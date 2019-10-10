@@ -84,12 +84,12 @@ public function registerBundles()
 
 ### Update the database
 
-This bundle use Dotrine ORM for drive the database table for store Dataflow schedule (`cr_dataflow_scheduled`) 
+This bundle uses Doctrine ORM for drive the database table for store Dataflow schedule (`cr_dataflow_scheduled`)
 and jobs (`cr_dataflow_job`).
 
 #### Doctrine migration
 
-Execute the command for generate the migration for your database:
+Execute the command to generate the migration for your database:
 
 ```shell script
 $ bin/console doctrine:migration:diff
@@ -97,7 +97,7 @@ $ bin/console doctrine:migration:diff
 
 #### Other migration tools
 
-If you use [Phinx](https://phinx.org/) or [Kaliop Migration Bundle](https://github.com/kaliop-uk/ezmigrationbundle) or whatever, 
+If you use [Phinx](https://phinx.org/) or [Kaliop Migration Bundle](https://github.com/kaliop-uk/ezmigrationbundle) or whatever,
 you can add a new migration with the generated SQL query from this command:
 
 ```shell script
@@ -116,7 +116,7 @@ A dataflow type defines the different parts of your dataflow. A dataflow is made
 
 Dataflow types can be configured with options.
 
-A dataflow type must implements `CodeRhapsodie\DataflowBundle\DataflowType\DataflowTypeInterface`.
+A dataflow type must implement `CodeRhapsodie\DataflowBundle\DataflowType\DataflowTypeInterface`.
 
 To help with creating your dataflow types, an abstract class `CodeRhapsodie\DataflowBundle\DataflowType\AbstractDataflowType`
 is provided, allowing you to define your dataflow through a handy builder `CodeRhapsodie\DataflowBundle\DataflowType\DataflowBuilder`.
