@@ -144,7 +144,7 @@ class Job
     }
 
     /**
-     * @return null|string
+     * @return string|null
      */
     public function getLabel(): ?string
     {
@@ -152,7 +152,7 @@ class Job
     }
 
     /**
-     * @param null|string $label
+     * @param string|null $label
      *
      * @return Job
      */
@@ -164,7 +164,7 @@ class Job
     }
 
     /**
-     * @return null|string
+     * @return string|null
      */
     public function getDataflowType(): ?string
     {
@@ -172,7 +172,7 @@ class Job
     }
 
     /**
-     * @param null|string $dataflowType
+     * @param string|null $dataflowType
      *
      * @return Job
      */

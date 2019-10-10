@@ -92,7 +92,7 @@ class ScheduledDataflow
     }
 
     /**
-     * @return null|string
+     * @return string|null
      */
     public function getLabel(): ?string
     {
@@ -100,7 +100,7 @@ class ScheduledDataflow
     }
 
     /**
-     * @param null|string $label
+     * @param string|null $label
      *
      * @return ScheduledDataflow
      */
@@ -112,7 +112,7 @@ class ScheduledDataflow
     }
 
     /**
-     * @return null|string
+     * @return string|null
      */
     public function getDataflowType(): ?string
     {
@@ -120,7 +120,7 @@ class ScheduledDataflow
     }
 
     /**
-     * @param null|string $dataflowType
+     * @param string|null $dataflowType
      *
      * @return ScheduledDataflow
      */
