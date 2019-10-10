@@ -25,7 +25,7 @@ class Dataflow implements DataflowInterface
 
     /**
      * @param iterable    $reader
-     * @param null|string $name
+     * @param string|null $name
      */
     public function __construct(iterable $reader, ?string $name)
     {

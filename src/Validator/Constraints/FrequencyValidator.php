@@ -25,7 +25,7 @@ class FrequencyValidator extends ConstraintValidator
 
         $interval = @\DateInterval::createFromDateString($value);
         if (!$interval) {
-            $this->context->buildViolation($constraint->invalidMessage)
+            $this->context->buildViolation($constraint->message)
                 ->setParameter('{{ string }}', $value)
                 ->addViolation()
             ;
@@ -38,7 +38,7 @@ class FrequencyValidator extends ConstraintValidator
         $dt->add($interval);
 
         if ($dt <= $now) {
-            $this->context->buildViolation($constraint->negativeIntervalMessage)
+            $this->context->buildViolation($constraint->message)
                 ->setParameter('{{ string }}', $value)
                 ->addViolation()
             ;

@@ -11,7 +11,5 @@ use Symfony\Component\Validator\Constraint;
  */
 class Frequency extends Constraint
 {
-    public $invalidMessage = 'The provided frequency "{{ string }}" must be a valid parameter for DateInterval::createFromDateString()';
-
-    public $negativeIntervalMessage = 'The provided frequency "{{ string }}" mustn\'t represent a negative interval';
+    public $message = 'The provided frequency "{{ string }}" must be a valid parameter for DateInterval::createFromDateString() and must not represent a negative value';
 }

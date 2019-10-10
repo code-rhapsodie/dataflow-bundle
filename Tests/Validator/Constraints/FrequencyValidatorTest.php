@@ -36,7 +36,7 @@ class FrequencyValidatorTest extends ConstraintValidatorTestCase
     public function testInvalidValue()
     {
         $constraint = new Frequency([
-            'invalidMessage' => 'testMessage',
+            'message' => 'testMessage',
         ]);
 
         $this->validator->validate('wrong value', $constraint);
@@ -53,7 +53,7 @@ class FrequencyValidatorTest extends ConstraintValidatorTestCase
     public function testNegativeIntervals($value)
     {
         $constraint = new Frequency([
-            'negativeIntervalMessage' => 'testMessage',
+            'message' => 'testMessage',
         ]);
 
         $this->validator->validate($value, $constraint);

@@ -14,7 +14,7 @@
         <ini name="error_reporting" value="-1" />
     </php>
     <testsuites>
-        <testsuite name="Port tests suite">
+        <testsuite name="Dataflow tests suite">
             <directory suffix="Test.php">./Tests</directory>
         </testsuite>
     </testsuites>
