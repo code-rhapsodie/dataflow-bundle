@@ -5,6 +5,8 @@ providing an easy way to create import / export dataflow.
 
 [![Build Status](https://travis-ci.org/code-rhapsodie/dataflow-bundle.svg?branch=master)](https://travis-ci.org/code-rhapsodie/dataflow-bundle)
 
+[![Coverage Status](https://coveralls.io/repos/github/code-rhapsodie/dataflow-bundle/badge.svg)](https://coveralls.io/github/code-rhapsodie/dataflow-bundle)
+
 # Features
 
 * Define and configure a Dataflow
