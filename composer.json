@@ -1,0 +1,57 @@
+{
+    "name": "code-rhapsodie/dataflow-bundle",
+    "description": "Data processing framework inspired by PortPHP",
+    "type": "symfony-bundle",
+    "keywords": ["dataflow", "import", "export", "data processing"],
+    "license": "MIT",
+    "authors": [
+        {
+            "name": "Jérémy J.",
+            "email": "jeremy@code-rhapsodie.fr",
+            "role": "Developer"
+        },
+        {
+            "name": "Jean-Baptiste Nahan",
+            "email": "jean-baptiste@code-rhapsodie.fr",
+            "role": "Developer"
+        },
+        {
+            "name": "Manuel Farrica",
+            "email": "manuel@code-rhapsodie.fr",
+            "role": "Developer"
+        },
+        {
+            "name": "Code Rhapsodie",
+            "homepage": "https://www.code-rhapsodie.fr/"
+        }
+    ],
+    "autoload": {
+        "psr-4": {
+            "CodeRhapsodie\\DataflowBundle\\": "src/"
+        }
+    },
+    "autoload-dev": {
+        "psr-4": {
+            "CodeRhapsodie\\DataflowBundle\\Tests\\": "Tests/"
+        }
+    },
+    "require": {
+        "php": "^7.1",
+        "symfony/dependency-injection": "^3.4||^4.0",
+        "symfony/http-kernel": "^3.4||^4.0",
+        "symfony/config": "^3.4||^4.0",
+        "symfony/yaml": "^3.4||^4.0",
+        "symfony/console": "^3.4||^4.0",
+        "symfony/lock": "^3.4||^4.0",
+        "symfony/event-dispatcher": "^3.4||^4.0",
+        "symfony/validator": "^3.4||^4.0",
+        "symfony/options-resolver": "^3.4||^4.0",
+        "doctrine/orm": "^2.4.5"
+    },
+    "require-dev": {
+        "phpunit/phpunit": "^8.1"
+    },
+    "suggest": {
+        "portphp/portphp": "Provides generic readers, steps and writers for your dataflows."
+    }
+}

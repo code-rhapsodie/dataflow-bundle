@@ -1,0 +1,62 @@
+services:
+    _defaults:
+        public: false
+
+    CodeRhapsodie\DataflowBundle\Registry\DataflowTypeRegistryInterface: '@CodeRhapsodie\DataflowBundle\Registry\DataflowTypeRegistry'
+    CodeRhapsodie\DataflowBundle\Registry\DataflowTypeRegistry:
+
+    CodeRhapsodie\DataflowBundle\Command\AddScheduledDataflowCommand:
+        arguments:
+            $registry: '@CodeRhapsodie\DataflowBundle\Registry\DataflowTypeRegistryInterface'
+            $scheduledDataflowRepository: '@CodeRhapsodie\DataflowBundle\Repository\ScheduledDataflowRepository'
+            $validator: '@validator'
+        tags: ['console.command']
+
+    CodeRhapsodie\DataflowBundle\Command\ChangeScheduleStatusCommand:
+        arguments:
+            $scheduledDataflowRepository: '@CodeRhapsodie\DataflowBundle\Repository\ScheduledDataflowRepository'
+        tags: ['console.command']
+
+    CodeRhapsodie\DataflowBundle\Command\ExecuteDataflowCommand:
+        arguments:
+            $registry: '@CodeRhapsodie\DataflowBundle\Registry\DataflowTypeRegistryInterface'
+        tags: ['console.command']
+
+    CodeRhapsodie\DataflowBundle\Command\JobShowCommand:
+        arguments:
+            $jobRepository: '@CodeRhapsodie\DataflowBundle\Repository\JobRepository'
+        tags: ['console.command']
+
+    CodeRhapsodie\DataflowBundle\Command\RunPendingDataflowsCommand:
+        arguments:
+            $manager: '@CodeRhapsodie\DataflowBundle\Manager\ScheduledDataflowManagerInterface'
+            $runner: '@CodeRhapsodie\DataflowBundle\Runner\PendingDataflowRunnerInterface'
+        tags: ['console.command']
+
+    CodeRhapsodie\DataflowBundle\Command\ScheduleListCommand:
+        arguments:
+            $scheduledDataflowRepository: '@CodeRhapsodie\DataflowBundle\Repository\ScheduledDataflowRepository'
+        tags: ['console.command']
+
+    CodeRhapsodie\DataflowBundle\Repository\ScheduledDataflowRepository:
+        factory: ['@doctrine.orm.default_entity_manager', 'getRepository']
+        arguments: ['CodeRhapsodie\DataflowBundle\Entity\ScheduledDataflow']
+
+    CodeRhapsodie\DataflowBundle\Repository\JobRepository:
+        factory: ['@doctrine.orm.default_entity_manager', 'getRepository']
+        arguments: ['CodeRhapsodie\DataflowBundle\Entity\Job']
+
+    CodeRhapsodie\DataflowBundle\Manager\ScheduledDataflowManagerInterface: '@CodeRhapsodie\DataflowBundle\Manager\ScheduledDataflowManager'
+    CodeRhapsodie\DataflowBundle\Manager\ScheduledDataflowManager:
+        arguments:
+            $em: '@doctrine.orm.default_entity_manager'
+            $scheduledDataflowRepository: '@CodeRhapsodie\DataflowBundle\Repository\ScheduledDataflowRepository'
+            $jobRepository: '@CodeRhapsodie\DataflowBundle\Repository\JobRepository'
+
+    CodeRhapsodie\DataflowBundle\Runner\PendingDataflowRunnerInterface: '@CodeRhapsodie\DataflowBundle\Runner\PendingDataflowRunner'
+    CodeRhapsodie\DataflowBundle\Runner\PendingDataflowRunner:
+        arguments:
+            $em: '@doctrine.orm.default_entity_manager'
+            $repository: '@CodeRhapsodie\DataflowBundle\Repository\JobRepository'
+            $registry: '@CodeRhapsodie\DataflowBundle\Registry\DataflowTypeRegistryInterface'
+            $dispatcher: '@event_dispatcher'
