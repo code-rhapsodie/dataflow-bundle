@@ -19,12 +19,6 @@ env:
     - PHPUNIT_ENABLED="true"
     - STABILITY=stable
 
-php:
-    - 7.1
-    - 7.2
-    - 7.3
-    - 7.4snapshot
-
 matrix:
   fast_finish: true
   include:
