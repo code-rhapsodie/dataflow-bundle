@@ -89,7 +89,7 @@ before_install:
 install:
   - travis_retry composer update --prefer-dist --no-interaction --no-suggest --no-progress --ansi $COMPOSER_FLAGS
 
-script: ./vendor/bin/phpunit
+script: ./vendor/bin/phpunit $PHPUNIT_FLAGS
 
 after_success:
   - if [[ "$PHPUNIT_ENABLED" == "true" && "$COVERALLS_ENABLED" == "true" ]]; then
