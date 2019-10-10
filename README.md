@@ -119,7 +119,7 @@ Dataflow types can be configured with options.
 A dataflow type must implements `CodeRhapsodie\DataflowBundle\DataflowType\DataflowTypeInterface`.
 
 To help with creating your dataflow types, an abstract class `CodeRhapsodie\DataflowBundle\DataflowType\AbstractDataflowType`
-is provided, allowing you to define your dataflow through an handy builder `CodeRhapsodie\DataflowBundle\DataflowType\DataflowBuilder`.
+is provided, allowing you to define your dataflow through a handy builder `CodeRhapsodie\DataflowBundle\DataflowType\DataflowBuilder`.
 
 This is an example to define one class DataflowType:
 
