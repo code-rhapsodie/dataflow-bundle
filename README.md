@@ -109,7 +109,7 @@ $ bin/console doctrine:schema:update --dump-sql
 
 This bundle uses a fixed and simple workflow structure in order to let you focus on the data processing logic part of your dataflow.
 
-A dataflow type defines the different parts of your dataflow. A dataflow is comprised of:
+A dataflow type defines the different parts of your dataflow. A dataflow is made of:
 - exactly one *Reader*
 - any number of *Steps*
 - one or more *Writers*
@@ -118,7 +118,7 @@ Dataflow types can be configured with options.
 
 A dataflow type must implements `CodeRhapsodie\DataflowBundle\DataflowType\DataflowTypeInterface`.
 
-To help with creating your workflow types, an abstract class `CodeRhapsodie\DataflowBundle\DataflowType\AbstractDataflowType` 
+To help with creating your dataflow types, an abstract class `CodeRhapsodie\DataflowBundle\DataflowType\AbstractDataflowType`
 is provided, allowing you to define your dataflow through an handy builder `CodeRhapsodie\DataflowBundle\DataflowType\DataflowBuilder`.
 
 This is an example to define one class DataflowType:
@@ -180,8 +180,11 @@ class MyFirstDataflowType extends AbstractDataflowType
 
 ```
 
-The `DataflowTypeInterface` is used by Symfony for auto-configuration our custom datafow type only if the folder is correctly configured (see the `services` configuration file in your projet).
-If you don't use the auto-configuration, you must add this tag `coderhapsodie.dataflow.type` in your dataflow type service configuration:
+Dataflow types must be tagged with `coderhapsodie.dataflow.type`.
+
+If you're using Symfony auto-configuration for your services, this tag will be automatically added to all services implementing `DataflowTypeInterface`.
+
+Otherwise, manually add the tag `coderhapsodie.dataflow.type` in your dataflow type service configuration:
 
 ```yaml
     CodeRhapsodie\DataflowExemple\DataflowType\MyFirstDataflowType:
@@ -189,9 +192,9 @@ If you don't use the auto-configuration, you must add this tag `coderhapsodie.da
         - { name: coderhapsodie.dataflow.type }
 ```
 
-### Use the options for your dataflow type
+### Use options for your dataflow type
 
-The `AbstractDataflowType` can help you define the options of your Datataflow type.
+The `AbstractDataflowType` can help you define options for your Dataflow type.
 
 Add this method in your DataflowType class:
 
@@ -216,7 +219,6 @@ class MyFirstDataflowType extends AbstractDataflowType
 ```
 
 With this configuration, the option `fileName` is required. For an advanced usage of the option resolver, read the [Symfony documentation](https://symfony.com/doc/current/components/options_resolver.html).
-
 
 ### Check if your DataflowType is ready
 
@@ -243,9 +245,9 @@ Symfony Container Public and Private Services Tagged with "coderhapsodie.dataflo
 
 ### Readers
 
-*Readers* provide the workflow with elements to import / export. Usually, elements are read from an external resource (file, database, webservice, etc).
+*Readers* provide the dataflow with elements to import / export. Usually, elements are read from an external resource (file, database, webservice, etc).
 
-A *Reader* must implements `Port\Reader` or return a `iterable` if you use the `Port\Reader\IteratorReader`.
+A *Reader* can be any `iterable`.
 
 The only constraint on the returned elements typing is that they cannot be `false`.
 
@@ -284,10 +286,10 @@ class FileReader
 }
 ```
 
-To setup your reader in the dataflow builder, you must use `Port\Reader\IteratorReader` like this
+You can set up this reader like that:
 
 ```php
-$builder->setReader(new \Port\Reader\IteratorReader($this->myReader))
+$builder->setReader(($this->myReader)())
 ``` 
 
 
@@ -301,6 +303,25 @@ A *Step* can be any callable, taking the element as its argument, and returning 
 - the element, possibly altered
 - `false`, if no further operations should be performed on this element
 
+A few examples:
+
+```php
+$builder->addStep(function($item) {
+    // Titles are changed to all caps before export
+    $item['title'] = strtoupper($item['title']);
+
+    return $item;
+});
+
+$builder->addStep(function($item) {
+    // Private items are not exported
+    if ($item['private']) {
+        return false;
+    }
+
+    return $item;
+});
+```
 
 ### Writers
 
@@ -359,7 +380,7 @@ $ SYMFONY_ENV=prod php bin/console code-rhapsodie:dataflow:job:run-pending
 
 ## Commands
 
-Many commands are provided.
+Several commands are provided to manage schedules and run jobs.
 
 `code-rhapsodie:dataflow:job:run-pending` Executes job in the queue according to their schedule.
 
