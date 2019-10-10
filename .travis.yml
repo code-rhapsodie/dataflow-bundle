@@ -18,6 +18,7 @@ env:
     - PHPUNIT_FLAGS="-v"
     - PHPUNIT_ENABLED="true"
     - STABILITY=stable
+    - COVERALLS_ENABLED="false"
 
 matrix:
   fast_finish: true
@@ -25,6 +26,12 @@ matrix:
     - php: '7.1'
     - php: '7.2'
     - php: '7.3'
+
+    # Enable code coverage with the latest supported PHP version
+    - php: '7.3'
+      env:
+        - COVERALLS_ENABLED="true"
+        - PHPUNIT_FLAGS="-v --coverage-text --coverage-clover var/build/clover.xml"
 
     # Minimum supported dependencies with the latest and oldest supported PHP versions
     - php: '7.1'
@@ -72,8 +79,19 @@ before_install:
   - if [[ "$STABILITY" != "stable" ]]; then
       travis_retry composer config minimum-stability $STABILITY;
     fi
+  - if [[ "$COVERALLS_ENABLED" != "true" ]]; then
+      phpenv config-rm xdebug.ini || true;
+    fi
+  - if [[ "$COVERALLS_ENABLED" == "true" ]]; then
+      travis_retry composer require --dev satooshi/php-coveralls:^2.0 --no-update $COMPOSER_FLAGS;
+    fi
 
 install:
   - travis_retry composer update --prefer-dist --no-interaction --no-suggest --no-progress --ansi $COMPOSER_FLAGS
 
-script: ./vendor/bin/phpunit 
+script: ./vendor/bin/phpunit
+
+after_success:
+  - if [[ "$PHPUNIT_ENABLED" == "true" && "$COVERALLS_ENABLED" == "true" ]]; then
+    ./vendor/bin/php-coveralls -vvv --config .coveralls.yml;
+    fi;
