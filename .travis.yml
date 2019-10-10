@@ -52,6 +52,15 @@ matrix:
       env:
         - SYMFONY_VERSION=4.3.*
 
+    # Test unsupported versions of Symfony
+    - php: '7.1'
+      env:
+        - SYMFONY_VERSION=4.0.*
+    - php: '7.1'
+      env:
+        - SYMFONY_VERSION=4.1.*
+
+
     # Test upcoming Symfony versions with lowest supported PHP version and dev dependencies
     - php: '7.1'
       env:
@@ -63,7 +72,12 @@ matrix:
       env:
         - STABILITY=dev
         - COMPOSER_FLAGS="--ignore-platform-reqs --prefer-stable"
+
   allow_failures:
+    - env:
+        - SYMFONY_VERSION=4.0.*
+    - env:
+        - SYMFONY_VERSION=4.1.*
     - env:
         - STABILITY=dev
         - COMPOSER_FLAGS="--ignore-platform-reqs --prefer-stable"
