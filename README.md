@@ -286,7 +286,7 @@ class FileReader
 }
 ```
 
-You can set up this reader like that:
+You can set up this reader as follows:
 
 ```php
 $builder->setReader(($this->myReader)())
