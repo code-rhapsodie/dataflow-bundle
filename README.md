@@ -297,7 +297,7 @@ $builder->setReader(($this->myReader)())
 
 *Steps* are operations performed on the elements before they are handled by the *Writers*. Usually, steps are either:
 - converters, that alter the element
-- filters, that conditionally prevents further operations on the element
+- filters, that conditionally prevent further operations on the element
 
 A *Step* can be any callable, taking the element as its argument, and returning either:
 - the element, possibly altered
@@ -325,9 +325,9 @@ $builder->addStep(function($item) {
 
 ### Writers
 
-*Writers* performs the actual import / export operations.
+*Writers* perform the actual import / export operations.
 
-A *Writer* must implements `CodeRhapsodie\DataflowBundle\DataflowType\Writer\WriterInterface`.
+A *Writer* must implement `CodeRhapsodie\DataflowBundle\DataflowType\Writer\WriterInterface`.
 As this interface is not compatible with `Port\Writer`, the adapter `CodeRhapsodie\DataflowBundle\DataflowType\Writer\PortWriterAdapter` is provided.
 
 This example show how to use the predefined PhpPort Writer :
@@ -336,7 +336,7 @@ This example show how to use the predefined PhpPort Writer :
 $builder->addWriter(new PortWriterAdapter(new \Port\FileWriter()));
 ```
 
-Or you own Writer:
+Or your own Writer:
 
 ```php
 <?php
@@ -372,7 +372,7 @@ class FileWriter implements WriterInterface
 
 All pending dataflow job processes are stored in a queue into the database.
 
-Add this command into your crontab for execute all queued job:
+Add this command into your crontab for execute all queued jobs:
 
 ```shell script
 $ SYMFONY_ENV=prod php bin/console code-rhapsodie:dataflow:job:run-pending
@@ -392,7 +392,7 @@ Several commands are provided to manage schedules and run jobs.
 
 `code-rhapsodie:dataflow:job:show` Display the last result of a job.
 
-`code-rhapsodie:dataflow:execute` Lets you execute one dataflow job.
+`code-rhapsodie:dataflow:execute` Let you execute one dataflow job.
 
 
 # Issues and feature requests
