@@ -375,14 +375,14 @@ All pending dataflow job processes are stored in a queue into the database.
 Add this command into your crontab for execute all queued jobs:
 
 ```shell script
-$ SYMFONY_ENV=prod php bin/console code-rhapsodie:dataflow:job:run-pending
+$ SYMFONY_ENV=prod php bin/console code-rhapsodie:dataflow:run-pending
 ```
 
 ## Commands
 
 Several commands are provided to manage schedules and run jobs.
 
-`code-rhapsodie:dataflow:job:run-pending` Executes job in the queue according to their schedule.
+`code-rhapsodie:dataflow:run-pending` Executes job in the queue according to their schedule.
 
 `code-rhapsodie:dataflow:schedule:list` Display the list of dataflows scheduled.
 
