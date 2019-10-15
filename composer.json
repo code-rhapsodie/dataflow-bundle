@@ -38,6 +38,7 @@
     "require": {
         "php": "^7.1",
         "doctrine/orm": "^2.4.5",
+        "seld/signal-handler": "^1.0",
         "symfony/config": "^3.4||^4.0",
         "symfony/console": "^3.4||^4.0",
         "symfony/dependency-injection": "^3.4||^4.0",
