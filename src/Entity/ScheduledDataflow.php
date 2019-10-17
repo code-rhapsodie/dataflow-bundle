@@ -78,7 +78,7 @@ class ScheduledDataflow
     /**
      * @var Job[]
      *
-     * @ORM\OneToMany(targetEntity="Job", mappedBy="scheduledDataflow", cascade={"persist"})
+     * @ORM\OneToMany(targetEntity="Job", mappedBy="scheduledDataflow", cascade={"persist", "remove"})
      * @ORM\OrderBy({"startTime" = "DESC"})
      */
     private $jobs;
