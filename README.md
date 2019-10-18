@@ -10,7 +10,7 @@ providing an easy way to create import / export dataflow.
 Dataflow uses a linear generic workflow in three parts (one reader, any number of steps, one or more writers).
 
 The reader can read data from anywhere and return data row by row. Each step processes the current row data. 
-The steps order is defined by the step adding into the dataflow builder. 
+The steps are executed in the order in which they are added.
 And finally, one or more writers save the row anywhere you want.
 
 Like shown in this schema, you can define more than one dataflow:
