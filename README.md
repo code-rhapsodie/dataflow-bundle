@@ -1,4 +1,4 @@
-# Code-Rhapsodie Dataflow Bundle
+# Code Rhapsodie Dataflow Bundle
 
 DataflowBundle is a bundle for Symfony 3.4+ 
 providing an easy way to create import / export dataflow.
@@ -6,6 +6,17 @@ providing an easy way to create import / export dataflow.
 [![Build Status](https://travis-ci.org/code-rhapsodie/dataflow-bundle.svg?branch=master)](https://travis-ci.org/code-rhapsodie/dataflow-bundle)
 
 [![Coverage Status](https://coveralls.io/repos/github/code-rhapsodie/dataflow-bundle/badge.svg)](https://coveralls.io/github/code-rhapsodie/dataflow-bundle)
+
+Dataflow uses a linear generic workflow in tree parts (read, one or more step, one or more writer).
+
+The reader can read data from everywhere and return data row by row. Each step processes the current row data. 
+The steps order is defined by the step adding into the dataflow builder. 
+And finally, one or more writers save the row to everywhere.
+
+Like this schema show, you can define more than one dataflow:
+
+![Dataflow schema](src/Resources/doc/schema.png)
+
 
 # Features
 
