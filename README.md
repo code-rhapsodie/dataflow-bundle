@@ -13,7 +13,7 @@ The reader can read data from anywhere and return data row by row. Each step pro
 The steps are executed in the order in which they are added.
 And finally, one or more writers save the row anywhere you want.
 
-Like shown in this schema, you can define more than one dataflow:
+As the following schema shows, you can define more than one dataflow:
 
 ![Dataflow schema](src/Resources/doc/schema.png)
 
