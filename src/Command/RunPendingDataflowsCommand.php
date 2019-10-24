@@ -13,6 +13,8 @@ use Symfony\Component\Console\Output\OutputInterface;
 
 /**
  * Runs dataflows according to user-defined schedule.
+ *
+ * @codeCoverageIgnore
  */
 class RunPendingDataflowsCommand extends Command
 {

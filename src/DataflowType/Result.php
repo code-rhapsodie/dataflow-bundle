@@ -4,6 +4,9 @@ declare(strict_types=1);
 
 namespace CodeRhapsodie\DataflowBundle\DataflowType;
 
+/**
+ * @codeCoverageIgnore
+ */
 class Result
 {
     /** @var string */
@@ -27,7 +30,7 @@ class Result
     /** @var int */
     private $totalProcessedCount = 0;
 
-    /** @var \SplObjectStorage */
+    /** @var array */
     private $exceptions;
 
     /**
@@ -37,7 +40,7 @@ class Result
      * @param int                $totalCount
      * @param \SplObjectStorage  $exceptions
      */
-    public function __construct(string $name, \DateTimeInterface $startTime, \DateTimeInterface $endTime, int $totalCount, \SplObjectStorage $exceptions)
+    public function __construct(string $name, \DateTimeInterface $startTime, \DateTimeInterface $endTime, int $totalCount, array $exceptions)
     {
         $this->name = $name;
         $this->startTime = $startTime;
@@ -114,9 +117,9 @@ class Result
     }
 
     /**
-     * @return \SplObjectStorage
+     * @return array
      */
-    public function getExceptions(): \SplObjectStorage
+    public function getExceptions(): array
     {
         return $this->exceptions;
     }

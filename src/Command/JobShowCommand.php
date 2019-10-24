@@ -12,6 +12,9 @@ use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Console\Style\SymfonyStyle;
 
+/**
+ * @codeCoverageIgnore
+ */
 class JobShowCommand extends Command
 {
     private const STATUS_MAPPING = [

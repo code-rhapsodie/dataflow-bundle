@@ -7,7 +7,6 @@ namespace CodeRhapsodie\DataflowBundle\DataflowType\Dataflow;
 use CodeRhapsodie\DataflowBundle\DataflowType\Result;
 use CodeRhapsodie\DataflowBundle\DataflowType\Writer\WriterInterface;
 use CodeRhapsodie\DataflowBundle\Exceptions\InterruptedProcessingException;
-use Seld\Signal\SignalHandler;
 
 class Dataflow implements DataflowInterface
 {
@@ -63,12 +62,8 @@ class Dataflow implements DataflowInterface
     public function process(): Result
     {
         $count = 0;
-        $exceptions = new \SplObjectStorage();
+        $exceptions = [];
         $startTime = new \DateTime();
-
-        SignalHandler::create(['SIGTERM', 'SIGINT'], function () {
-            throw new InterruptedProcessingException();
-        });
 
         foreach ($this->writers as $writer) {
             $writer->prepare();
@@ -78,7 +73,7 @@ class Dataflow implements DataflowInterface
             try {
                 $this->processItem($item);
             } catch (\Exception $e) {
-                $exceptions->attach($e, $index);
+                $exceptions[$index] = $e;
             }
 
             ++$count;

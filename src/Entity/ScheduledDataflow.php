@@ -12,6 +12,8 @@ use Doctrine\ORM\Mapping as ORM;
  *
  * @ORM\Entity(repositoryClass="CodeRhapsodie\DataflowBundle\Repository\ScheduledDataflowRepository")
  * @ORM\Table(name="cr_dataflow_scheduled")
+ *
+ * @codeCoverageIgnore
  */
 class ScheduledDataflow
 {

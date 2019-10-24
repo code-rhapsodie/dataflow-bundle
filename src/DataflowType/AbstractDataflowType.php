@@ -8,6 +8,9 @@ use Symfony\Component\OptionsResolver\OptionsResolver;
 
 abstract class AbstractDataflowType implements DataflowTypeInterface
 {
+    /**
+     * @codeCoverageIgnore
+     */
     public function getAliases(): iterable
     {
         return [];
@@ -28,6 +31,9 @@ abstract class AbstractDataflowType implements DataflowTypeInterface
         return $dataflow->process();
     }
 
+    /**
+     * @codeCoverageIgnore
+     */
     protected function configureOptions(OptionsResolver $optionsResolver): void
     {
     }

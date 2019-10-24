@@ -11,6 +11,8 @@ use Doctrine\ORM\EntityRepository;
 
 /**
  * Repository.
+ *
+ * @codeCoverageIgnore
  */
 class JobRepository extends EntityRepository
 {

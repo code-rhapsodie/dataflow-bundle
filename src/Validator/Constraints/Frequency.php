@@ -8,6 +8,8 @@ use Symfony\Component\Validator\Constraint;
 
 /**
  * @Annotation
+ *
+ * @codeCoverageIgnore
  */
 class Frequency extends Constraint
 {

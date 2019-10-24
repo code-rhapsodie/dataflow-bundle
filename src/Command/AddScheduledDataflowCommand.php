@@ -14,6 +14,9 @@ use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Console\Style\SymfonyStyle;
 use Symfony\Component\Validator\Validator\ValidatorInterface;
 
+/**
+ * @codeCoverageIgnore
+ */
 class AddScheduledDataflowCommand extends Command
 {
     protected static $defaultName = 'code-rhapsodie:dataflow:schedule:add';

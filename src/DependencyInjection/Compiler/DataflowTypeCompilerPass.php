@@ -11,6 +11,8 @@ use Symfony\Component\DependencyInjection\Reference;
 
 /**
  * Registers dataflow types in the registry.
+ *
+ * @codeCoverageIgnore
  */
 class DataflowTypeCompilerPass implements CompilerPassInterface
 {

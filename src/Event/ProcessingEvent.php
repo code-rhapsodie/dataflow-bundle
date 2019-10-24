@@ -9,6 +9,8 @@ use Symfony\Component\EventDispatcher\Event;
 
 /**
  * Event used during the dataflow lifecycle.
+ *
+ * @codeCoverageIgnore
  */
 class ProcessingEvent extends Event
 {

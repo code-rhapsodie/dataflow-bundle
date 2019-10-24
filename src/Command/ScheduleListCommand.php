@@ -10,6 +10,9 @@ use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Console\Style\SymfonyStyle;
 
+/**
+ * @codeCoverageIgnore
+ */
 class ScheduleListCommand extends Command
 {
     protected static $defaultName = 'code-rhapsodie:dataflow:schedule:list';
