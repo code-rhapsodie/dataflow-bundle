@@ -103,10 +103,8 @@ class PendingDataflowRunnerTest extends TestCase
             ->willReturnOnConsecutiveCalls($dataflowType1, $dataflowType2)
         ;
 
-        $bag1 = new \SplObjectStorage();
-        $bag1->attach(new \Exception('message1'));
-        $bag2 = new \SplObjectStorage();
-        $bag2->attach(new \Exception('message2'));
+        $bag1 = [new \Exception('message1')];
+        $bag2 = [new \Exception('message2')];
 
         $result1 = new Result('name', new \DateTime(), $end1 = new \DateTime(), $count1 = 10, $bag1);
         $result2 = new Result('name', new \DateTime(), $end2 = new \DateTime(), $count2 = 20, $bag2);

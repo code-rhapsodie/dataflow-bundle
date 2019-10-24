@@ -12,6 +12,8 @@ use Symfony\Component\Console\Output\OutputInterface;
 
 /**
  * Runs one dataflow.
+ *
+ * @codeCoverageIgnore
  */
 class ExecuteDataflowCommand extends Command
 {

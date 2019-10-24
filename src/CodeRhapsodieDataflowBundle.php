@@ -9,6 +9,9 @@ use CodeRhapsodie\DataflowBundle\DependencyInjection\Compiler\DataflowTypeCompil
 use Symfony\Component\DependencyInjection\ContainerBuilder;
 use Symfony\Component\HttpKernel\Bundle\Bundle;
 
+/**
+ * @codeCoverageIgnore
+ */
 class CodeRhapsodieDataflowBundle extends Bundle
 {
     protected $name = 'CodeRhapsodieDataflowBundle';

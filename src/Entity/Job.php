@@ -11,6 +11,8 @@ use Doctrine\ORM\Mapping as ORM;
  *
  * @ORM\Entity(repositoryClass="CodeRhapsodie\DataflowBundle\Repository\JobRepository")
  * @ORM\Table(name="cr_dataflow_job")
+ *
+ * @codeCoverageIgnore
  */
 class Job
 {

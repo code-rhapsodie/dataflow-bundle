@@ -10,6 +10,8 @@ use Doctrine\ORM\EntityRepository;
 
 /**
  * Repository for the ScheduledDataflow entity.
+ *
+ * @codeCoverageIgnore
  */
 class ScheduledDataflowRepository extends EntityRepository
 {
