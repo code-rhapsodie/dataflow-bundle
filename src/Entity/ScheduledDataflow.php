@@ -22,7 +22,7 @@ class ScheduledDataflow
     ];
 
     /**
-     * @var null|int
+     * @var int|null
      */
     private $id;
 
@@ -69,22 +69,23 @@ class ScheduledDataflow
 
     public static function createFromArray(array $datas)
     {
-        $keys = ['id', 'label', 'dataflow_type', 'options', 'frequency', 'next', 'enabled',];
+        $keys = ['id', 'label', 'dataflow_type', 'options', 'frequency', 'next', 'enabled'];
         $lost = array_diff($keys, array_keys($datas));
         if (count($lost) > 0) {
-            throw new \LogicException('The first argument of ' . __METHOD__ . '  must be contains: "' . implode(', ',
-                    $lost) . '"');
+            throw new \LogicException('The first argument of '.__METHOD__.'  must be contains: "'.implode(', ',
+                    $lost).'"');
         }
 
         $scheduledDataflow = new self();
-        $scheduledDataflow->id = $datas['id'] === null ? null : (int)$datas['id'];
+        $scheduledDataflow->id = null === $datas['id'] ? null : (int) $datas['id'];
 
         $scheduledDataflow->setLabel($datas['label']);
         $scheduledDataflow->setDataflowType($datas['dataflow_type']);
         $scheduledDataflow->setOptions($datas['options']);
         $scheduledDataflow->setFrequency($datas['frequency']);
         $scheduledDataflow->setNext($datas['next']);
-        $scheduledDataflow->setEnabled($datas['enabled'] === null ? null : (bool)$datas['enabled']);
+        $scheduledDataflow->setEnabled(null === $datas['enabled'] ? null : (bool) $datas['enabled']);
+
         return $scheduledDataflow;
     }
 
@@ -114,7 +115,7 @@ class ScheduledDataflow
     }
 
     /**
-     * @return null|int
+     * @return int|null
      */
     public function getId(): ?int
     {

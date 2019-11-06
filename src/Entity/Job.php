@@ -18,7 +18,7 @@ class Job
     const STATUS_COMPLETED = 2;
 
     /**
-     * @var null|int
+     * @var int|null
      */
     private $id;
 
@@ -123,22 +123,23 @@ class Job
         ];
         $lost = array_diff($keys, array_keys($datas));
         if (count($lost) > 0) {
-            throw new \LogicException('The first argument of ' . __METHOD__ . '  must be contains: "' . implode(', ',
-                    $lost) . '"');
+            throw new \LogicException('The first argument of '.__METHOD__.'  must be contains: "'.implode(', ',
+                    $lost).'"');
         }
 
         $job = new self();
-        $job->id = $datas['id'] === null ? null : (int)$datas['id'];
-        $job->setStatus($datas['status'] === null ? null : (int)$datas['status']);
+        $job->id = null === $datas['id'] ? null : (int) $datas['id'];
+        $job->setStatus(null === $datas['status'] ? null : (int) $datas['status']);
         $job->setLabel($datas['label']);
         $job->setDataflowType($datas['dataflow_type']);
         $job->setOptions($datas['options']);
         $job->setRequestedDate($datas['requested_date']);
-        $job->setScheduledDataflowId($datas['scheduled_dataflow_id'] === null ? null : (int)$datas['scheduled_dataflow_id']);
-        $job->setCount($datas['count'] === null ? null : (int)$datas['count']);
+        $job->setScheduledDataflowId(null === $datas['scheduled_dataflow_id'] ? null : (int) $datas['scheduled_dataflow_id']);
+        $job->setCount(null === $datas['count'] ? null : (int) $datas['count']);
         $job->setExceptions($datas['exceptions']);
         $job->setStartTime($datas['start_time']);
         $job->setEndTime($datas['end_time']);
+
         return $job;
     }
 
@@ -161,6 +162,7 @@ class Job
 
     /**
      * @param int $id
+     *
      * @return Job
      */
     public function setId(int $id): Job
@@ -170,9 +172,8 @@ class Job
         return $this;
     }
 
-
     /**
-     * @return null|int
+     * @return int|null
      */
     public function getId(): ?int
     {

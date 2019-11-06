@@ -9,14 +9,12 @@ use CodeRhapsodie\DataflowBundle\Entity\Job;
 use CodeRhapsodie\DataflowBundle\Repository\ScheduledDataflowRepository;
 use CodeRhapsodie\DataflowBundle\Repository\JobRepository;
 use Doctrine\DBAL\Driver\Connection;
-use Doctrine\ORM\EntityManagerInterface;
 
 /**
  * Handles scheduled dataflows execution dates based on their frequency.
  */
 class ScheduledDataflowManager implements ScheduledDataflowManagerInterface
 {
-
     /** @var ScheduledDataflowRepository */
     private $scheduledDataflowRepository;
 

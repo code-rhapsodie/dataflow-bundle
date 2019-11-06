@@ -4,7 +4,6 @@ declare(strict_types=1);
 
 namespace CodeRhapsodie\DataflowBundle\Repository;
 
-use CodeRhapsodie\DataflowBundle\Entity\Job;
 use CodeRhapsodie\DataflowBundle\Entity\ScheduledDataflow;
 use Doctrine\DBAL\Driver\Connection;
 use Doctrine\DBAL\Query\QueryBuilder;
@@ -36,6 +35,7 @@ class ScheduledDataflowRepository
 
     /**
      * JobRepository constructor.
+     *
      * @param Connection $connexion
      */
     public function __construct(Connection $connexion)
@@ -57,7 +57,7 @@ class ScheduledDataflowRepository
             ;
 
         $stmt = $qb->execute();
-        if ($stmt->rowCount() === 0) {
+        if (0 === $stmt->rowCount()) {
             return [];
         }
         while (false !== ($row = $stmt->fetch(\PDO::FETCH_ASSOC))) {
@@ -71,8 +71,8 @@ class ScheduledDataflowRepository
         $qb->andWhere($qb->expr()->eq('id', $qb->createNamedParameter($scheduleId, \PDO::PARAM_INT)))
             ->setMaxResults(1)
         ;
-        return $this->returnFirstOrNull($qb);
 
+        return $this->returnFirstOrNull($qb);
     }
 
     public function findAllOrderedByLabel(): iterable
@@ -81,7 +81,7 @@ class ScheduledDataflowRepository
         $qb->orderBy('label', 'ASC');
 
         $stmt = $qb->execute();
-        if ($stmt->rowCount() === 0) {
+        if (0 === $stmt->rowCount()) {
             return [];
         }
         while (false !== ($row = $stmt->fetch(\PDO::FETCH_ASSOC))) {
@@ -94,7 +94,7 @@ class ScheduledDataflowRepository
         $query = $this->connexion->createQueryBuilder()
             ->from(static::TABLE_NAME, 'w')
             ->select('w.id', 'w.label', 'w.enabled', 'w.next', 'max(j.start_time) as startTime')
-            ->leftJoin('w', JobRepository::TABLE_NAME,'j', 'j.scheduled_dataflow_id = w.id')
+            ->leftJoin('w', JobRepository::TABLE_NAME, 'j', 'j.scheduled_dataflow_id = w.id')
             ->orderBy('w.label', 'ASC')
             ->groupBy('w.id');
 
@@ -110,13 +110,13 @@ class ScheduledDataflowRepository
             $datas['options'] = json_encode($datas['options']);
         }
 
-        if ($scheduledDataflow->getId() === null) {
+        if (null === $scheduledDataflow->getId()) {
             $this->connexion->insert(static::TABLE_NAME, $datas, static::FIELDS_TYPE);
             $scheduledDataflow->setId((int) $this->connexion->lastInsertId());
 
             return;
         }
-        $this->connexion->update(static::TABLE_NAME, $datas, ['id'=>$scheduledDataflow->getId()], static::FIELDS_TYPE);
+        $this->connexion->update(static::TABLE_NAME, $datas, ['id' => $scheduledDataflow->getId()], static::FIELDS_TYPE);
     }
 
     public function delete(int $id): void
@@ -138,17 +138,17 @@ class ScheduledDataflowRepository
         $qb = $this->connexion->createQueryBuilder();
         $qb->select('*')
             ->from(static::TABLE_NAME);
+
         return $qb;
     }
 
-    private function returnFirstOrNull(QueryBuilder $qb): ?ScheduledDataflow {
-
+    private function returnFirstOrNull(QueryBuilder $qb): ?ScheduledDataflow
+    {
         $stmt = $qb->execute();
-        if ($stmt->rowCount() === 0) {
+        if (0 === $stmt->rowCount()) {
             return null;
         }
 
         return ScheduledDataflow::createFromArray($this->initDateTime($this->initArray($stmt->fetch(\PDO::FETCH_ASSOC))));
     }
-
 }

@@ -100,7 +100,7 @@ class AddScheduledDataflowCommand extends Command
         }
 
         $newScheduledDataflow = ScheduledDataflow::createFromArray([
-            'id'=>null,
+            'id' => null,
             'label' => $label,
             'dataflow_type' => $type,
             'options' => json_decode($options, true),
@@ -111,7 +111,7 @@ class AddScheduledDataflowCommand extends Command
 
         $errors = $this->validator->validate($newScheduledDataflow);
         if (count($errors) > 0) {
-            $io->error((string)$errors);
+            $io->error((string) $errors);
 
             return 2;
         }
