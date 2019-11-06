@@ -5,13 +5,10 @@ declare(strict_types=1);
 namespace CodeRhapsodie\DataflowBundle\Entity;
 
 use CodeRhapsodie\DataflowBundle\Validator\Constraints\Frequency;
-use Doctrine\ORM\Mapping as ORM;
+use Symfony\Component\Validator\Constraints as Asserts;
 
 /**
  * Schedule for a regular execution of a dataflow.
- *
- * @ORM\Entity(repositoryClass="CodeRhapsodie\DataflowBundle\Repository\ScheduledDataflowRepository")
- * @ORM\Table(name="cr_dataflow_scheduled")
  *
  * @codeCoverageIgnore
  */
@@ -25,70 +22,101 @@ class ScheduledDataflow
     ];
 
     /**
-     * @var int
-     *
-     * @ORM\Id()
-     * @ORM\Column(name="id", type="integer")
-     * @ORM\GeneratedValue(strategy="AUTO")
+     * @var null|int
      */
     private $id;
 
     /**
      * @var string|null
      *
-     * @ORM\Column(type="string")
+     * @Asserts\NotBlank()
+     * @Asserts\Length(min=1, max=255)
+     * @Asserts\Regex("#^[[:alnum:] ]+\z#u")
      */
     private $label;
 
     /**
      * @var string|null
      *
-     * @ORM\Column(type="string")
+     * @Asserts\NotBlank()
+     * @Asserts\Length(min=1, max=255)
+     * @Asserts\Regex("#^[\w\\]+\z#u")
      */
     private $dataflowType;
 
     /**
      * @var array|null
-     *
-     * @ORM\Column(type="json")
      */
     private $options;
 
     /**
      * @var string|null
      *
-     * @ORM\Column(type="string")
-     *
+     * @Asserts\NotBlank()
      * @Frequency()
      */
     private $frequency;
 
     /**
      * @var \DateTimeInterface|null
-     *
-     * @ORM\Column(type="datetime", nullable=true)
      */
     private $next;
 
     /**
      * @var bool|null
-     *
-     * @ORM\Column(type="boolean")
      */
     private $enabled;
 
-    /**
-     * @var Job[]
-     *
-     * @ORM\OneToMany(targetEntity="Job", mappedBy="scheduledDataflow", cascade={"persist", "remove"})
-     * @ORM\OrderBy({"startTime" = "DESC"})
-     */
-    private $jobs;
+    public static function createFromArray(array $datas)
+    {
+        $keys = ['id', 'label', 'dataflow_type', 'options', 'frequency', 'next', 'enabled',];
+        $lost = array_diff($keys, array_keys($datas));
+        if (count($lost) > 0) {
+            throw new \LogicException('The first argument of ' . __METHOD__ . '  must be contains: "' . implode(', ',
+                    $lost) . '"');
+        }
+
+        $scheduledDataflow = new self();
+        $scheduledDataflow->id = $datas['id'] === null ? null : (int)$datas['id'];
+
+        $scheduledDataflow->setLabel($datas['label']);
+        $scheduledDataflow->setDataflowType($datas['dataflow_type']);
+        $scheduledDataflow->setOptions($datas['options']);
+        $scheduledDataflow->setFrequency($datas['frequency']);
+        $scheduledDataflow->setNext($datas['next']);
+        $scheduledDataflow->setEnabled($datas['enabled'] === null ? null : (bool)$datas['enabled']);
+        return $scheduledDataflow;
+    }
+
+    public function toArray(): array
+    {
+        return [
+            'id' => $this->getId(),
+            'label' => $this->getLabel(),
+            'dataflow_type' => $this->getDataflowType(),
+            'options' => $this->getOptions(),
+            'frequency' => $this->getFrequency(),
+            'next' => $this->getNext(),
+            'enabled' => $this->getEnabled(),
+        ];
+    }
 
     /**
-     * @return int
+     * @param int $id
+     *
+     * @return ScheduledDataflow
      */
-    public function getId(): int
+    public function setId(int $id): ScheduledDataflow
+    {
+        $this->id = $id;
+
+        return $this;
+    }
+
+    /**
+     * @return null|int
+     */
+    public function getId(): ?int
     {
         return $this->id;
     }

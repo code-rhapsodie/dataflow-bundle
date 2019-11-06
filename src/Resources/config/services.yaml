@@ -39,24 +39,21 @@ services:
         tags: ['console.command']
 
     CodeRhapsodie\DataflowBundle\Repository\ScheduledDataflowRepository:
-        factory: ['@doctrine.orm.default_entity_manager', 'getRepository']
-        arguments: ['CodeRhapsodie\DataflowBundle\Entity\ScheduledDataflow']
+        arguments: ['@doctrine.dbal.default_connection']
 
     CodeRhapsodie\DataflowBundle\Repository\JobRepository:
-        factory: ['@doctrine.orm.default_entity_manager', 'getRepository']
-        arguments: ['CodeRhapsodie\DataflowBundle\Entity\Job']
+        arguments: ['@doctrine.dbal.default_connection']
 
     CodeRhapsodie\DataflowBundle\Manager\ScheduledDataflowManagerInterface: '@CodeRhapsodie\DataflowBundle\Manager\ScheduledDataflowManager'
     CodeRhapsodie\DataflowBundle\Manager\ScheduledDataflowManager:
         arguments:
-            $em: '@doctrine.orm.default_entity_manager'
+            $connection: '@doctrine.dbal.default_connection'
             $scheduledDataflowRepository: '@CodeRhapsodie\DataflowBundle\Repository\ScheduledDataflowRepository'
             $jobRepository: '@CodeRhapsodie\DataflowBundle\Repository\JobRepository'
 
     CodeRhapsodie\DataflowBundle\Runner\PendingDataflowRunnerInterface: '@CodeRhapsodie\DataflowBundle\Runner\PendingDataflowRunner'
     CodeRhapsodie\DataflowBundle\Runner\PendingDataflowRunner:
         arguments:
-            $em: '@doctrine.orm.default_entity_manager'
             $repository: '@CodeRhapsodie\DataflowBundle\Repository\JobRepository'
             $registry: '@CodeRhapsodie\DataflowBundle\Registry\DataflowTypeRegistryInterface'
             $dispatcher: '@event_dispatcher'

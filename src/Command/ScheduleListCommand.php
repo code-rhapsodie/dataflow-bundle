@@ -51,7 +51,7 @@ class ScheduleListCommand extends Command
                 $schedule['label'],
                 $schedule['enabled'] ? 'yes' : 'no',
                 $schedule['startTime'] ? (new \DateTime($schedule['startTime']))->format('Y-m-d H:i:s') : '-',
-                $schedule['next'] ? $schedule['next']->format('Y-m-d H:i:s') : '-',
+                $schedule['next'] ? (new \DateTime($schedule['next']))->format('Y-m-d H:i:s') : '-',
             ];
         }
 

@@ -8,6 +8,7 @@ use CodeRhapsodie\DataflowBundle\Entity\ScheduledDataflow;
 use CodeRhapsodie\DataflowBundle\Entity\Job;
 use CodeRhapsodie\DataflowBundle\Repository\ScheduledDataflowRepository;
 use CodeRhapsodie\DataflowBundle\Repository\JobRepository;
+use Doctrine\DBAL\Driver\Connection;
 use Doctrine\ORM\EntityManagerInterface;
 
 /**
@@ -15,8 +16,6 @@ use Doctrine\ORM\EntityManagerInterface;
  */
 class ScheduledDataflowManager implements ScheduledDataflowManagerInterface
 {
-    /** @var EntityManagerInterface */
-    private $em;
 
     /** @var ScheduledDataflowRepository */
     private $scheduledDataflowRepository;
@@ -24,9 +23,12 @@ class ScheduledDataflowManager implements ScheduledDataflowManagerInterface
     /** @var JobRepository */
     private $jobRepository;
 
-    public function __construct(EntityManagerInterface $em, ScheduledDataflowRepository $scheduledDataflowRepository, JobRepository $jobRepository)
+    /** @var Connection */
+    private $connection;
+
+    public function __construct(Connection $connection, ScheduledDataflowRepository $scheduledDataflowRepository, JobRepository $jobRepository)
     {
-        $this->em = $em;
+        $this->connection = $connection;
         $this->scheduledDataflowRepository = $scheduledDataflowRepository;
         $this->jobRepository = $jobRepository;
     }
@@ -36,16 +38,21 @@ class ScheduledDataflowManager implements ScheduledDataflowManagerInterface
      */
     public function createJobsFromScheduledDataflows(): void
     {
-        foreach ($this->scheduledDataflowRepository->findReadyToRun() as $scheduled) {
-            if (null !== $this->jobRepository->findPendingForScheduledDataflow($scheduled)) {
-                continue;
+        $this->connection->beginTransaction();
+        try {
+            foreach ($this->scheduledDataflowRepository->findReadyToRun() as $scheduled) {
+                if (null !== $this->jobRepository->findPendingForScheduledDataflow($scheduled)) {
+                    continue;
+                }
+
+                $this->createPendingForScheduled($scheduled);
+                $this->updateScheduledDataflowNext($scheduled);
             }
-
-            $this->createPendingForScheduled($scheduled);
-            $this->updateScheduledDataflowNext($scheduled);
+        } catch (\Throwable $e) {
+            $this->connection->rollBack();
+            throw $e;
         }
-
-        $this->em->flush();
+        $this->connection->commit();
     }
 
     /**
@@ -69,6 +76,6 @@ class ScheduledDataflowManager implements ScheduledDataflowManagerInterface
      */
     private function createPendingForScheduled(ScheduledDataflow $scheduled): void
     {
-        $this->em->persist(Job::createFromScheduledDataflow($scheduled));
+        $this->jobRepository->save(Job::createFromScheduledDataflow($scheduled));
     }
 }
