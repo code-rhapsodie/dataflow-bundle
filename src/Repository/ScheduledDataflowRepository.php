@@ -31,16 +31,16 @@ class ScheduledDataflowRepository
     /**
      * @var \Doctrine\DBAL\Connection
      */
-    private $connexion;
+    private $connection;
 
     /**
      * JobRepository constructor.
      *
-     * @param Connection $connexion
+     * @param Connection $connection
      */
-    public function __construct(Connection $connexion)
+    public function __construct(Connection $connection)
     {
-        $this->connexion = $connexion;
+        $this->connection = $connection;
     }
 
     /**
@@ -91,7 +91,7 @@ class ScheduledDataflowRepository
 
     public function listAllOrderedByLabel(): array
     {
-        $query = $this->connexion->createQueryBuilder()
+        $query = $this->connection->createQueryBuilder()
             ->from(static::TABLE_NAME, 'w')
             ->select('w.id', 'w.label', 'w.enabled', 'w.next', 'max(j.start_time) as startTime')
             ->leftJoin('w', JobRepository::TABLE_NAME, 'j', 'j.scheduled_dataflow_id = w.id')
@@ -111,31 +111,31 @@ class ScheduledDataflowRepository
         }
 
         if (null === $scheduledDataflow->getId()) {
-            $this->connexion->insert(static::TABLE_NAME, $datas, static::FIELDS_TYPE);
-            $scheduledDataflow->setId((int) $this->connexion->lastInsertId());
+            $this->connection->insert(static::TABLE_NAME, $datas, static::FIELDS_TYPE);
+            $scheduledDataflow->setId((int) $this->connection->lastInsertId());
 
             return;
         }
-        $this->connexion->update(static::TABLE_NAME, $datas, ['id' => $scheduledDataflow->getId()], static::FIELDS_TYPE);
+        $this->connection->update(static::TABLE_NAME, $datas, ['id' => $scheduledDataflow->getId()], static::FIELDS_TYPE);
     }
 
     public function delete(int $id): void
     {
-        $this->connexion->beginTransaction();
+        $this->connection->beginTransaction();
         try {
-            $this->connexion->delete(JobRepository::TABLE_NAME, ['scheduled_dataflow_id' => $id]);
-            $this->connexion->delete(static::TABLE_NAME, ['id' => $id]);
+            $this->connection->delete(JobRepository::TABLE_NAME, ['scheduled_dataflow_id' => $id]);
+            $this->connection->delete(static::TABLE_NAME, ['id' => $id]);
         } catch (\Throwable $e) {
-            $this->connexion->rollBack();
+            $this->connection->rollBack();
             throw $e;
         }
 
-        $this->connexion->commit();
+        $this->connection->commit();
     }
 
     private function getQueryBuilder(): QueryBuilder
     {
-        $qb = $this->connexion->createQueryBuilder();
+        $qb = $this->connection->createQueryBuilder();
         $qb->select('*')
             ->from(static::TABLE_NAME);
 

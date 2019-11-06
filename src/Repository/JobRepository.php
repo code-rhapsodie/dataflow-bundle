@@ -37,16 +37,16 @@ class JobRepository
     /**
      * @var \Doctrine\DBAL\Connection
      */
-    private $connexion;
+    private $connection;
 
     /**
      * JobRepository constructor.
      *
-     * @param Connection $connexion
+     * @param Connection $connection
      */
-    public function __construct(Connection $connexion)
+    public function __construct(Connection $connection)
     {
-        $this->connexion = $connexion;
+        $this->connection = $connection;
     }
 
     public function find(int $jobId)
@@ -150,17 +150,17 @@ class JobRepository
         }
 
         if (null === $job->getId()) {
-            $this->connexion->insert(static::TABLE_NAME, $datas, static::FIELDS_TYPE);
-            $job->setId((int) $this->connexion->lastInsertId());
+            $this->connection->insert(static::TABLE_NAME, $datas, static::FIELDS_TYPE);
+            $job->setId((int) $this->connection->lastInsertId());
 
             return;
         }
-        $this->connexion->update(static::TABLE_NAME, $datas, ['id' => $job->getId()], static::FIELDS_TYPE);
+        $this->connection->update(static::TABLE_NAME, $datas, ['id' => $job->getId()], static::FIELDS_TYPE);
     }
 
     private function getQueryBuilder(): QueryBuilder
     {
-        $qb = $this->connexion->createQueryBuilder();
+        $qb = $this->connection->createQueryBuilder();
         $qb->select('*')
             ->from(static::TABLE_NAME);
 

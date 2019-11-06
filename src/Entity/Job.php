@@ -17,6 +17,20 @@ class Job
     const STATUS_RUNNING = 1;
     const STATUS_COMPLETED = 2;
 
+    private const KEYS = [
+        'id',
+        'status',
+        'label',
+        'dataflow_type',
+        'options',
+        'requested_date',
+        'scheduled_dataflow_id',
+        'count',
+        'exceptions',
+        'start_time',
+        'end_time',
+    ];
+
     /**
      * @var int|null
      */
@@ -43,7 +57,7 @@ class Job
      *
      * @Asserts\NotBlank()
      * @Asserts\Length(min=1, max=255)
-     * @Asserts\Regex("#^[\w\\]+\z#u")
+     * @Asserts\Regex("#^[[:alnum:]\\]+\z#u")
      */
     private $dataflowType;
 
@@ -108,20 +122,7 @@ class Job
 
     public static function createFromArray(array $datas)
     {
-        $keys = [
-            'id',
-            'status',
-            'label',
-            'dataflow_type',
-            'options',
-            'requested_date',
-            'scheduled_dataflow_id',
-            'count',
-            'exceptions',
-            'start_time',
-            'end_time',
-        ];
-        $lost = array_diff($keys, array_keys($datas));
+        $lost = array_diff(static::KEYS, array_keys($datas));
         if (count($lost) > 0) {
             throw new \LogicException('The first argument of '.__METHOD__.'  must be contains: "'.implode(', ',
                     $lost).'"');

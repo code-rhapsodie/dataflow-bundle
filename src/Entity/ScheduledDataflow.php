@@ -21,6 +21,8 @@ class ScheduledDataflow
         '1 month',
     ];
 
+    private const KEYS = ['id', 'label', 'dataflow_type', 'options', 'frequency', 'next', 'enabled'];
+
     /**
      * @var int|null
      */
@@ -40,7 +42,7 @@ class ScheduledDataflow
      *
      * @Asserts\NotBlank()
      * @Asserts\Length(min=1, max=255)
-     * @Asserts\Regex("#^[\w\\]+\z#u")
+     * @Asserts\Regex("#^[[:alnum:]\\]+\z#u")
      */
     private $dataflowType;
 
@@ -69,8 +71,7 @@ class ScheduledDataflow
 
     public static function createFromArray(array $datas)
     {
-        $keys = ['id', 'label', 'dataflow_type', 'options', 'frequency', 'next', 'enabled'];
-        $lost = array_diff($keys, array_keys($datas));
+        $lost = array_diff(static::KEYS, array_keys($datas));
         if (count($lost) > 0) {
             throw new \LogicException('The first argument of '.__METHOD__.'  must be contains: "'.implode(', ',
                     $lost).'"');
