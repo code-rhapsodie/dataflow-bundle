@@ -24,5 +24,9 @@ class CodeRhapsodieDataflowExtension extends Extension
             ->registerForAutoconfiguration(DataflowTypeInterface::class)
             ->addTag('coderhapsodie.dataflow.type')
         ;
+        $configuration = new Configuration();
+        $config = $this->processConfiguration($configuration, $configs);
+
+        $container->setParameter('coderhapsodie.dataflow.dbal_connections', $config['dbal_connections']);
     }
 }
