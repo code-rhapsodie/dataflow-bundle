@@ -9,6 +9,7 @@ use CodeRhapsodie\DataflowBundle\Repository\ScheduledDataflowRepository;
 use Symfony\Component\DependencyInjection\Compiler\CompilerPassInterface;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
 use Symfony\Component\DependencyInjection\Definition;
+use Symfony\Component\DependencyInjection\Exception\ServiceNotFoundException;
 use Symfony\Component\DependencyInjection\Reference;
 
 /**
@@ -32,7 +33,7 @@ class DbalRepositoryCompilerPass implements CompilerPassInterface
         foreach ($dbalConnections as $connection) {
             $connectionName = sprintf('doctrine.dbal.%s_connection', $connection);
             if (!$container->has($connectionName)) {
-                throw new \Exception('Unable to find the connection '.$connectionName);
+                throw new ServiceNotFoundException($connectionName);
             }
             $def = new Definition(JobRepository::class, [new Reference($connectionName)]);
             $def->setPublic(false);
