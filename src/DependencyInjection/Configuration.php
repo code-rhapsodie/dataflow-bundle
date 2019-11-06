@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace CodeRhapsodie\DataflowBundle\DependencyInjection;
 
 use Symfony\Component\Config\Definition\Builder\TreeBuilder;
@@ -17,7 +19,7 @@ class Configuration implements ConfigurationInterface
                 ->arrayNode('dbal_connections')
                     ->beforeNormalization()
                         ->ifString()
-                        ->then(static function ($v){
+                        ->then(static function ($v) {
                             return [$v];
                         })
                     ->end()

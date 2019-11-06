@@ -6,7 +6,6 @@ namespace CodeRhapsodie\DataflowBundle\DataflowType\Dataflow;
 
 use CodeRhapsodie\DataflowBundle\DataflowType\Result;
 use CodeRhapsodie\DataflowBundle\DataflowType\Writer\WriterInterface;
-use CodeRhapsodie\DataflowBundle\Exceptions\InterruptedProcessingException;
 
 class Dataflow implements DataflowInterface
 {
