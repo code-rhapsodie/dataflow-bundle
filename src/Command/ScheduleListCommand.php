@@ -49,7 +49,7 @@ class ScheduleListCommand extends Command
      */
     protected function execute(InputInterface $input, OutputInterface $output)
     {
-        if ($input->hasOption('connection')) {
+        if ($input->getOption('connection') !== null) {
             $this->connectionFactory->setConnectionName($input->getOption('connection'));
         }
         $io = new SymfonyStyle($input, $output);

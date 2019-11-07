@@ -67,7 +67,7 @@ EOF
             return 0;
         }
 
-        if ($input->hasOption('connection')) {
+        if ($input->getOption('connection') !== null) {
             $this->connectionFactory->setConnectionName($input->getOption('connection'));
         }
 
