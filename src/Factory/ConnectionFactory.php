@@ -6,6 +6,11 @@ namespace CodeRhapsodie\DataflowBundle\Factory;
 
 use Symfony\Component\DependencyInjection\Container;
 
+/**
+ * Class ConnectionFactory
+ *
+ * @codeCoverageIgnore
+ */
 class ConnectionFactory
 {
     private $connectionName;
