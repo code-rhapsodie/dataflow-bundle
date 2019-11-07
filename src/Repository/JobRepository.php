@@ -158,11 +158,11 @@ class JobRepository
         $this->connection->update(static::TABLE_NAME, $datas, ['id' => $job->getId()], static::FIELDS_TYPE);
     }
 
-    public function createQueryBuilder(): QueryBuilder
+    public function createQueryBuilder($alias = null): QueryBuilder
     {
         $qb = $this->connection->createQueryBuilder();
         $qb->select('*')
-            ->from(static::TABLE_NAME);
+            ->from(static::TABLE_NAME, $alias);
 
         return $qb;
     }
