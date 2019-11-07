@@ -6,7 +6,7 @@ namespace CodeRhapsodie\DataflowBundle\Factory;
 
 use Symfony\Component\DependencyInjection\Container;
 
-class Connection
+class ConnectionFactory
 {
     private $connectionName;
 
@@ -18,7 +18,7 @@ class Connection
         $this->container = $container;
     }
 
-    public function setConnection(string $connectionName)
+    public function setConnectionName(string $connectionName)
     {
         $this->connectionName = $connectionName;
     }

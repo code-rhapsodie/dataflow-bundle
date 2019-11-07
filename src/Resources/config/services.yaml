@@ -49,9 +49,9 @@ services:
     coderhapsodie.dataflow.connection:
         lazy: true
         class: Doctrine\DBAL\Driver\Connection
-        factory: ['@CodeRhapsodie\Factory\Connection', 'getConnection']
+        factory: ['@CodeRhapsodie\DataflowBundle\Factory\ConnectionFactory', 'getConnection']
 
-    CodeRhapsodie\DataflowBundle\Factory\Connection:
+    CodeRhapsodie\DataflowBundle\Factory\ConnectionFactory:
         arguments: ['@service.container', '%coderhapsodie.dataflow.dbal_default_connection%']
 
     CodeRhapsodie\DataflowBundle\Manager\ScheduledDataflowManagerInterface: '@CodeRhapsodie\DataflowBundle\Manager\ScheduledDataflowManager'
