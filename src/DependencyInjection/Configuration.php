@@ -16,15 +16,8 @@ class Configuration implements ConfigurationInterface
 
         $rootNode
             ->children()
-                ->arrayNode('dbal_connections')
-                    ->beforeNormalization()
-                        ->ifString()
-                        ->then(static function ($v) {
-                            return [$v];
-                        })
-                    ->end()
-                    ->defaultValue(['default'])
-                    ->prototype('scalar')->end()
+                ->scalarNode('dbal_default_connection')
+                    ->defaultValue('default')
                 ->end()
             ->end()
         ;
