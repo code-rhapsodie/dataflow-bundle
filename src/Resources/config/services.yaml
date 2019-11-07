@@ -57,7 +57,7 @@ services:
     CodeRhapsodie\DataflowBundle\Manager\ScheduledDataflowManagerInterface: '@CodeRhapsodie\DataflowBundle\Manager\ScheduledDataflowManager'
     CodeRhapsodie\DataflowBundle\Manager\ScheduledDataflowManager:
         arguments:
-            $connection: '@doctrine.dbal.default_connection'
+            $connection: '@coderhapsodie.dataflow.connection'
             $scheduledDataflowRepository: '@CodeRhapsodie\DataflowBundle\Repository\ScheduledDataflowRepository'
             $jobRepository: '@CodeRhapsodie\DataflowBundle\Repository\JobRepository'
 
