@@ -39,15 +39,25 @@ services:
         tags: ['console.command']
 
     CodeRhapsodie\DataflowBundle\Repository\ScheduledDataflowRepository:
-        arguments: ['@doctrine.dbal.default_connection']
+        lazy: true
+        arguments: ['@coderhapsodie.dataflow.connection']
 
     CodeRhapsodie\DataflowBundle\Repository\JobRepository:
-        arguments: ['@doctrine.dbal.default_connection']
+        lazy: true
+        arguments: ['@coderhapsodie.dataflow.connection']
+
+    coderhapsodie.dataflow.connection:
+        lazy: true
+        class: Doctrine\DBAL\Driver\Connection
+        factory: ['@CodeRhapsodie\DataflowBundle\Factory\ConnectionFactory', 'getConnection']
+
+    CodeRhapsodie\DataflowBundle\Factory\ConnectionFactory:
+        arguments: ['@service.container', '%coderhapsodie.dataflow.dbal_default_connection%']
 
     CodeRhapsodie\DataflowBundle\Manager\ScheduledDataflowManagerInterface: '@CodeRhapsodie\DataflowBundle\Manager\ScheduledDataflowManager'
     CodeRhapsodie\DataflowBundle\Manager\ScheduledDataflowManager:
         arguments:
-            $connection: '@doctrine.dbal.default_connection'
+            $connection: '@coderhapsodie.dataflow.connection'
             $scheduledDataflowRepository: '@CodeRhapsodie\DataflowBundle\Repository\ScheduledDataflowRepository'
             $jobRepository: '@CodeRhapsodie\DataflowBundle\Repository\JobRepository'
 
