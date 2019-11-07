@@ -11,7 +11,7 @@ use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Console\Style\SymfonyStyle;
-use CodeRhapsodie\DataflowBundle\Factory\Connection;
+use CodeRhapsodie\DataflowBundle\Factory\ConnectionFactory;
 
 /**
  * @codeCoverageIgnore
@@ -29,10 +29,10 @@ class JobShowCommand extends Command
     /** @var JobRepository */
     private $jobRepository;
 
-    /** @var Connection */
+    /** @var ConnectionFactory */
     private $connectionFactory;
 
-    public function __construct(JobRepository $jobRepository, Connection $connectionFactory)
+    public function __construct(JobRepository $jobRepository, ConnectionFactory $connectionFactory)
     {
         parent::__construct();
 
@@ -60,7 +60,7 @@ class JobShowCommand extends Command
     protected function execute(InputInterface $input, OutputInterface $output)
     {
         if ($input->hasOption('connection')) {
-            $this->connectionFactory->setConnection($input->getOption('connection'));
+            $this->connectionFactory->setConnectionName($input->getOption('connection'));
         }
 
         $io = new SymfonyStyle($input, $output);

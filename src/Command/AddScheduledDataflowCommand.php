@@ -13,7 +13,7 @@ use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Console\Style\SymfonyStyle;
 use Symfony\Component\Validator\Validator\ValidatorInterface;
-use CodeRhapsodie\DataflowBundle\Factory\Connection;
+use CodeRhapsodie\DataflowBundle\Factory\ConnectionFactory;
 
 /**
  * @codeCoverageIgnore
@@ -29,10 +29,10 @@ class AddScheduledDataflowCommand extends Command
     /** @var ValidatorInterface */
     private $validator;
 
-    /** @var Connection */
+    /** @var ConnectionFactory */
     private $connectionFactory;
 
-    public function __construct(DataflowTypeRegistryInterface $registry, ScheduledDataflowRepository $scheduledDataflowRepository, ValidatorInterface $validator, Connection $connectionFactory)
+    public function __construct(DataflowTypeRegistryInterface $registry, ScheduledDataflowRepository $scheduledDataflowRepository, ValidatorInterface $validator, ConnectionFactory $connectionFactory)
     {
         parent::__construct();
 
@@ -66,7 +66,7 @@ class AddScheduledDataflowCommand extends Command
     protected function execute(InputInterface $input, OutputInterface $output)
     {
         if ($input->hasOption('connection')) {
-            $this->connectionFactory->setConnection($input->getOption('connection'));
+            $this->connectionFactory->setConnectionName($input->getOption('connection'));
         }
         $choices = [];
         $typeMapping = [];

@@ -12,7 +12,7 @@ use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Console\Style\SymfonyStyle;
-use CodeRhapsodie\DataflowBundle\Factory\Connection;
+use CodeRhapsodie\DataflowBundle\Factory\ConnectionFactory;
 
 /**
  * @codeCoverageIgnore
@@ -24,10 +24,10 @@ class ChangeScheduleStatusCommand extends Command
     /** @var ScheduledDataflowRepository */
     private $scheduledDataflowRepository;
 
-    /** @var Connection */
+    /** @var ConnectionFactory */
     private $connectionFactory;
 
-    public function __construct(ScheduledDataflowRepository $scheduledDataflowRepository, Connection $connectionFactory)
+    public function __construct(ScheduledDataflowRepository $scheduledDataflowRepository, ConnectionFactory $connectionFactory)
     {
         parent::__construct();
 
@@ -55,7 +55,7 @@ class ChangeScheduleStatusCommand extends Command
     protected function execute(InputInterface $input, OutputInterface $output)
     {
         if ($input->hasOption('connection')) {
-            $this->connectionFactory->setConnection($input->getOption('connection'));
+            $this->connectionFactory->setConnectionName($input->getOption('connection'));
         }
         $io = new SymfonyStyle($input, $output);
         /** @var ScheduledDataflow|null $schedule */

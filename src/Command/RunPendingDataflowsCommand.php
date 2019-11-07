@@ -11,7 +11,7 @@ use Symfony\Component\Console\Command\LockableTrait;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
-use CodeRhapsodie\DataflowBundle\Factory\Connection;
+use CodeRhapsodie\DataflowBundle\Factory\ConnectionFactory;
 
 /**
  * Runs dataflows according to user-defined schedule.
@@ -30,10 +30,10 @@ class RunPendingDataflowsCommand extends Command
     /** @var PendingDataflowRunnerInterface */
     private $runner;
 
-    /** @var Connection */
+    /** @var ConnectionFactory */
     private $connectionFactory;
 
-    public function __construct(ScheduledDataflowManagerInterface $manager, PendingDataflowRunnerInterface $runner, Connection $connectionFactory)
+    public function __construct(ScheduledDataflowManagerInterface $manager, PendingDataflowRunnerInterface $runner, ConnectionFactory $connectionFactory)
     {
         parent::__construct();
 
@@ -68,7 +68,7 @@ EOF
         }
 
         if ($input->hasOption('connection')) {
-            $this->connectionFactory->setConnection($input->getOption('connection'));
+            $this->connectionFactory->setConnectionName($input->getOption('connection'));
         }
 
         $this->manager->createJobsFromScheduledDataflows();

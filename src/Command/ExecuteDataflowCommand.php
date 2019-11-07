@@ -10,7 +10,7 @@ use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
-use CodeRhapsodie\DataflowBundle\Factory\Connection;
+use CodeRhapsodie\DataflowBundle\Factory\ConnectionFactory;
 
 /**
  * Runs one dataflow.
@@ -24,10 +24,10 @@ class ExecuteDataflowCommand extends Command
     /** @var DataflowTypeRegistryInterface */
     private $registry;
 
-    /** @var Connection */
+    /** @var ConnectionFactory */
     private $connectionFactory;
 
-    public function __construct(DataflowTypeRegistryInterface $registry, Connection $connectionFactory)
+    public function __construct(DataflowTypeRegistryInterface $registry, ConnectionFactory $connectionFactory)
     {
         parent::__construct();
 
@@ -59,7 +59,7 @@ EOF
     protected function execute(InputInterface $input, OutputInterface $output)
     {
         if ($input->hasOption('connection')) {
-            $this->connectionFactory->setConnection($input->getOption('connection'));
+            $this->connectionFactory->setConnectionName($input->getOption('connection'));
         }
         $fqcnOrAlias = $input->getArgument('fqcn');
         $options = json_decode($input->getArgument('options'), true);
