@@ -11,6 +11,7 @@ use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Console\Style\SymfonyStyle;
+use CodeRhapsodie\DataflowBundle\Factory\Connection;
 
 /**
  * @codeCoverageIgnore
@@ -28,11 +29,15 @@ class JobShowCommand extends Command
     /** @var JobRepository */
     private $jobRepository;
 
-    public function __construct(JobRepository $jobRepository)
+    /** @var Connection */
+    private $connectionFactory;
+
+    public function __construct(JobRepository $jobRepository, Connection $connectionFactory)
     {
         parent::__construct();
 
         $this->jobRepository = $jobRepository;
+        $this->connectionFactory = $connectionFactory;
     }
 
     /**
@@ -45,7 +50,8 @@ class JobShowCommand extends Command
             ->setHelp('The <info>%command.name%</info> display job details for schedule or specific job.')
             ->addOption('job-id', null, InputOption::VALUE_REQUIRED, 'Id of the job to get details')
             ->addOption('schedule-id', null, InputOption::VALUE_REQUIRED, 'Id of schedule for last execution details')
-            ->addOption('details', null, InputOption::VALUE_NONE, 'Display full details');
+            ->addOption('details', null, InputOption::VALUE_NONE, 'Display full details')
+            ->addOption('connection', null, InputOption::VALUE_REQUIRED, 'Define the DBAL connection to use');
     }
 
     /**
@@ -53,6 +59,10 @@ class JobShowCommand extends Command
      */
     protected function execute(InputInterface $input, OutputInterface $output)
     {
+        if ($input->hasOption('connection')) {
+            $this->connectionFactory->setConnection($input->getOption('connection'));
+        }
+
         $io = new SymfonyStyle($input, $output);
 
         $jobId = (int) $input->getOption('job-id');

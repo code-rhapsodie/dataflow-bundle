@@ -9,7 +9,9 @@ use CodeRhapsodie\DataflowBundle\Runner\PendingDataflowRunnerInterface;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Command\LockableTrait;
 use Symfony\Component\Console\Input\InputInterface;
+use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
+use CodeRhapsodie\DataflowBundle\Factory\Connection;
 
 /**
  * Runs dataflows according to user-defined schedule.
@@ -28,12 +30,16 @@ class RunPendingDataflowsCommand extends Command
     /** @var PendingDataflowRunnerInterface */
     private $runner;
 
-    public function __construct(ScheduledDataflowManagerInterface $manager, PendingDataflowRunnerInterface $runner)
+    /** @var Connection */
+    private $connectionFactory;
+
+    public function __construct(ScheduledDataflowManagerInterface $manager, PendingDataflowRunnerInterface $runner, Connection $connectionFactory)
     {
         parent::__construct();
 
         $this->manager = $manager;
         $this->runner = $runner;
+        $this->connectionFactory = $connectionFactory;
     }
 
     /**
@@ -47,7 +53,7 @@ class RunPendingDataflowsCommand extends Command
 The <info>%command.name%</info> command runs dataflows according to the schedule defined in the UI by the user.
 EOF
             )
-        ;
+            ->addOption('connection', null, InputOption::VALUE_REQUIRED, 'Define the DBAL connection to use');
     }
 
     /**
@@ -59,6 +65,10 @@ EOF
             $output->writeln('The command is already running in another process.');
 
             return 0;
+        }
+
+        if ($input->hasOption('connection')) {
+            $this->connectionFactory->setConnection($input->getOption('connection'));
         }
 
         $this->manager->createJobsFromScheduledDataflows();
