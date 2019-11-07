@@ -8,7 +8,9 @@ use CodeRhapsodie\DataflowBundle\Registry\DataflowTypeRegistryInterface;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
+use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
+use CodeRhapsodie\DataflowBundle\Factory\ConnectionFactory;
 
 /**
  * Runs one dataflow.
@@ -22,11 +24,15 @@ class ExecuteDataflowCommand extends Command
     /** @var DataflowTypeRegistryInterface */
     private $registry;
 
-    public function __construct(DataflowTypeRegistryInterface $registry)
+    /** @var ConnectionFactory */
+    private $connectionFactory;
+
+    public function __construct(DataflowTypeRegistryInterface $registry, ConnectionFactory $connectionFactory)
     {
         parent::__construct();
 
         $this->registry = $registry;
+        $this->connectionFactory = $connectionFactory;
     }
 
     /**
@@ -44,7 +50,7 @@ EOF
             )
             ->addArgument('fqcn', InputArgument::REQUIRED, 'FQCN or alias of the dataflow type')
             ->addArgument('options', InputArgument::OPTIONAL, 'Options for the dataflow type as a json string', '[]')
-        ;
+            ->addOption('connection', null, InputOption::VALUE_REQUIRED, 'Define the DBAL connection to use');
     }
 
     /**
@@ -52,6 +58,9 @@ EOF
      */
     protected function execute(InputInterface $input, OutputInterface $output)
     {
+        if ($input->getOption('connection') !== null) {
+            $this->connectionFactory->setConnectionName($input->getOption('connection'));
+        }
         $fqcnOrAlias = $input->getArgument('fqcn');
         $options = json_decode($input->getArgument('options'), true);
 

@@ -13,6 +13,7 @@ use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Console\Style\SymfonyStyle;
 use Symfony\Component\Validator\Validator\ValidatorInterface;
+use CodeRhapsodie\DataflowBundle\Factory\ConnectionFactory;
 
 /**
  * @codeCoverageIgnore
@@ -28,16 +29,17 @@ class AddScheduledDataflowCommand extends Command
     /** @var ValidatorInterface */
     private $validator;
 
-    public function __construct(
-        DataflowTypeRegistryInterface $registry,
-        ScheduledDataflowRepository $scheduledDataflowRepository,
-        ValidatorInterface $validator
-    ) {
+    /** @var ConnectionFactory */
+    private $connectionFactory;
+
+    public function __construct(DataflowTypeRegistryInterface $registry, ScheduledDataflowRepository $scheduledDataflowRepository, ValidatorInterface $validator, ConnectionFactory $connectionFactory)
+    {
         parent::__construct();
 
         $this->registry = $registry;
         $this->scheduledDataflowRepository = $scheduledDataflowRepository;
         $this->validator = $validator;
+        $this->connectionFactory = $connectionFactory;
     }
 
     /**
@@ -53,9 +55,9 @@ class AddScheduledDataflowCommand extends Command
             ->addOption('options', null, InputOption::VALUE_OPTIONAL,
                 'Options of the scheduled dataflow (ex: {"option1": "value1", "option2": "value2"})')
             ->addOption('frequency', null, InputOption::VALUE_REQUIRED, 'Frequency of the scheduled dataflow')
-            ->addOption('first_run', null, InputOption::VALUE_REQUIRED,
-                'Date for the first run of the scheduled dataflow (Y-m-d H:i:s)')
-            ->addOption('enabled', null, InputOption::VALUE_REQUIRED, 'State of the scheduled dataflow');
+            ->addOption('first_run', null, InputOption::VALUE_REQUIRED, 'Date for the first run of the scheduled dataflow (Y-m-d H:i:s)')
+            ->addOption('enabled', null, InputOption::VALUE_REQUIRED, 'State of the scheduled dataflow')
+            ->addOption('connection', null, InputOption::VALUE_REQUIRED, 'Define the DBAL connection to use');
     }
 
     /**
@@ -63,6 +65,9 @@ class AddScheduledDataflowCommand extends Command
      */
     protected function execute(InputInterface $input, OutputInterface $output)
     {
+        if ($input->getOption('connection') !== null) {
+            $this->connectionFactory->setConnectionName($input->getOption('connection'));
+        }
         $choices = [];
         $typeMapping = [];
         foreach ($this->registry->listDataflowTypes() as $fqcn => $dataflowType) {

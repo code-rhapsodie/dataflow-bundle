@@ -12,6 +12,7 @@ use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Console\Style\SymfonyStyle;
+use CodeRhapsodie\DataflowBundle\Factory\ConnectionFactory;
 
 /**
  * @codeCoverageIgnore
@@ -23,11 +24,15 @@ class ChangeScheduleStatusCommand extends Command
     /** @var ScheduledDataflowRepository */
     private $scheduledDataflowRepository;
 
-    public function __construct(ScheduledDataflowRepository $scheduledDataflowRepository)
+    /** @var ConnectionFactory */
+    private $connectionFactory;
+
+    public function __construct(ScheduledDataflowRepository $scheduledDataflowRepository, ConnectionFactory $connectionFactory)
     {
         parent::__construct();
 
         $this->scheduledDataflowRepository = $scheduledDataflowRepository;
+        $this->connectionFactory = $connectionFactory;
     }
 
     /**
@@ -40,7 +45,8 @@ class ChangeScheduleStatusCommand extends Command
             ->setHelp('The <info>%command.name%</info> command able you to change schedule status.')
             ->addArgument('schedule-id', InputArgument::REQUIRED, 'Id of the schedule')
             ->addOption('enable', null, InputOption::VALUE_NONE, 'Enable the schedule')
-            ->addOption('disable', null, InputOption::VALUE_NONE, 'Disable the schedule');
+            ->addOption('disable', null, InputOption::VALUE_NONE, 'Disable the schedule')
+            ->addOption('connection', null, InputOption::VALUE_REQUIRED, 'Define the DBAL connection to use');
     }
 
     /**
@@ -48,6 +54,9 @@ class ChangeScheduleStatusCommand extends Command
      */
     protected function execute(InputInterface $input, OutputInterface $output)
     {
+        if ($input->getOption('connection') !== null) {
+            $this->connectionFactory->setConnectionName($input->getOption('connection'));
+        }
         $io = new SymfonyStyle($input, $output);
         /** @var ScheduledDataflow|null $schedule */
         $schedule = $this->scheduledDataflowRepository->find((int) $input->getArgument('schedule-id'));

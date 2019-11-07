@@ -7,7 +7,7 @@ namespace CodeRhapsodie\DataflowBundle\Factory;
 use Symfony\Component\DependencyInjection\Container;
 
 /**
- * Class ConnectionFactory
+ * Class ConnectionFactory.
  *
  * @codeCoverageIgnore
  */
