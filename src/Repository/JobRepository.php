@@ -51,7 +51,7 @@ class JobRepository
 
     public function find(int $jobId)
     {
-        $qb = $this->getQueryBuilder();
+        $qb = $this->createQueryBuilder();
         $qb
             ->andWhere($qb->expr()->eq('id', $qb->createNamedParameter($jobId, \PDO::PARAM_INT)))
         ;
@@ -61,7 +61,7 @@ class JobRepository
 
     public function findOneshotDataflows(): iterable
     {
-        $qb = $this->getQueryBuilder();
+        $qb = $this->createQueryBuilder();
         $qb
             ->andWhere($qb->expr()->isNull('scheduled_dataflow_id'))
             ->andWhere($qb->expr()->eq('status', $qb->createNamedParameter(Job::STATUS_PENDING, \PDO::PARAM_INT)));
@@ -76,7 +76,7 @@ class JobRepository
 
     public function findPendingForScheduledDataflow(ScheduledDataflow $scheduled): ?Job
     {
-        $qb = $this->getQueryBuilder();
+        $qb = $this->createQueryBuilder();
         $qb
             ->andWhere($qb->expr()->eq('scheduled_dataflow_id', $qb->createNamedParameter($scheduled->getId(), \PDO::PARAM_INT)))
             ->andWhere($qb->expr()->eq('status', $qb->createNamedParameter(Job::STATUS_PENDING, \PDO::PARAM_INT)));
@@ -86,7 +86,7 @@ class JobRepository
 
     public function findNextPendingDataflow(): ?Job
     {
-        $qb = $this->getQueryBuilder();
+        $qb = $this->createQueryBuilder();
         $qb->andWhere($qb->expr()->lte('requested_date', $qb->createNamedParameter(new \DateTime(), 'datetime')))
             ->andWhere($qb->expr()->eq('status', $qb->createNamedParameter(Job::STATUS_PENDING, \PDO::PARAM_INT)))
             ->orderBy('requested_date', 'ASC')
@@ -98,7 +98,7 @@ class JobRepository
 
     public function findLastForDataflowId(int $dataflowId): ?Job
     {
-        $qb = $this->getQueryBuilder();
+        $qb = $this->createQueryBuilder();
         $qb->andWhere($qb->expr()->eq('scheduled_dataflow_id', $qb->createNamedParameter($dataflowId, \PDO::PARAM_INT)))
             ->orderBy('requested_date', 'DESC')
             ->setMaxResults(1)
@@ -109,7 +109,7 @@ class JobRepository
 
     public function findLatests(): iterable
     {
-        $qb = $this->getQueryBuilder();
+        $qb = $this->createQueryBuilder();
         $qb
             ->orderBy('requested_date', 'DESC')
             ->setMaxResults(20);
@@ -124,7 +124,7 @@ class JobRepository
 
     public function findForScheduled(int $id): iterable
     {
-        $qb = $this->getQueryBuilder();
+        $qb = $this->createQueryBuilder();
         $qb->andWhere($qb->expr()->eq('scheduled_dataflow_id', $qb->createNamedParameter($id, \PDO::PARAM_INT)))
             ->orderBy('requested_date', 'DESC')
             ->setMaxResults(20);
@@ -158,7 +158,7 @@ class JobRepository
         $this->connection->update(static::TABLE_NAME, $datas, ['id' => $job->getId()], static::FIELDS_TYPE);
     }
 
-    private function getQueryBuilder(): QueryBuilder
+    public function createQueryBuilder(): QueryBuilder
     {
         $qb = $this->connection->createQueryBuilder();
         $qb->select('*')
