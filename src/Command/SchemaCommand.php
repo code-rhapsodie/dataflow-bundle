@@ -36,7 +36,7 @@ class SchemaCommand extends Command
     protected function configure()
     {
         $this
-            ->setDescription('List scheduled dataflows')
+            ->setDescription('Generates schema create / update SQL queries')
             ->setHelp('The <info>%command.name%</info> help you to generate SQL Query to create or update your database schema for this bundle')
             ->addOption('update', null, InputOption::VALUE_NONE, 'Dump only the update SQL queries.')
             ->addOption('connection', null, InputOption::VALUE_REQUIRED, 'Define the DBAL connection to use')
@@ -88,7 +88,7 @@ class SchemaCommand extends Command
             $sqls = $schema->getMigrateFromSql($oldSchema, $connection->getDatabasePlatform());
         }
         $io = new SymfonyStyle($input, $output);
-        $io->text('Execute theres SQL Query on your database:');
+        $io->text('Execute these SQL Queries on your database:');
         foreach ($sqls as $sql) {
             $io->text($sql);
         }
