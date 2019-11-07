@@ -38,6 +38,11 @@ services:
             $scheduledDataflowRepository: '@CodeRhapsodie\DataflowBundle\Repository\ScheduledDataflowRepository'
         tags: ['console.command']
 
+    CodeRhapsodie\DataflowBundle\Command\SchemaCommand:
+        arguments:
+            $connectionFactory: '@CodeRhapsodie\DataflowBundle\Factory\ConnectionFactory'
+        tags: ['console.command']
+
     CodeRhapsodie\DataflowBundle\Repository\ScheduledDataflowRepository:
         lazy: true
         arguments: ['@coderhapsodie.dataflow.connection']
@@ -52,7 +57,7 @@ services:
         factory: ['@CodeRhapsodie\DataflowBundle\Factory\ConnectionFactory', 'getConnection']
 
     CodeRhapsodie\DataflowBundle\Factory\ConnectionFactory:
-        arguments: ['@service.container', '%coderhapsodie.dataflow.dbal_default_connection%']
+        arguments: ['@service_container', '%coderhapsodie.dataflow.dbal_default_connection%']
 
     CodeRhapsodie\DataflowBundle\Manager\ScheduledDataflowManagerInterface: '@CodeRhapsodie\DataflowBundle\Manager\ScheduledDataflowManager'
     CodeRhapsodie\DataflowBundle\Manager\ScheduledDataflowManager:
