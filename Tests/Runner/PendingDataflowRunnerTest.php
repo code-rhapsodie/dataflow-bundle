@@ -20,9 +20,6 @@ class PendingDataflowRunnerTest extends TestCase
     /** @var PendingDataflowRunner */
     private $runner;
 
-    /** @var EntityManagerInterface|MockObject */
-    private $em;
-
     /** @var JobRepository|MockObject */
     private $repository;
 
@@ -34,12 +31,11 @@ class PendingDataflowRunnerTest extends TestCase
 
     protected function setUp(): void
     {
-        $this->em = $this->createMock(EntityManagerInterface::class);
         $this->repository = $this->createMock(JobRepository::class);
         $this->registry = $this->createMock(DataflowTypeRegistryInterface::class);
         $this->dispatcher = $this->createMock(EventDispatcherInterface::class);
 
-        $this->runner = new PendingDataflowRunner($this->em, $this->repository, $this->registry, $this->dispatcher);
+        $this->runner = new PendingDataflowRunner($this->repository, $this->registry, $this->dispatcher);
     }
 
     public function testRunPendingDataflows()
@@ -122,9 +118,9 @@ class PendingDataflowRunnerTest extends TestCase
             ->willReturn($result2)
         ;
 
-        $this->em
+        $this->repository
             ->expects($this->exactly(4))
-            ->method('flush')
+            ->method('save')
         ;
 
         $this->runner->runPendingDataflows();

@@ -4,13 +4,10 @@ declare(strict_types=1);
 
 namespace CodeRhapsodie\DataflowBundle\Entity;
 
-use Doctrine\ORM\Mapping as ORM;
+use Symfony\Component\Validator\Constraints as Asserts;
 
 /**
  * Dataflow execution status.
- *
- * @ORM\Entity(repositoryClass="CodeRhapsodie\DataflowBundle\Repository\JobRepository")
- * @ORM\Table(name="cr_dataflow_job")
  *
  * @codeCoverageIgnore
  */
@@ -20,83 +17,84 @@ class Job
     const STATUS_RUNNING = 1;
     const STATUS_COMPLETED = 2;
 
+    private const KEYS = [
+        'id',
+        'status',
+        'label',
+        'dataflow_type',
+        'options',
+        'requested_date',
+        'scheduled_dataflow_id',
+        'count',
+        'exceptions',
+        'start_time',
+        'end_time',
+    ];
+
     /**
-     * @var int
-     *
-     * @ORM\Id()
-     * @ORM\Column(type="integer")
-     * @ORM\GeneratedValue(strategy="AUTO")
+     * @var int|null
      */
     private $id;
 
     /**
      * @var int
      *
-     * @ORM\Column(type="integer")
+     * @Asserts\Range(min=0, max=2)
      */
     private $status;
 
     /**
      * @var string|null
      *
-     * @ORM\Column(type="string")
+     * @Asserts\NotBlank()
+     * @Asserts\Length(min=1, max=255)
+     * @Asserts\Regex("#^[[:alnum:] ]+\z#u")
      */
     private $label;
 
     /**
      * @var string|null
      *
-     * @ORM\Column(type="string")
+     * @Asserts\NotBlank()
+     * @Asserts\Length(min=1, max=255)
+     * @Asserts\Regex("#^[[:alnum:]\\]+\z#u")
      */
     private $dataflowType;
 
     /**
      * @var array|null
-     *
-     * @ORM\Column(type="json")
      */
     private $options;
 
     /**
      * @var \DateTimeInterface|null
      *
-     * @ORM\Column(type="datetime", nullable=true)
+     * @Asserts\DateTime()
      */
     private $requestedDate;
 
     /**
-     * @var ScheduledDataflow|null
-     *
-     * @ORM\ManyToOne(targetEntity="ScheduledDataflow", inversedBy="jobs")
-     * @ORM\JoinColumn(nullable=true)
+     * @var int|null
      */
-    private $scheduledDataflow;
+    private $scheduledDataflowId;
 
     /**
      * @var int|null
-     *
-     * @ORM\Column(type="integer", nullable=true)
      */
     private $count;
 
     /**
      * @var array|null
-     *
-     * @ORM\Column(type="json", nullable=true)
      */
     private $exceptions;
 
     /**
      * @var \DateTimeInterface|null
-     *
-     * @ORM\Column(type="datetime", nullable=true)
      */
     private $startTime;
 
     /**
      * @var \DateTimeInterface|null
-     *
-     * @ORM\Column(type="datetime", nullable=true)
      */
     private $endTime;
 
@@ -113,14 +111,72 @@ class Job
             ->setOptions($scheduled->getOptions())
             ->setRequestedDate(clone $scheduled->getNext())
             ->setLabel($scheduled->getLabel())
-            ->setScheduledDataflow($scheduled)
-        ;
+            ->setScheduledDataflowId($scheduled->getId());
+    }
+
+    public function __construct()
+    {
+        $this->count = 0;
+        $this->status = static::STATUS_PENDING;
+    }
+
+    public static function createFromArray(array $datas)
+    {
+        $lost = array_diff(static::KEYS, array_keys($datas));
+        if (count($lost) > 0) {
+            throw new \LogicException('The first argument of '.__METHOD__.'  must be contains: "'.implode(', ',
+                    $lost).'"');
+        }
+
+        $job = new self();
+        $job->id = null === $datas['id'] ? null : (int) $datas['id'];
+        $job->setStatus(null === $datas['status'] ? null : (int) $datas['status']);
+        $job->setLabel($datas['label']);
+        $job->setDataflowType($datas['dataflow_type']);
+        $job->setOptions($datas['options']);
+        $job->setRequestedDate($datas['requested_date']);
+        $job->setScheduledDataflowId(null === $datas['scheduled_dataflow_id'] ? null : (int) $datas['scheduled_dataflow_id']);
+        $job->setCount(null === $datas['count'] ? null : (int) $datas['count']);
+        $job->setExceptions($datas['exceptions']);
+        $job->setStartTime($datas['start_time']);
+        $job->setEndTime($datas['end_time']);
+
+        return $job;
+    }
+
+    public function toArray(): array
+    {
+        return [
+            'id' => $this->getId(),
+            'status' => $this->getStatus(),
+            'label' => $this->getLabel(),
+            'dataflow_type' => $this->getDataflowType(),
+            'options' => $this->getOptions(),
+            'requested_date' => $this->getRequestedDate(),
+            'scheduled_dataflow_id' => $this->getScheduledDataflowId(),
+            'count' => $this->getCount(),
+            'exceptions' => $this->getExceptions(),
+            'start_time' => $this->getStartTime(),
+            'end_time' => $this->getEndTime(),
+        ];
     }
 
     /**
-     * @return int
+     * @param int $id
+     *
+     * @return Job
      */
-    public function getId(): int
+    public function setId(int $id): Job
+    {
+        $this->id = $id;
+
+        return $this;
+    }
+
+    /**
+     * @return int|null
+     */
+    public function getId(): ?int
     {
         return $this->id;
     }
@@ -226,21 +282,21 @@ class Job
     }
 
     /**
-     * @return ScheduledDataflow|null
+     * @return int|null
      */
-    public function getScheduledDataflow(): ?ScheduledDataflow
+    public function getScheduledDataflowId(): ?int
     {
-        return $this->scheduledDataflow;
+        return $this->scheduledDataflowId;
     }
 
     /**
-     * @param ScheduledDataflow|null $scheduledDataflow
+     * @param int|null $scheduledDataflowId
      *
      * @return Job
      */
-    public function setScheduledDataflow(?ScheduledDataflow $scheduledDataflow): Job
+    public function setScheduledDataflowId(?int $scheduledDataflowId): Job
     {
-        $this->scheduledDataflow = $scheduledDataflow;
+        $this->scheduledDataflowId = $scheduledDataflowId;
 
         return $this;
     }

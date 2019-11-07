@@ -31,7 +31,7 @@ class DataflowTypeRegistry implements DataflowTypeRegistryInterface
             return $this->aliasesRegistry[$fqcnOrAlias];
         }
 
-        throw new UnknownDataflowTypeException();
+        throw new UnknownDataflowTypeException($fqcnOrAlias);
     }
 
     /**

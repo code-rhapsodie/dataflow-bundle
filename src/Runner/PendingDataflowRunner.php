@@ -10,14 +10,10 @@ use CodeRhapsodie\DataflowBundle\Event\Events;
 use CodeRhapsodie\DataflowBundle\Event\ProcessingEvent;
 use CodeRhapsodie\DataflowBundle\Registry\DataflowTypeRegistryInterface;
 use CodeRhapsodie\DataflowBundle\Repository\JobRepository;
-use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\EventDispatcher\EventDispatcherInterface;
 
 class PendingDataflowRunner implements PendingDataflowRunnerInterface
 {
-    /** @var EntityManagerInterface */
-    private $em;
-
     /** @var JobRepository */
     private $repository;
 
@@ -27,9 +23,8 @@ class PendingDataflowRunner implements PendingDataflowRunnerInterface
     /** @var EventDispatcherInterface */
     private $dispatcher;
 
-    public function __construct(EntityManagerInterface $em, JobRepository $repository, DataflowTypeRegistryInterface $registry, EventDispatcherInterface $dispatcher)
+    public function __construct(JobRepository $repository, DataflowTypeRegistryInterface $registry, EventDispatcherInterface $dispatcher)
     {
-        $this->em = $em;
         $this->repository = $repository;
         $this->registry = $registry;
         $this->dispatcher = $dispatcher;
@@ -61,7 +56,7 @@ class PendingDataflowRunner implements PendingDataflowRunnerInterface
             ->setStatus(Job::STATUS_RUNNING)
             ->setStartTime(new \DateTime())
         ;
-        $this->em->flush();
+        $this->repository->save($job);
     }
 
     /**
@@ -82,7 +77,7 @@ class PendingDataflowRunner implements PendingDataflowRunnerInterface
             ->setCount($result->getSuccessCount())
             ->setExceptions($exceptions)
         ;
-        $this->em->flush();
+        $this->repository->save($job);
 
         $this->dispatcher->dispatch(Events::AFTER_PROCESSING, new ProcessingEvent($job));
     }

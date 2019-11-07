@@ -50,7 +50,7 @@ class ChangeScheduleStatusCommand extends Command
     {
         $io = new SymfonyStyle($input, $output);
         /** @var ScheduledDataflow|null $schedule */
-        $schedule = $this->scheduledDataflowRepository->find($input->getArgument('schedule-id'));
+        $schedule = $this->scheduledDataflowRepository->find((int) $input->getArgument('schedule-id'));
 
         if (!$schedule) {
             $io->error(sprintf('Cannot find scheduled dataflow with id "%d".', $input->getArgument('schedule-id')));

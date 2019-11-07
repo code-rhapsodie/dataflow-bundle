@@ -9,6 +9,7 @@ use CodeRhapsodie\DataflowBundle\Exceptions\UnknownDataflowTypeException;
 use CodeRhapsodie\DataflowBundle\Manager\ScheduledDataflowManager;
 use CodeRhapsodie\DataflowBundle\Repository\JobRepository;
 use CodeRhapsodie\DataflowBundle\Repository\ScheduledDataflowRepository;
+use Doctrine\DBAL\Driver\Connection;
 use Doctrine\ORM\EntityManagerInterface;
 use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;
@@ -18,8 +19,8 @@ class ScheduledDataflowManagerTest extends TestCase
     /** @var ScheduledDataflowManager */
     private $manager;
 
-    /** @var EntityManagerInterface|MockObject */
-    private $em;
+    /** @var Connection|MockObject */
+    private $connection;
 
     /** @var ScheduledDataflowRepository|MockObject */
     private $scheduledDataflowRepository;
@@ -29,17 +30,18 @@ class ScheduledDataflowManagerTest extends TestCase
 
     protected function setUp(): void
     {
-        $this->em = $this->createMock(EntityManagerInterface::class);
+        $this->connection = $this->createMock(Connection::class);
         $this->scheduledDataflowRepository = $this->createMock(ScheduledDataflowRepository::class);
         $this->jobRepository = $this->createMock(JobRepository::class);
 
-        $this->manager = new ScheduledDataflowManager($this->em, $this->scheduledDataflowRepository, $this->jobRepository);
+        $this->manager = new ScheduledDataflowManager($this->connection, $this->scheduledDataflowRepository, $this->jobRepository);
     }
 
     public function testCreateJobsFromScheduledDataflows()
     {
         $scheduled1 = new ScheduledDataflow();
         $scheduled2 = (new ScheduledDataflow())
+            ->setId(-1)
             ->setDataflowType($type = 'testType')
             ->setOptions($options = ['opt' => 'val'])
             ->setNext($next = new \DateTime())
@@ -60,9 +62,13 @@ class ScheduledDataflowManagerTest extends TestCase
             ->willReturnOnConsecutiveCalls(new Job(), null)
         ;
 
-        $this->em
+        $this->connection
             ->expects($this->once())
-            ->method('persist')
+            ->method('beginTransaction')
+        ;
+        $this->jobRepository
+            ->expects($this->once())
+            ->method('save')
             ->with(
                 $this->callback(function (Job $job) use ($type, $options, $next, $label, $scheduled2) {
                     return (
@@ -71,15 +77,15 @@ class ScheduledDataflowManagerTest extends TestCase
                         && $job->getOptions() === $options
                         && $job->getRequestedDate() == $next
                         && $job->getLabel() === $label
-                        && $job->getScheduledDataflow() === $scheduled2
+                        && $job->getScheduledDataflowId() === $scheduled2->getId()
                     );
                 })
             )
         ;
 
-        $this->em
+        $this->connection
             ->expects($this->once())
-            ->method('flush')
+            ->method('commit')
         ;
 
         $this->manager->createJobsFromScheduledDataflows();
