@@ -1,11 +1,12 @@
 <?php
-
+DataflowTypeCompilerPass
 declare(strict_types=1);
 
 namespace CodeRhapsodie\DataflowBundle;
 
 use CodeRhapsodie\DataflowBundle\DependencyInjection\CodeRhapsodieDataflowExtension;
 use CodeRhapsodie\DataflowBundle\DependencyInjection\Compiler\DataflowTypeCompilerPass;
+use CodeRhapsodie\DataflowBundle\DependencyInjection\Compiler\RepositoryCompilerPass;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
 use Symfony\Component\HttpKernel\Bundle\Bundle;
 
@@ -24,5 +25,6 @@ class CodeRhapsodieDataflowBundle extends Bundle
     public function build(ContainerBuilder $container)
     {
         $container->addCompilerPass(new DataflowTypeCompilerPass());
+        $container->addCompilerPass(new RepositoryCompilerPass());
     }
 }
