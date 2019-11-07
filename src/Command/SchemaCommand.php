@@ -16,6 +16,9 @@ use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Console\Style\SymfonyStyle;
 use CodeRhapsodie\DataflowBundle\Factory\ConnectionFactory;
 
+/**
+ * @codeCoverageIgnore
+ */
 class SchemaCommand extends Command
 {
     protected static $defaultName = 'code-rhapsodie:dataflow:dump-schema';
