@@ -51,8 +51,8 @@ services:
         class: Doctrine\DBAL\Driver\Connection
         factory: ['@CodeRhapsodie\Factory\Connection', 'getConnection']
 
-    CodeRhapsodie\Factory\Connection:
-        arguments: ['@service.container']
+    CodeRhapsodie\DataflowBundle\Factory\Connection:
+        arguments: ['@service.container', '%coderhapsodie.dataflow.dbal_default_connection%']
 
     CodeRhapsodie\DataflowBundle\Manager\ScheduledDataflowManagerInterface: '@CodeRhapsodie\DataflowBundle\Manager\ScheduledDataflowManager'
     CodeRhapsodie\DataflowBundle\Manager\ScheduledDataflowManager:
