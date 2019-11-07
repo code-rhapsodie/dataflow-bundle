@@ -58,7 +58,7 @@ EOF
      */
     protected function execute(InputInterface $input, OutputInterface $output)
     {
-        if ($input->getOption('connection') !== null) {
+        if (null !== $input->getOption('connection')) {
             $this->connectionFactory->setConnectionName($input->getOption('connection'));
         }
         $fqcnOrAlias = $input->getArgument('fqcn');
