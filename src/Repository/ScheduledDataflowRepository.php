@@ -50,7 +50,7 @@ class ScheduledDataflowRepository
      */
     public function findReadyToRun(): iterable
     {
-        $qb = $this->getQueryBuilder();
+        $qb = $this->createQueryBuilder();
         $qb->andWhere($qb->expr()->lte('next', $qb->createNamedParameter(new \DateTime(), 'datetime')))
             ->andWhere($qb->expr()->eq('enabled', 1))
             ->orderBy('next', 'ASC')
@@ -67,7 +67,7 @@ class ScheduledDataflowRepository
 
     public function find(int $scheduleId): ?ScheduledDataflow
     {
-        $qb = $this->getQueryBuilder();
+        $qb = $this->createQueryBuilder();
         $qb->andWhere($qb->expr()->eq('id', $qb->createNamedParameter($scheduleId, \PDO::PARAM_INT)))
             ->setMaxResults(1)
         ;
@@ -77,7 +77,7 @@ class ScheduledDataflowRepository
 
     public function findAllOrderedByLabel(): iterable
     {
-        $qb = $this->getQueryBuilder();
+        $qb = $this->createQueryBuilder();
         $qb->orderBy('label', 'ASC');
 
         $stmt = $qb->execute();
@@ -133,11 +133,11 @@ class ScheduledDataflowRepository
         $this->connection->commit();
     }
 
-    private function getQueryBuilder(): QueryBuilder
+    public function createQueryBuilder($alias = null): QueryBuilder
     {
         $qb = $this->connection->createQueryBuilder();
         $qb->select('*')
-            ->from(static::TABLE_NAME);
+            ->from(static::TABLE_NAME, $alias);
 
         return $qb;
     }
