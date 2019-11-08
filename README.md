@@ -30,7 +30,7 @@ As the following schema shows, you can define more than one dataflow:
 * Enable/Disable a scheduled Dataflow from the command line
 * Display the list of scheduled Dataflow from the command line
 * Display the result for the last Job for a Dataflow from the command line
-* Work with many Doctrine DBAL connection
+* Work with multiple Doctrine DBAL connections
 
 
 ## Installation
@@ -99,7 +99,7 @@ public function registerBundles()
 
 ### Update the database
 
-This bundle uses Doctrine DBAL for drive the database table for store Dataflow schedule (`cr_dataflow_scheduled`)
+This bundle uses Doctrine DBAL to store Dataflow schedule into the database table (`cr_dataflow_scheduled`)
 and jobs (`cr_dataflow_job`).
 
 If you use [Doctrine Migration Bundle](https://symfony.com/doc/master/bundles/DoctrineMigrationsBundle/index.html) or [Phinx](https://phinx.org/) 
@@ -118,7 +118,7 @@ $ bin/console code-rhapsodie:dataflow:dump-schema --update
 
 ## Configuration
 
-By default the Doctrine DBAL connection used is `default`. You can change the default connexion with the configuration.
+By default, the Doctrine DBAL connection used is `default`. You can configure the default connection.
 Add this configuration into your Symfony configuration:
 
 ```yaml
@@ -419,18 +419,17 @@ Several commands are provided to manage schedules and run jobs.
 
 ### Work with many databases
 
-All commands have `--connection` option to define what Doctrine DBAL use to execution. You must be register in your 
-crontab one job by connection.
+All commands have a `--connection` option to define what Doctrine DBAL connection to use during execution.
 
-Exemple:
+Example:
 
-This command use the `default` DBAL connection to generates all update schema update queries.
+This command uses the `default` DBAL connection to generate all schema update queries.
 
 ```shell script
 $ bin/console code-rhapsodie:dataflow:dump-schema --update --connection=default
 ```
 
-To execute all pending job in tow specific connection use:
+To execute all pending job for a specific connection use:
 
 ```shell script
 # Run for dataflow DBAL connection
