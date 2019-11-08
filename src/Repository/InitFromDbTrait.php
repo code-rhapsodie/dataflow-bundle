@@ -35,8 +35,12 @@ trait InitFromDbTrait
 
     private function strToArray($value): array
     {
+        if ($value === null) {
+            return [];
+        }
+
         $array = json_decode($value, true);
 
-        return (null === $value || false === $array) ? [] : $array;
+        return (false === $array) ? [] : $array;
     }
 }
