@@ -1,13 +1,12 @@
 <?php
 
 declare(strict_types=1);
-/**
- * @copy Code-Rhapsodie (c) 2019
- * Added by : cameleon at 06/11/2019 11:06
- */
 
 namespace CodeRhapsodie\DataflowBundle\Repository;
 
+/**
+ * @codeCoverageIgnore
+ */
 trait InitFromDbTrait
 {
     private function initDateTime(array $datas): array
