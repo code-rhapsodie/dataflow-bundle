@@ -10,32 +10,38 @@ services:
             $registry: '@CodeRhapsodie\DataflowBundle\Registry\DataflowTypeRegistryInterface'
             $scheduledDataflowRepository: '@CodeRhapsodie\DataflowBundle\Repository\ScheduledDataflowRepository'
             $validator: '@validator'
+            $connectionFactory: '@CodeRhapsodie\DataflowBundle\Factory\ConnectionFactory'
         tags: ['console.command']
 
     CodeRhapsodie\DataflowBundle\Command\ChangeScheduleStatusCommand:
         arguments:
             $scheduledDataflowRepository: '@CodeRhapsodie\DataflowBundle\Repository\ScheduledDataflowRepository'
+            $connectionFactory: '@CodeRhapsodie\DataflowBundle\Factory\ConnectionFactory'
         tags: ['console.command']
 
     CodeRhapsodie\DataflowBundle\Command\ExecuteDataflowCommand:
         arguments:
             $registry: '@CodeRhapsodie\DataflowBundle\Registry\DataflowTypeRegistryInterface'
+            $connectionFactory: '@CodeRhapsodie\DataflowBundle\Factory\ConnectionFactory'
         tags: ['console.command']
 
     CodeRhapsodie\DataflowBundle\Command\JobShowCommand:
         arguments:
             $jobRepository: '@CodeRhapsodie\DataflowBundle\Repository\JobRepository'
+            $connectionFactory: '@CodeRhapsodie\DataflowBundle\Factory\ConnectionFactory'
         tags: ['console.command']
 
     CodeRhapsodie\DataflowBundle\Command\RunPendingDataflowsCommand:
         arguments:
             $manager: '@CodeRhapsodie\DataflowBundle\Manager\ScheduledDataflowManagerInterface'
             $runner: '@CodeRhapsodie\DataflowBundle\Runner\PendingDataflowRunnerInterface'
+            $connectionFactory: '@CodeRhapsodie\DataflowBundle\Factory\ConnectionFactory'
         tags: ['console.command']
 
     CodeRhapsodie\DataflowBundle\Command\ScheduleListCommand:
         arguments:
             $scheduledDataflowRepository: '@CodeRhapsodie\DataflowBundle\Repository\ScheduledDataflowRepository'
+            $connectionFactory: '@CodeRhapsodie\DataflowBundle\Factory\ConnectionFactory'
         tags: ['console.command']
 
     CodeRhapsodie\DataflowBundle\Command\SchemaCommand:

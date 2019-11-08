@@ -34,7 +34,7 @@ trait InitFromDbTrait
 
     private function strToArray($value): array
     {
-        if ($value === null) {
+        if (null === $value) {
             return [];
         }
 
