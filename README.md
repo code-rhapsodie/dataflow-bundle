@@ -30,6 +30,7 @@ As the following schema shows, you can define more than one dataflow:
 * Enable/Disable a scheduled Dataflow from the command line
 * Display the list of scheduled Dataflow from the command line
 * Display the result for the last Job for a Dataflow from the command line
+* Work with multiple Doctrine DBAL connections
 
 
 ## Installation
@@ -98,26 +99,32 @@ public function registerBundles()
 
 ### Update the database
 
-This bundle uses Doctrine ORM for drive the database table for store Dataflow schedule (`cr_dataflow_scheduled`)
+This bundle uses Doctrine DBAL to store Dataflow schedule into the database table (`cr_dataflow_scheduled`)
 and jobs (`cr_dataflow_job`).
 
-#### Doctrine migration
-
-Execute the command to generate the migration for your database:
-
-```shell script
-$ bin/console doctrine:migration:diff
-```
-
-#### Other migration tools
-
-If you use [Phinx](https://phinx.org/) or [Kaliop Migration Bundle](https://github.com/kaliop-uk/ezmigrationbundle) or whatever,
+If you use [Doctrine Migration Bundle](https://symfony.com/doc/master/bundles/DoctrineMigrationsBundle/index.html) or [Phinx](https://phinx.org/) 
+or [Kaliop Migration Bundle](https://github.com/kaliop-uk/ezmigrationbundle) or whatever,
 you can add a new migration with the generated SQL query from this command:
 
 ```shell script
-$ bin/console doctrine:schema:update --dump-sql
+$ bin/console code-rhapsodie:dataflow:dump-schema
 ```
 
+If you have already the tables, you can add a new migration with the generated update SQL query from this command:
+
+```shell script
+$ bin/console code-rhapsodie:dataflow:dump-schema --update
+```
+
+## Configuration
+
+By default, the Doctrine DBAL connection used is `default`. You can configure the default connection.
+Add this configuration into your Symfony configuration:
+
+```yaml
+code_rhapsodie_dataflow:
+  dbal_default_connection: test #Name of the default connection used by Dataflow bundle
+```
 
 ## Define a dataflow type
 
@@ -408,6 +415,28 @@ Several commands are provided to manage schedules and run jobs.
 
 `code-rhapsodie:dataflow:execute` Let you execute one dataflow job.
 
+`code-rhapsodie:dataflow:dump-schema` Generates schema create / update SQL queries
+
+### Work with many databases
+
+All commands have a `--connection` option to define what Doctrine DBAL connection to use during execution.
+
+Example:
+
+This command uses the `default` DBAL connection to generate all schema update queries.
+
+```shell script
+$ bin/console code-rhapsodie:dataflow:dump-schema --update --connection=default
+```
+
+To execute all pending job for a specific connection use:
+
+```shell script
+# Run for dataflow DBAL connection
+$ bin/console code-rhapsodie:dataflow:run-pending --connection=dataflow
+# Run for default DBAL connection
+$ bin/console code-rhapsodie:dataflow:run-pending --connection=default
+```
 
 # Issues and feature requests
 
