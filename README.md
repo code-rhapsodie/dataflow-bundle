@@ -40,7 +40,7 @@ As the following schema shows, you can define more than one dataflow:
 To install this bundle, run this command :
 
 ```shell script
-$ composer require code-rhapsodie/dataflow
+$ composer require code-rhapsodie/dataflow-bundle
 ```
 
 #### Suggest
