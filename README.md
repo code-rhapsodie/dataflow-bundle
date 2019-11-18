@@ -168,9 +168,10 @@ class MyFirstDataflowType extends AbstractDataflowType
     protected function buildDataflow(DataflowBuilder $builder, array $options): void
     {
         $this->myWriter->setDestinationFilePath($options['to-file']);
-        
-        $builder->setReader($this->myReader->read($options['from-file']))
-            ->addStep(function($data) use ($options) {
+
+        $builder
+            ->setReader($this->myReader->read($options['from-file']))
+            ->addStep(function ($data) use ($options) {
                 // TODO : Write your code here...
                 return $data;
             })
@@ -180,7 +181,7 @@ class MyFirstDataflowType extends AbstractDataflowType
 
     protected function configureOptions(OptionsResolver $optionsResolver): void
     {
-        $optionsResolver->setDefaults(['to-file'=>'/tmp/dataflow.csv', 'from-file'=>null]);
+        $optionsResolver->setDefaults(['to-file' => '/tmp/dataflow.csv', 'from-file' => null]);
         $optionsResolver->setRequired('from-file');
     }
 
@@ -281,11 +282,11 @@ class FileReader
         }
 
         if (!$fh = fopen($filename, 'r')) {
-            throw new \Exception("Unable to open file '" . $filename . "' for read.");
+            throw new \Exception("Unable to open file '".$filename."' for read.");
         }
 
         while (false !== ($read = fgets($fh))) {
-            yield explode("|", trim($read));
+            yield explode('|', trim($read));
         }
     }
 }
@@ -311,14 +312,16 @@ A *Step* can be any callable, taking the element as its argument, and returning 
 A few examples:
 
 ```php
-$builder->addStep(function($item) {
+<?php
+//[...]
+$builder->addStep(function ($item) {
     // Titles are changed to all caps before export
     $item['title'] = strtoupper($item['title']);
 
     return $item;
 });
 
-$builder->addStep(function($item) {
+$builder->addStep(function ($item) {
     // Private items are not exported
     if ($item['private']) {
         return false;
@@ -326,6 +329,7 @@ $builder->addStep(function($item) {
 
     return $item;
 });
+//[...]
 ```
 
 ### Writers
@@ -366,7 +370,7 @@ class FileWriter implements WriterInterface
             throw new \Exception('Define the destination file name before use');
         }
         if (!$this->fh = fopen($this->path, 'w')) {
-            throw new \Exception("Unable to open in write mode the output file.");
+            throw new \Exception('Unable to open in write mode the output file.');
         }
     }
 
