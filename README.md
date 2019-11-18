@@ -226,7 +226,7 @@ class MyFirstDataflowType extends AbstractDataflowType
     // ...
     protected function configureOptions(OptionsResolver $optionsResolver): void
     {
-        $optionsResolver->setDefaults(['to-file'=>'/tmp/dataflow.csv', 'from-file'=>null]);
+        $optionsResolver->setDefaults(['to-file' => '/tmp/dataflow.csv', 'from-file' => null]);
         $optionsResolver->setRequired('from-file');
     }
 
