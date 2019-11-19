@@ -167,11 +167,11 @@ class MyFirstDataflowType extends AbstractDataflowType
 
     protected function buildDataflow(DataflowBuilder $builder, array $options): void
     {
-        
-        $this->myReader->setFilename($options['fileName']);
+        $this->myWriter->setDestinationFilePath($options['to-file']);
 
-        $builder->setReader($this->myReader)
-            ->addStep(function($data) use ($options) {
+        $builder
+            ->setReader($this->myReader->read($options['from-file']))
+            ->addStep(function ($data) use ($options) {
                 // TODO : Write your code here...
                 return $data;
             })
@@ -181,11 +181,8 @@ class MyFirstDataflowType extends AbstractDataflowType
 
     protected function configureOptions(OptionsResolver $optionsResolver): void
     {
-        $optionsResolver->setDefaults([
-            'my_option' => 'my_default_value',
-            'fileName'  => null,
-        ]);
-        $optionsResolver->setRequired('fileName');
+        $optionsResolver->setDefaults(['to-file' => '/tmp/dataflow.csv', 'from-file' => null]);
+        $optionsResolver->setRequired('from-file');
     }
 
     public function getLabel(): string
@@ -229,11 +226,8 @@ class MyFirstDataflowType extends AbstractDataflowType
     // ...
     protected function configureOptions(OptionsResolver $optionsResolver): void
     {
-        $optionsResolver->setDefaults([
-            'my_option' => 'my_default_value',
-            'fileName'  => null,
-        ]);
-        $optionsResolver->setRequired('fileName');
+        $optionsResolver->setDefaults(['to-file' => '/tmp/dataflow.csv', 'from-file' => null]);
+        $optionsResolver->setRequired('from-file');
     }
 
 }
@@ -281,27 +275,18 @@ namespace CodeRhapsodie\DataflowExemple\Reader;
 
 class FileReader
 {
-    private $filename;
-
-    /**
-     * Set the filename option needed by the Reader.
-     */
-    public function setFilename(string $filename) {
-        $this->filename = $filename;
-    }
-
-    public function __invoke(): iterable
+    public function read(string $filename): iterable
     {
-        if (!$this->filename) {
+        if (!$filename) {
             throw new \Exception("The file name is not defined. Define it with 'setFilename' method");
         }
 
-        if (!$fh = fopen($this->filename, 'r')) {
-            throw new \Exception("Unable to open file '".$this->filename."' for read.");
+        if (!$fh = fopen($filename, 'r')) {
+            throw new \Exception("Unable to open file '".$filename."' for read.");
         }
 
-        while (false === ($read = fread($fh, 1024))) {
-            yield explode("|", $read);
+        while (false !== ($read = fgets($fh))) {
+            yield explode('|', trim($read));
         }
     }
 }
@@ -327,14 +312,16 @@ A *Step* can be any callable, taking the element as its argument, and returning 
 A few examples:
 
 ```php
-$builder->addStep(function($item) {
+<?php
+//[...]
+$builder->addStep(function ($item) {
     // Titles are changed to all caps before export
     $item['title'] = strtoupper($item['title']);
 
     return $item;
 });
 
-$builder->addStep(function($item) {
+$builder->addStep(function ($item) {
     // Private items are not exported
     if ($item['private']) {
         return false;
@@ -342,6 +329,7 @@ $builder->addStep(function($item) {
 
     return $item;
 });
+//[...]
 ```
 
 ### Writers
@@ -369,11 +357,20 @@ class FileWriter implements WriterInterface
 {
     private $fh;
 
+    /** @var string */
+    private $path;
+
+    public function setDestinationFilePath(string $path) {
+        $this->path = $path;
+    }
+
     public function prepare()
     {
-
-        if (!$this->fh = fopen('/path/to/file', 'w')) {
-            throw new \Exception("Unable to open in write mode the output file.");
+        if (null === $this->path) {
+            throw new \Exception('Define the destination file name before use');
+        }
+        if (!$this->fh = fopen($this->path, 'w')) {
+            throw new \Exception('Unable to open in write mode the output file.');
         }
     }
 
