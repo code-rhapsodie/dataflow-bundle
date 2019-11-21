@@ -386,6 +386,95 @@ class FileWriter implements WriterInterface
 }
 ```
 
+#### CollectionWriter
+
+If you want to write multiple items from a single item read, you can use the generic `CollectionWriter`. This writer will iterate over any `iterable` it receives, and pass each item from that collection to your own writer that handles single items.
+
+```php
+$builder->addWriter(new CollectionWriter($mySingleItemWriter));
+```
+
+#### DelegatorWriter
+
+If you want to call different writers depending on what item is read, you can use the generic `DelegatorWriter`.
+
+As an example, let's suppose our items are arrays with the first entry being either `product` or `order`. We want to use a different writer based on that value.
+
+First, create your writers implementing `DelegateWriterInterface` (this interface extends `WriterInterface` so your writers can still be used without the `DelegatorWriter`).
+
+```php
+<?php
+namespace CodeRhapsodie\DataflowExemple\Writer;
+
+use CodeRhapsodie\DataFlowBundle\DataflowType\Writer\WriterInterface;
+
+class ProductWriter implements DelegateWriterInterface
+{
+    public function supports($item): bool
+    {
+        return 'product' === reset($item);
+    }
+
+    public function prepare()
+    {
+    }
+
+    public function write($item)
+    {
+        // Process your product
+    }
+
+    public function finish()
+    {
+    }
+}
+```
+
+```php
+<?php
+namespace CodeRhapsodie\DataflowExemple\Writer;
+
+use CodeRhapsodie\DataFlowBundle\DataflowType\Writer\WriterInterface;
+
+class OrderWriter implements DelegateWriterInterface
+{
+    public function supports($item): bool
+    {
+        return 'order' === reset($item);
+    }
+
+    public function prepare()
+    {
+    }
+
+    public function write($item)
+    {
+        // Process your order
+    }
+
+    public function finish()
+    {
+    }
+}
+```
+
+Then, configure your `DelegatorWriter` and add it to your dataflow type.
+
+```php
+    protected function buildDataflow(DataflowBuilder $builder, array $options): void
+    {
+        // Snip add reader and steps
+
+        $delegatorWriter = new DelegatorWriter();
+        $delegatorWriter->addDelegate(new ProductWriter());
+        $delegatorWriter->addDelegate(new OrderWriter());
+
+        $builder->addWriter($delegatorWriter);
+    }
+```
+
+During execution, the `DelegatorWriter` will simply pass each item received to its first delegate (in the order those were added) that supports it. If no delegate supports an item, an exception will be thrown.
+
 ## Queue
 
 All pending dataflow job processes are stored in a queue into the database.

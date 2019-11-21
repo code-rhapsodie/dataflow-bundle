@@ -1,3 +1,7 @@
+# Version 2.1.0
+
+* Added CollectionWriter and DelegatorWriter
+
 # Version 2.0.0
 
 * Add Doctrine DBAL multi-connection support

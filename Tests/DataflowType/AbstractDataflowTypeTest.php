@@ -4,7 +4,6 @@ namespace CodeRhapsodie\DataflowBundle\Tests\DataflowType;
 
 use CodeRhapsodie\DataflowBundle\DataflowType\AbstractDataflowType;
 use CodeRhapsodie\DataflowBundle\DataflowType\DataflowBuilder;
-use PHPUnit\Framework\Constraint\IsIdentical;
 use PHPUnit\Framework\TestCase;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 
@@ -15,18 +14,21 @@ class AbstractDataflowTypeTest extends TestCase
         $label = 'Test label';
         $options = ['testOption' => 'Test value'];
         $values = [1, 2, 3];
+        $testCase = $this;
 
-        $dataflowType = new class($label, $options, $values) extends AbstractDataflowType
+        $dataflowType = new class($label, $options, $values, $testCase) extends AbstractDataflowType
         {
             private $label;
             private $options;
             private $values;
+            private $testCase;
 
-            public function __construct(string $label, array $options, array $values)
+            public function __construct(string $label, array $options, array $values, TestCase $testCase)
             {
                 $this->label = $label;
                 $this->options = $options;
                 $this->values = $values;
+                $this->testCase = $testCase;
             }
 
             public function getLabel(): string
@@ -42,7 +44,7 @@ class AbstractDataflowTypeTest extends TestCase
             protected function buildDataflow(DataflowBuilder $builder, array $options): void
             {
                 $builder->setReader($this->values);
-                (new IsIdentical($this->options))->evaluate($options);
+                $this->testCase->assertSame($this->options, $options);
             }
         };
 
