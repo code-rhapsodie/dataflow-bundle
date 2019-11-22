@@ -67,6 +67,7 @@ class ScheduledDataflowManager implements ScheduledDataflowManagerInterface
         }
 
         $scheduled->setNext($next);
+        $this->scheduledDataflowRepository->save($scheduled);
     }
 
     /**

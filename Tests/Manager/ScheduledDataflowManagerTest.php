@@ -83,6 +83,12 @@ class ScheduledDataflowManagerTest extends TestCase
             )
         ;
 
+        $this->scheduledDataflowRepository
+            ->expects($this->once())
+            ->method('save')
+            ->with($scheduled2)
+        ;
+
         $this->connection
             ->expects($this->once())
             ->method('commit')
