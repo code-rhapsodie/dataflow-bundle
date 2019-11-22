@@ -58,36 +58,68 @@ class PendingDataflowRunnerTest extends TestCase
             ->willReturnOnConsecutiveCalls($job1, $job2, null)
         ;
 
-        $this->dispatcher
-            ->expects($this->exactly(4))
-            ->method('dispatch')
-            ->withConsecutive(
-                [
-                    Events::BEFORE_PROCESSING,
-                    $this->callback(function (ProcessingEvent $event) use ($job1) {
-                        return $event->getJob() === $job1;
-                    })
-                ],
-                [
-                    Events::AFTER_PROCESSING,
-                    $this->callback(function (ProcessingEvent $event) use ($job1) {
-                        return $event->getJob() === $job1;
-                    })
-                ],
-                [
-                    Events::BEFORE_PROCESSING,
-                    $this->callback(function (ProcessingEvent $event) use ($job2) {
-                        return $event->getJob() === $job2;
-                    })
-                ],
-                [
-                    Events::AFTER_PROCESSING,
-                    $this->callback(function (ProcessingEvent $event) use ($job2) {
-                        return $event->getJob() === $job2;
-                    })
-                ]
-            )
-        ;
+        // Symfony 3.4 to 4.4 call
+        if (!class_exists('Symfony\Contracts\EventDispatcher\Event')) {
+            $this->dispatcher
+                ->expects($this->exactly(4))
+                ->method('dispatch')
+                ->withConsecutive(
+                    [
+                        Events::BEFORE_PROCESSING,
+                        $this->callback(function (ProcessingEvent $event) use ($job1) {
+                            return $event->getJob() === $job1;
+                        })
+                    ],
+                    [
+                        Events::AFTER_PROCESSING,
+                        $this->callback(function (ProcessingEvent $event) use ($job1) {
+                            return $event->getJob() === $job1;
+                        })
+                    ],
+                    [
+                        Events::BEFORE_PROCESSING,
+                        $this->callback(function (ProcessingEvent $event) use ($job2) {
+                            return $event->getJob() === $job2;
+                        })
+                    ],
+                    [
+                        Events::AFTER_PROCESSING,
+                        $this->callback(function (ProcessingEvent $event) use ($job2) {
+                            return $event->getJob() === $job2;
+                        })
+                    ]
+                );
+        } else { // Symfony 5.0+
+            $this->dispatcher
+                ->expects($this->exactly(4))
+                ->method('dispatch')
+                ->withConsecutive(
+                    [
+                        $this->callback(function (ProcessingEvent $event) use ($job1) {
+                            return $event->getJob() === $job1;
+                        }),
+                        Events::BEFORE_PROCESSING,
+                    ],
+                    [
+                        $this->callback(function (ProcessingEvent $event) use ($job1) {
+                            return $event->getJob() === $job1;
+                        }),
+                        Events::AFTER_PROCESSING,
+                    ],
+                    [
+                        $this->callback(function (ProcessingEvent $event) use ($job2) {
+                            return $event->getJob() === $job2;
+                        }),
+                        Events::BEFORE_PROCESSING,
+                    ],
+                    [
+                        $this->callback(function (ProcessingEvent $event) use ($job2) {
+                            return $event->getJob() === $job2;
+                        }),
+                        Events::AFTER_PROCESSING,
+                    ]
+                );
+        }
 
         $dataflowType1 = $this->createMock(DataflowTypeInterface::class);
         $dataflowType2 = $this->createMock(DataflowTypeInterface::class);

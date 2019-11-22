@@ -50,7 +50,12 @@ class PendingDataflowRunner implements PendingDataflowRunnerInterface
      */
     private function beforeProcessing(Job $job): void
     {
-        $this->dispatcher->dispatch(Events::BEFORE_PROCESSING, new ProcessingEvent($job));
+        // Symfony 3.4 to 4.4 call
+        if (!class_exists('Symfony\Contracts\EventDispatcher\Event')) {
+            $this->dispatcher->dispatch(Events::BEFORE_PROCESSING, new ProcessingEvent($job));
+        } else { // Symfony 5.0+ call
+            $this->dispatcher->dispatch(new ProcessingEvent($job), Events::BEFORE_PROCESSING);
+        }
 
         $job
             ->setStatus(Job::STATUS_RUNNING)
@@ -79,6 +84,11 @@ class PendingDataflowRunner implements PendingDataflowRunnerInterface
         ;
         $this->repository->save($job);
 
-        $this->dispatcher->dispatch(Events::AFTER_PROCESSING, new ProcessingEvent($job));
+        // Symfony 3.4 to 4.4 call
+        if (!class_exists('Symfony\Contracts\EventDispatcher\Event')) {
+            $this->dispatcher->dispatch(Events::AFTER_PROCESSING, new ProcessingEvent($job));
+        } else { // Symfony 5.0+ call
+            $this->dispatcher->dispatch(new ProcessingEvent($job), Events::AFTER_PROCESSING);
+        }
     }
 }
