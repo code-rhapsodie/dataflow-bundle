@@ -5,14 +5,13 @@ declare(strict_types=1);
 namespace CodeRhapsodie\DataflowBundle\Event;
 
 use CodeRhapsodie\DataflowBundle\Entity\Job;
-use Symfony\Component\EventDispatcher\Event;
 
 /**
  * Event used during the dataflow lifecycle.
  *
  * @codeCoverageIgnore
  */
-class ProcessingEvent extends Event
+class ProcessingEvent extends CrEvent
 {
     /** @var Job */
     private $job;

@@ -98,4 +98,44 @@ class ScheduledDataflowManagerTest extends TestCase
 
         $this->assertEquals($next->add(\DateInterval::createFromDateString($frequency)), $scheduled2->getNext());
     }
+
+    public function testCreateJobsFromScheduledDataflowsWithError()
+    {
+        $scheduled1 = new ScheduledDataflow();
+
+        $this->scheduledDataflowRepository
+            ->expects($this->once())
+            ->method('findReadyToRun')
+            ->willReturn([$scheduled1])
+        ;
+
+        $this->jobRepository
+            ->expects($this->exactly(1))
+            ->method('findPendingForScheduledDataflow')
+            ->withConsecutive([$scheduled1])
+            ->willThrowException(new \Exception())
+        ;
+
+        $this->connection
+            ->expects($this->once())
+            ->method('beginTransaction')
+        ;
+        $this->jobRepository
+            ->expects($this->never())
+            ->method('save')
+        ;
+
+        $this->connection
+            ->expects($this->never())
+            ->method('commit')
+        ;
+        $this->connection
+            ->expects($this->once())
+            ->method('rollBack')
+        ;
+
+        $this->expectException(\Exception::class);
+
+        $this->manager->createJobsFromScheduledDataflows();
+    }
 }

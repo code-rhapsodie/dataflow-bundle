@@ -30,6 +30,7 @@ matrix:
     # Enable code coverage with the latest supported PHP version
     - php: '7.3'
       env:
+        - SYMFONY_VERSION=3.4.*
         - COVERALLS_ENABLED="true"
         - PHPUNIT_FLAGS="-v --coverage-text --coverage-clover var/build/clover.xml"
 
@@ -47,10 +48,15 @@ matrix:
         - SYMFONY_VERSION=3.4.*
     - php: '7.1'
       env:
-        - SYMFONY_VERSION=4.2.*
+        - SYMFONY_VERSION=4.3.*
     - php: '7.1'
       env:
-        - SYMFONY_VERSION=4.3.*
+        - SYMFONY_VERSION=4.4.*
+    - php: '7.2'
+      env:
+        - COVERALLS_ENABLED="true"
+        - PHPUNIT_FLAGS="-v --coverage-text --coverage-clover var/build/clover.xml"
+        - SYMFONY_VERSION=5.0.*
 
     # Test unsupported versions of Symfony
     - php: '7.1'
@@ -59,13 +65,16 @@ matrix:
     - php: '7.1'
       env:
         - SYMFONY_VERSION=4.1.*
+    - php: '7.1'
+      env:
+        - SYMFONY_VERSION=4.2.*
 
 
     # Test upcoming Symfony versions with lowest supported PHP version and dev dependencies
-    - php: '7.1'
+    - php: '7.2'
       env:
         - STABILITY=dev
-        - SYMFONY_VERSION=4.4.*
+        - SYMFONY_VERSION=5.1.*
 
     # Test upcoming PHP versions with dev dependencies
     - php: '7.4snapshot'
@@ -79,11 +88,13 @@ matrix:
     - env:
         - SYMFONY_VERSION=4.1.*
     - env:
+        - SYMFONY_VERSION=4.2.*
+    - env:
         - STABILITY=dev
         - COMPOSER_FLAGS="--ignore-platform-reqs --prefer-stable"
     - env:
         - STABILITY=dev
-        - SYMFONY_VERSION=4.4.*
+        - SYMFONY_VERSION=5.1.*
 
 before_install:
   - if [[ "$SYMFONY_VERSION" != "" ]]; then
