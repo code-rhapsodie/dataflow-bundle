@@ -4,10 +4,10 @@ declare(strict_types=1);
 
 namespace CodeRhapsodie\DataflowBundle\Manager;
 
-use CodeRhapsodie\DataflowBundle\Entity\ScheduledDataflow;
 use CodeRhapsodie\DataflowBundle\Entity\Job;
-use CodeRhapsodie\DataflowBundle\Repository\ScheduledDataflowRepository;
+use CodeRhapsodie\DataflowBundle\Entity\ScheduledDataflow;
 use CodeRhapsodie\DataflowBundle\Repository\JobRepository;
+use CodeRhapsodie\DataflowBundle\Repository\ScheduledDataflowRepository;
 use Doctrine\DBAL\Driver\Connection;
 
 /**
@@ -53,9 +53,6 @@ class ScheduledDataflowManager implements ScheduledDataflowManagerInterface
         $this->connection->commit();
     }
 
-    /**
-     * @param ScheduledDataflow $scheduled
-     */
     private function updateScheduledDataflowNext(ScheduledDataflow $scheduled): void
     {
         $interval = \DateInterval::createFromDateString($scheduled->getFrequency());
@@ -70,9 +67,6 @@ class ScheduledDataflowManager implements ScheduledDataflowManagerInterface
         $this->scheduledDataflowRepository->save($scheduled);
     }
 
-    /**
-     * @param ScheduledDataflow $scheduled
-     */
     private function createPendingForScheduled(ScheduledDataflow $scheduled): void
     {
         $this->jobRepository->save(Job::createFromScheduledDataflow($scheduled));

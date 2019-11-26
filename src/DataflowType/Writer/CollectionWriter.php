@@ -16,8 +16,6 @@ class CollectionWriter implements DelegateWriterInterface
 
     /**
      * CollectionWriter constructor.
-     *
-     * @param WriterInterface $writer
      */
     public function __construct(WriterInterface $writer)
     {
@@ -38,10 +36,7 @@ class CollectionWriter implements DelegateWriterInterface
     public function write($collection)
     {
         if (!is_iterable($collection)) {
-            throw new UnsupportedItemTypeException(sprintf(
-                'Item to write was expected to be an iterable, received %s.',
-                is_object($collection) ? get_class($collection) : gettype($collection)
-            ));
+            throw new UnsupportedItemTypeException(sprintf('Item to write was expected to be an iterable, received %s.', is_object($collection) ? get_class($collection) : gettype($collection)));
         }
 
         foreach ($collection as $item) {

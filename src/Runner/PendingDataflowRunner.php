@@ -45,9 +45,6 @@ class PendingDataflowRunner implements PendingDataflowRunnerInterface
         }
     }
 
-    /**
-     * @param Job $job
-     */
     private function beforeProcessing(Job $job): void
     {
         // Symfony 3.4 to 4.4 call
@@ -64,10 +61,6 @@ class PendingDataflowRunner implements PendingDataflowRunnerInterface
         $this->repository->save($job);
     }
 
-    /**
-     * @param Job    $job
-     * @param Result $result
-     */
     private function afterProcessing(Job $job, Result $result): void
     {
         $exceptions = [];

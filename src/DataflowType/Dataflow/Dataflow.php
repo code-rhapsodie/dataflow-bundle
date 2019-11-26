@@ -21,10 +21,6 @@ class Dataflow implements DataflowInterface
     /** @var WriterInterface[] */
     private $writers = [];
 
-    /**
-     * @param iterable    $reader
-     * @param string|null $name
-     */
     public function __construct(iterable $reader, ?string $name)
     {
         $this->reader = $reader;
@@ -32,8 +28,6 @@ class Dataflow implements DataflowInterface
     }
 
     /**
-     * @param callable $step
-     *
      * @return $this
      */
     public function addStep(callable $step): self
@@ -44,8 +38,6 @@ class Dataflow implements DataflowInterface
     }
 
     /**
-     * @param WriterInterface $writer
-     *
      * @return $this
      */
     public function addWriter(WriterInterface $writer): self
