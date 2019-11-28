@@ -4,8 +4,8 @@ declare(strict_types=1);
 
 namespace CodeRhapsodie\DataflowBundle\Registry;
 
-use CodeRhapsodie\DataflowBundle\Exceptions\UnknownDataflowTypeException;
 use CodeRhapsodie\DataflowBundle\DataflowType\DataflowTypeInterface;
+use CodeRhapsodie\DataflowBundle\Exceptions\UnknownDataflowTypeException;
 
 /**
  * Array based dataflow types registry.

@@ -18,17 +18,12 @@ class ProcessingEvent extends CrEvent
 
     /**
      * ProcessingEvent constructor.
-     *
-     * @param Job $job
      */
     public function __construct(Job $job)
     {
         $this->job = $job;
     }
 
-    /**
-     * @return Job
-     */
     public function getJob(): Job
     {
         return $this->job;

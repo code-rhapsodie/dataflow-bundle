@@ -13,8 +13,6 @@ interface DelegateWriterInterface extends WriterInterface
      * Returns true if the argument is of a supported type.
      *
      * @param $item
-     *
-     * @return bool
      */
     public function supports($item): bool;
 }

@@ -13,8 +13,6 @@ interface DataflowInterface
 {
     /**
      * Processes the data.
-     *
-     * @return Result
      */
     public function process(): Result;
 }

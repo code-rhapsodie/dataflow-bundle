@@ -41,8 +41,6 @@ class JobRepository
 
     /**
      * JobRepository constructor.
-     *
-     * @param Connection $connection
      */
     public function __construct(Connection $connection)
     {

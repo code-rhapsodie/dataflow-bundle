@@ -99,8 +99,6 @@ class Job
     private $endTime;
 
     /**
-     * @param ScheduledDataflow $scheduled
-     *
      * @return Job
      */
     public static function createFromScheduledDataflow(ScheduledDataflow $scheduled): self
@@ -124,8 +122,7 @@ class Job
     {
         $lost = array_diff(static::KEYS, array_keys($datas));
         if (count($lost) > 0) {
-            throw new \LogicException('The first argument of '.__METHOD__.'  must be contains: "'.implode(', ',
-                    $lost).'"');
+            throw new \LogicException('The first argument of '.__METHOD__.'  must be contains: "'.implode(', ', $lost).'"');
         }
 
         $job = new self();
@@ -161,11 +158,6 @@ class Job
         ];
     }
 
-    /**
-     * @param int $id
-     *
-     * @return Job
-     */
     public function setId(int $id): Job
     {
         $this->id = $id;
@@ -173,27 +165,16 @@ class Job
         return $this;
     }
 
-    /**
-     * @return int|null
-     */
     public function getId(): ?int
     {
         return $this->id;
     }
 
-    /**
-     * @return int
-     */
     public function getStatus(): int
     {
         return $this->status;
     }
 
-    /**
-     * @param int $status
-     *
-     * @return Job
-     */
     public function setStatus(int $status): Job
     {
         $this->status = $status;
@@ -201,19 +182,11 @@ class Job
         return $this;
     }
 
-    /**
-     * @return string|null
-     */
     public function getLabel(): ?string
     {
         return $this->label;
     }
 
-    /**
-     * @param string|null $label
-     *
-     * @return Job
-     */
     public function setLabel(?string $label): Job
     {
         $this->label = $label;
@@ -221,19 +194,11 @@ class Job
         return $this;
     }
 
-    /**
-     * @return string|null
-     */
     public function getDataflowType(): ?string
     {
         return $this->dataflowType;
     }
 
-    /**
-     * @param string|null $dataflowType
-     *
-     * @return Job
-     */
     public function setDataflowType(?string $dataflowType): Job
     {
         $this->dataflowType = $dataflowType;
@@ -241,19 +206,11 @@ class Job
         return $this;
     }
 
-    /**
-     * @return array|null
-     */
     public function getOptions(): ?array
     {
         return $this->options;
     }
 
-    /**
-     * @param array|null $options
-     *
-     * @return Job
-     */
     public function setOptions(?array $options): Job
     {
         $this->options = $options;
@@ -261,19 +218,11 @@ class Job
         return $this;
     }
 
-    /**
-     * @return \DateTimeInterface|null
-     */
     public function getRequestedDate(): ?\DateTimeInterface
     {
         return $this->requestedDate;
     }
 
-    /**
-     * @param \DateTimeInterface|null $requestedDate
-     *
-     * @return Job
-     */
     public function setRequestedDate(?\DateTimeInterface $requestedDate): Job
     {
         $this->requestedDate = $requestedDate;
@@ -281,19 +230,11 @@ class Job
         return $this;
     }
 
-    /**
-     * @return int|null
-     */
     public function getScheduledDataflowId(): ?int
     {
         return $this->scheduledDataflowId;
     }
 
-    /**
-     * @param int|null $scheduledDataflowId
-     *
-     * @return Job
-     */
     public function setScheduledDataflowId(?int $scheduledDataflowId): Job
     {
         $this->scheduledDataflowId = $scheduledDataflowId;
@@ -301,19 +242,11 @@ class Job
         return $this;
     }
 
-    /**
-     * @return int|null
-     */
     public function getCount(): ?int
     {
         return $this->count;
     }
 
-    /**
-     * @param int|null $count
-     *
-     * @return Job
-     */
     public function setCount(?int $count): Job
     {
         $this->count = $count;
@@ -321,19 +254,11 @@ class Job
         return $this;
     }
 
-    /**
-     * @return array|null
-     */
     public function getExceptions(): ?array
     {
         return $this->exceptions;
     }
 
-    /**
-     * @param array|null $exceptions
-     *
-     * @return Job
-     */
     public function setExceptions(?array $exceptions): Job
     {
         $this->exceptions = $exceptions;
@@ -341,19 +266,11 @@ class Job
         return $this;
     }
 
-    /**
-     * @return \DateTimeInterface|null
-     */
     public function getStartTime(): ?\DateTimeInterface
     {
         return $this->startTime;
     }
 
-    /**
-     * @param \DateTimeInterface|null $startTime
-     *
-     * @return Job
-     */
     public function setStartTime(?\DateTimeInterface $startTime): Job
     {
         $this->startTime = $startTime;
@@ -361,19 +278,11 @@ class Job
         return $this;
     }
 
-    /**
-     * @return \DateTimeInterface|null
-     */
     public function getEndTime(): ?\DateTimeInterface
     {
         return $this->endTime;
     }
 
-    /**
-     * @param \DateTimeInterface|null $endTime
-     *
-     * @return Job
-     */
     public function setEndTime(?\DateTimeInterface $endTime): Job
     {
         $this->endTime = $endTime;

@@ -47,10 +47,7 @@ class DelegatorWriter implements DelegateWriterInterface
             return;
         }
 
-        throw new UnsupportedItemTypeException(sprintf(
-            'None of the registered delegate writers support the received item of type %s',
-            is_object($item) ? get_class($item) : gettype($item)
-        ));
+        throw new UnsupportedItemTypeException(sprintf('None of the registered delegate writers support the received item of type %s', is_object($item) ? get_class($item) : gettype($item)));
     }
 
     /**
@@ -91,8 +88,6 @@ class DelegatorWriter implements DelegateWriterInterface
 
     /**
      * Registers one delegate.
-     *
-     * @param DelegateWriterInterface $delegate
      */
     public function addDelegate(DelegateWriterInterface $delegate): void
     {

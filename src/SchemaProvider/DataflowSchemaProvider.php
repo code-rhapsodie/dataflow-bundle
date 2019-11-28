@@ -19,10 +19,10 @@ class DataflowSchemaProvider
     {
         $schema = new Schema();
         $tableJob = $schema->createTable(JobRepository::TABLE_NAME);
-        $tableJob->addColumn('id', 'integer', array(
+        $tableJob->addColumn('id', 'integer', [
             'autoincrement' => true,
-        ));
-        $tableJob->setPrimaryKey(array('id'));
+        ]);
+        $tableJob->setPrimaryKey(['id']);
 
         $tableJob->addColumn('scheduled_dataflow_id', 'integer', ['notnull' => false]);
         $tableJob->addColumn('status', 'integer', ['notnull' => true]);
@@ -36,10 +36,10 @@ class DataflowSchemaProvider
         $tableJob->addColumn('end_time', 'datetime', ['notnull' => false]);
 
         $tableSchedule = $schema->createTable(ScheduledDataflowRepository::TABLE_NAME);
-        $tableSchedule->addColumn('id', 'integer', array(
+        $tableSchedule->addColumn('id', 'integer', [
             'autoincrement' => true,
-        ));
-        $tableSchedule->setPrimaryKey(array('id'));
+        ]);
+        $tableSchedule->setPrimaryKey(['id']);
         $tableSchedule->addColumn('label', 'string', ['notnull' => true, 'length' => 255]);
         $tableSchedule->addColumn('dataflow_type', 'string', ['notnull' => true, 'length' => 255]);
         $tableSchedule->addColumn('options', 'json', ['notnull' => true]);

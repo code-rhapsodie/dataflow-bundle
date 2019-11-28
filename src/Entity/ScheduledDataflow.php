@@ -73,8 +73,7 @@ class ScheduledDataflow
     {
         $lost = array_diff(static::KEYS, array_keys($datas));
         if (count($lost) > 0) {
-            throw new \LogicException('The first argument of '.__METHOD__.'  must be contains: "'.implode(', ',
-                    $lost).'"');
+            throw new \LogicException('The first argument of '.__METHOD__.'  must be contains: "'.implode(', ', $lost).'"');
         }
 
         $scheduledDataflow = new self();
@@ -103,11 +102,6 @@ class ScheduledDataflow
         ];
     }
 
-    /**
-     * @param int $id
-     *
-     * @return ScheduledDataflow
-     */
     public function setId(int $id): ScheduledDataflow
     {
         $this->id = $id;
@@ -115,27 +109,16 @@ class ScheduledDataflow
         return $this;
     }
 
-    /**
-     * @return int|null
-     */
     public function getId(): ?int
     {
         return $this->id;
     }
 
-    /**
-     * @return string|null
-     */
     public function getLabel(): ?string
     {
         return $this->label;
     }
 
-    /**
-     * @param string|null $label
-     *
-     * @return ScheduledDataflow
-     */
     public function setLabel(?string $label): ScheduledDataflow
     {
         $this->label = $label;
@@ -143,19 +126,11 @@ class ScheduledDataflow
         return $this;
     }
 
-    /**
-     * @return string|null
-     */
     public function getDataflowType(): ?string
     {
         return $this->dataflowType;
     }
 
-    /**
-     * @param string|null $dataflowType
-     *
-     * @return ScheduledDataflow
-     */
     public function setDataflowType(?string $dataflowType): ScheduledDataflow
     {
         $this->dataflowType = $dataflowType;
@@ -163,19 +138,11 @@ class ScheduledDataflow
         return $this;
     }
 
-    /**
-     * @return array|null
-     */
     public function getOptions(): ?array
     {
         return $this->options;
     }
 
-    /**
-     * @param array|null $options
-     *
-     * @return ScheduledDataflow
-     */
     public function setOptions(?array $options): ScheduledDataflow
     {
         $this->options = $options;
@@ -183,19 +150,11 @@ class ScheduledDataflow
         return $this;
     }
 
-    /**
-     * @return string|null
-     */
     public function getFrequency(): ?string
     {
         return $this->frequency;
     }
 
-    /**
-     * @param string|null $frequency
-     *
-     * @return ScheduledDataflow
-     */
     public function setFrequency(?string $frequency): ScheduledDataflow
     {
         $this->frequency = $frequency;
@@ -203,19 +162,11 @@ class ScheduledDataflow
         return $this;
     }
 
-    /**
-     * @return \DateTimeInterface|null
-     */
     public function getNext(): ?\DateTimeInterface
     {
         return $this->next;
     }
 
-    /**
-     * @param \DateTimeInterface|null $next
-     *
-     * @return ScheduledDataflow
-     */
     public function setNext(?\DateTimeInterface $next): ScheduledDataflow
     {
         $this->next = $next;
@@ -223,19 +174,11 @@ class ScheduledDataflow
         return $this;
     }
 
-    /**
-     * @return bool|null
-     */
     public function getEnabled(): ?bool
     {
         return $this->enabled;
     }
 
-    /**
-     * @param bool|null $enabled
-     *
-     * @return ScheduledDataflow
-     */
     public function setEnabled(?bool $enabled): ScheduledDataflow
     {
         $this->enabled = $enabled;

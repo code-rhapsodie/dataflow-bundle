@@ -13,10 +13,6 @@ interface DataflowTypeRegistryInterface
 {
     /**
      * Get a registered dataflow type from its FQCN or one of its aliases.
-     *
-     * @param string $fqcnOrAlias
-     *
-     * @return DataflowTypeInterface
      */
     public function getDataflowType(string $fqcnOrAlias): DataflowTypeInterface;
 
@@ -29,8 +25,6 @@ interface DataflowTypeRegistryInterface
 
     /**
      * Registers a dataflow type.
-     *
-     * @param DataflowTypeInterface $dataflowType
      */
     public function registerDataflowType(DataflowTypeInterface $dataflowType): void;
 }
