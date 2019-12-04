@@ -63,7 +63,7 @@ class Dataflow implements DataflowInterface
         foreach ($this->reader as $index => $item) {
             try {
                 $this->processItem($item);
-            } catch (\Exception $e) {
+            } catch (\Throwable $e) {
                 $exceptions[$index] = $e;
             }
 
