@@ -6,6 +6,7 @@ namespace CodeRhapsodie\DataflowBundle\Command;
 
 use CodeRhapsodie\DataflowBundle\Factory\ConnectionFactory;
 use CodeRhapsodie\DataflowBundle\Registry\DataflowTypeRegistryInterface;
+use Psr\Log\LoggerInterface;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
@@ -27,12 +28,18 @@ class ExecuteDataflowCommand extends Command
     /** @var ConnectionFactory */
     private $connectionFactory;
 
-    public function __construct(DataflowTypeRegistryInterface $registry, ConnectionFactory $connectionFactory)
+    /**
+     * @var LoggerInterface
+     */
+    private $logger;
+
+    public function __construct(DataflowTypeRegistryInterface $registry, ConnectionFactory $connectionFactory, LoggerInterface $logger)
     {
         parent::__construct();
 
         $this->registry = $registry;
         $this->connectionFactory = $connectionFactory;
+        $this->logger = $logger;
     }
 
     /**
@@ -71,6 +78,13 @@ EOF
         $output->writeln('Start time: '.$result->getStartTime()->format('Y/m/d H:i:s'));
         $output->writeln('End time: '.$result->getEndTime()->format('Y/m/d H:i:s'));
         $output->writeln('Success: '.$result->getSuccessCount());
+
+        if ($result->hasErrors()> 0)
+        {
+            foreach ($result->getExceptions() as $e) {
+                $this->logger->error('Error during processing : '.$e->getMessage(), ['exception'=>$e]);
+            }
+        }
 
         return 0;
     }
