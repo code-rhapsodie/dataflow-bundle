@@ -23,6 +23,7 @@ services:
         arguments:
             $registry: '@CodeRhapsodie\DataflowBundle\Registry\DataflowTypeRegistryInterface'
             $connectionFactory: '@CodeRhapsodie\DataflowBundle\Factory\ConnectionFactory'
+            $logger: '@logger'
         tags: ['console.command']
 
     CodeRhapsodie\DataflowBundle\Command\JobShowCommand:
