@@ -62,7 +62,7 @@ services:
 
     coderhapsodie.dataflow.connection.internal:
         lazy: true
-        class: Doctrine\DBAL\Driver\Connection
+        class: Doctrine\DBAL\Connection
         factory: ['@CodeRhapsodie\DataflowBundle\Factory\ConnectionFactory', 'getConnection']
 
     CodeRhapsodie\DataflowBundle\Factory\ConnectionFactory:
