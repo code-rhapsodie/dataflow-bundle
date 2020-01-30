@@ -1,3 +1,11 @@
+# Version 2.0.2
+
+* Fixed the connection proxy class created by the factory
+
+# Version 2.0.1
+
+* Fixed next execution time not increasing for scheduled dataflows
+
 # Version 2.0.0
 
 * Add Doctrine DBAL multi-connection support
