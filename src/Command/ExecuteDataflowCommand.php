@@ -28,9 +28,7 @@ class ExecuteDataflowCommand extends Command
     /** @var ConnectionFactory */
     private $connectionFactory;
 
-    /**
-     * @var LoggerInterface
-     */
+    /** @var LoggerInterface */
     private $logger;
 
     public function __construct(DataflowTypeRegistryInterface $registry, ConnectionFactory $connectionFactory, LoggerInterface $logger)
@@ -79,11 +77,15 @@ EOF
         $output->writeln('End time: '.$result->getEndTime()->format('Y/m/d H:i:s'));
         $output->writeln('Success: '.$result->getSuccessCount());
 
-        if ($result->hasErrors()> 0)
-        {
+        if ($result->hasErrors() > 0) {
+            $output->writeln('Errors: '.$result->getErrorCount());
+            $output->writeln('Exceptions traces are available in the logs.');
+
             foreach ($result->getExceptions() as $e) {
-                $this->logger->error('Error during processing : '.$e->getMessage(), ['exception'=>$e]);
+                $this->logger->error('Error during processing : '.$e->getMessage(), ['exception' => $e]);
             }
+
+            return 1;
         }
 
         return 0;

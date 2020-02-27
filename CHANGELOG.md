@@ -3,6 +3,7 @@
 * Added CollectionWriter and DelegatorWriter
 * Adding Symfony 5.0 compatibility
 * Save all exceptions caught in the log for `code-rhapsodie:dataflow:execute`
+* Added more output when errors occured during `code-rhapsodie:dataflow:execute`
 
 # Version 2.0.2
 
