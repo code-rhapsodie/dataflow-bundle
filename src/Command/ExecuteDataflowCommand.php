@@ -78,8 +78,8 @@ EOF
         $output->writeln('Success: '.$result->getSuccessCount());
 
         if ($result->hasErrors() > 0) {
-            $output->writeln('Errors: '.$result->getErrorCount());
-            $output->writeln('Exceptions traces are available in the logs.');
+            $output->writeln('<error> Errors: '.$result->getErrorCount().' </error>');
+            $output->writeln('<error> Exceptions traces are available in the logs. </error>');
 
             foreach ($result->getExceptions() as $e) {
                 $this->logger->error('Error during processing : '.$e->getMessage(), ['exception' => $e]);
