@@ -3,7 +3,7 @@
 DataflowBundle is a bundle for Symfony 3.4+ 
 providing an easy way to create import / export dataflow.
 
-[![Build Status](https://travis-ci.org/code-rhapsodie/dataflow-bundle.svg?branch=master)](https://travis-ci.org/code-rhapsodie/dataflow-bundle)
+[![Build Status](https://travis-ci.com/code-rhapsodie/dataflow-bundle.svg?branch=master)](https://travis-ci.com/code-rhapsodie/dataflow-bundle)
 
 [![Coverage Status](https://coveralls.io/repos/github/code-rhapsodie/dataflow-bundle/badge.svg)](https://coveralls.io/github/code-rhapsodie/dataflow-bundle)
 
@@ -34,6 +34,10 @@ As the following schema shows, you can define more than one dataflow:
 
 
 ## Installation
+
+Security notice: Symfony 4.x is not supported before 4.1.12, see https://github.com/advisories/GHSA-pgwj-prpq-jpc2
+
+And basically, every allowed-to-failed jobs in our travis configuration are not fully supported.
 
 ### Add the dependency
 

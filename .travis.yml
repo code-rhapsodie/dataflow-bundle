@@ -26,9 +26,17 @@ matrix:
     - php: '7.1'
     - php: '7.2'
     - php: '7.3'
+    - php: '7.4'
+
+    # Enable code coverage with the previous supported PHP version
+    - php: '7.3'
+      env:
+        - SYMFONY_VERSION=3.4.*
+        - COVERALLS_ENABLED="true"
+        - PHPUNIT_FLAGS="-v --coverage-text --coverage-clover var/build/clover.xml"
 
     # Enable code coverage with the latest supported PHP version
-    - php: '7.3'
+    - php: '7.4'
       env:
         - SYMFONY_VERSION=3.4.*
         - COVERALLS_ENABLED="true"
@@ -61,9 +69,6 @@ matrix:
     # Test unsupported versions of Symfony
     - php: '7.1'
       env:
-        - SYMFONY_VERSION=4.0.*
-    - php: '7.1'
-      env:
         - SYMFONY_VERSION=4.1.*
     - php: '7.1'
       env:
@@ -77,12 +82,13 @@ matrix:
         - SYMFONY_VERSION=5.1.*
 
     # Test upcoming PHP versions with dev dependencies
-    - php: '7.4snapshot'
-      env:
-        - STABILITY=dev
-        - COMPOSER_FLAGS="--ignore-platform-reqs --prefer-stable"
+    #- php: '7.5snapshot'
+    #  env:
+    #    - STABILITY=dev
+    #    - COMPOSER_FLAGS="--ignore-platform-reqs --prefer-stable"
 
   allow_failures:
+    # 4.0 not supported because of https://github.com/advisories/GHSA-pgwj-prpq-jpc2
     - env:
         - SYMFONY_VERSION=4.0.*
     - env:
