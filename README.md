@@ -35,6 +35,10 @@ As the following schema shows, you can define more than one dataflow:
 
 ## Installation
 
+Security notice: Symfony 4.x is not supported before 4.1.12, see https://github.com/advisories/GHSA-pgwj-prpq-jpc2
+
+And basically, every allowed-to-failed jobs in our travis configuration are not fully supported.
+
 ### Add the dependency
 
 To install this bundle, run this command :
