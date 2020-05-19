@@ -11,8 +11,8 @@ class Configuration implements ConfigurationInterface
 {
     public function getConfigTreeBuilder()
     {
-        $treeBuilder = new TreeBuilder();
-        $rootNode = $treeBuilder->root('code_rhapsodie_dataflow');
+        $treeBuilder = new TreeBuilder('code_rhapsodie_dataflow');
+        $rootNode = $treeBuilder->getRootNode();
 
         $rootNode
             ->children()
