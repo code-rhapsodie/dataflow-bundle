@@ -11,8 +11,13 @@ class Configuration implements ConfigurationInterface
 {
     public function getConfigTreeBuilder()
     {
-        $treeBuilder = new TreeBuilder();
-        $rootNode = $treeBuilder->root('code_rhapsodie_dataflow');
+        $treeBuilder = new TreeBuilder('code_rhapsodie_dataflow');
+        if (method_exists($treeBuilder, 'getRootNode')) {
+            $rootNode = $treeBuilder->getRootNode();
+        } else {
+            // BC for symfony/config < 4.2
+            $rootNode = $treeBuilder->root('code_rhapsodie_dataflow');
+        }
 
         $rootNode
             ->children()

@@ -95,5 +95,7 @@ class SchemaCommand extends Command
         foreach ($sqls as $sql) {
             $io->text($sql.';');
         }
+
+        return 0;
     }
 }
