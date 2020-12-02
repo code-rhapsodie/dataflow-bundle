@@ -1,3 +1,7 @@
+# Version 2.1.1
+
+* Fixed some Symfony 5 compatibility issues
+
 # Version 2.1.0
 
 * Added CollectionWriter and DelegatorWriter
