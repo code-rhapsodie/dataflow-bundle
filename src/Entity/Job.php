@@ -68,8 +68,6 @@ class Job
 
     /**
      * @var \DateTimeInterface|null
-     *
-     * @Asserts\DateTime()
      */
     private $requestedDate;
 
