@@ -28,5 +28,6 @@ class CodeRhapsodieDataflowExtension extends Extension
         $config = $this->processConfiguration($configuration, $configs);
 
         $container->setParameter('coderhapsodie.dataflow.dbal_default_connection', $config['dbal_default_connection']);
+        $container->setParameter('coderhapsodie.dataflow.default_logger', $config['default_logger']);
     }
 }

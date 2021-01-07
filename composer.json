@@ -2,7 +2,12 @@
     "name": "code-rhapsodie/dataflow-bundle",
     "description": "Data processing framework inspired by PortPHP",
     "type": "symfony-bundle",
-    "keywords": ["dataflow", "import", "export", "data processing"],
+    "keywords": [
+        "dataflow",
+        "import",
+        "export",
+        "data processing"
+    ],
     "license": "MIT",
     "authors": [
         {
@@ -37,17 +42,20 @@
     },
     "require": {
         "php": "^7.1",
+        "ext-json": "*",
         "doctrine/dbal": "^2.0",
+        "doctrine/doctrine-bundle": "^1.0||^2.0",
+        "psr/log": "^1.1",
         "symfony/config": "^3.4||^4.0||^5.0",
         "symfony/console": "^3.4||^4.0||^5.0",
         "symfony/dependency-injection": "^3.4||>=4.1.12||^5.0",
         "symfony/event-dispatcher": "^3.4||^4.0||^5.0",
         "symfony/http-kernel": "^3.4||^4.0||^5.0",
         "symfony/lock": "^3.4||^4.0||^5.0",
+        "symfony/monolog-bridge": "^3.4||^4.0||^5.0",
         "symfony/options-resolver": "^3.4||^4.0||^5.0",
         "symfony/validator": "^3.4||^4.0||^5.0",
-        "symfony/yaml": "^3.4||^4.0||^5.0",
-        "doctrine/doctrine-bundle": "^1.0||^2.0"
+        "symfony/yaml": "^3.4||^4.0||^5.0"
     },
     "require-dev": {
         "phpunit/phpunit": "^7||^8"

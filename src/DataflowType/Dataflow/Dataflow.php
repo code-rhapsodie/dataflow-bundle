@@ -6,9 +6,13 @@ namespace CodeRhapsodie\DataflowBundle\DataflowType\Dataflow;
 
 use CodeRhapsodie\DataflowBundle\DataflowType\Result;
 use CodeRhapsodie\DataflowBundle\DataflowType\Writer\WriterInterface;
+use Psr\Log\LoggerAwareInterface;
+use Psr\Log\LoggerAwareTrait;
 
-class Dataflow implements DataflowInterface
+class Dataflow implements DataflowInterface, LoggerAwareInterface
 {
+    use LoggerAwareTrait;
+
     /** @var string */
     private $name;
 
@@ -16,15 +20,17 @@ class Dataflow implements DataflowInterface
     private $reader;
 
     /** @var callable[] */
-    private $steps = [];
+    private $steps;
 
     /** @var WriterInterface[] */
-    private $writers = [];
+    private $writers;
 
     public function __construct(iterable $reader, ?string $name)
     {
         $this->reader = $reader;
         $this->name = $name;
+        $this->steps = [];
+        $this->writers = [];
     }
 
     /**
@@ -54,27 +60,33 @@ class Dataflow implements DataflowInterface
     {
         $count = 0;
         $exceptions = [];
-        $startTime = new \DateTime();
+        $startTime = new \DateTimeImmutable();
 
-        foreach ($this->writers as $writer) {
-            $writer->prepare();
-        }
-
-        foreach ($this->reader as $index => $item) {
-            try {
-                $this->processItem($item);
-            } catch (\Throwable $e) {
-                $exceptions[$index] = $e;
+        try {
+            foreach ($this->writers as $writer) {
+                $writer->prepare();
             }
 
-            ++$count;
+            foreach ($this->reader as $index => $item) {
+                try {
+                    $this->processItem($item);
+                } catch (\Throwable $e) {
+                    $exceptions[$index] = $e;
+                    $this->logException($e, (string) $index);
+                }
+
+                ++$count;
+            }
+
+            foreach ($this->writers as $writer) {
+                $writer->finish();
+            }
+        } catch (\Throwable $e) {
+            $exceptions[] = $e;
+            $this->logException($e);
         }
 
-        foreach ($this->writers as $writer) {
-            $writer->finish();
-        }
-
-        return new Result($this->name, $startTime, new \DateTime(), $count, $exceptions);
+        return new Result($this->name, $startTime, new \DateTimeImmutable(), $count, $exceptions);
     }
 
     /**
@@ -93,5 +105,14 @@ class Dataflow implements DataflowInterface
         foreach ($this->writers as $writer) {
             $writer->write($item);
         }
+    }
+
+    private function logException(\Throwable $e, ?string $index = null): void
+    {
+        if (!isset($this->logger)) {
+            return;
+        }
+
+        $this->logger->error($e, ['index' => $index]);
     }
 }

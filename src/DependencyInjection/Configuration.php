@@ -24,6 +24,9 @@ class Configuration implements ConfigurationInterface
                 ->scalarNode('dbal_default_connection')
                     ->defaultValue('default')
                 ->end()
+                ->scalarNode('default_logger')
+                    ->defaultValue('logger')
+                ->end()
             ->end()
         ;
 

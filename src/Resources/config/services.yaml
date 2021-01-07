@@ -23,7 +23,7 @@ services:
         arguments:
             $registry: '@CodeRhapsodie\DataflowBundle\Registry\DataflowTypeRegistryInterface'
             $connectionFactory: '@CodeRhapsodie\DataflowBundle\Factory\ConnectionFactory'
-            $logger: '@logger'
+            $logger: ~ # Injected via compiler pass
         tags: ['console.command']
 
     CodeRhapsodie\DataflowBundle\Command\JobShowCommand:
@@ -81,3 +81,4 @@ services:
             $repository: '@CodeRhapsodie\DataflowBundle\Repository\JobRepository'
             $registry: '@CodeRhapsodie\DataflowBundle\Registry\DataflowTypeRegistryInterface'
             $dispatcher: '@event_dispatcher'
+            $logger: ~ # Injected via compiler pass
