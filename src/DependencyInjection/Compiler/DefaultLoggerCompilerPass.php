@@ -18,13 +18,17 @@ class DefaultLoggerCompilerPass implements CompilerPassInterface
     public function process(ContainerBuilder $container)
     {
         $defaultLogger = $container->getParameter('coderhapsodie.dataflow.default_logger');
+        if (!$container->has($defaultLogger)) {
+            return;
+        }
+
         foreach ([ExecuteDataflowCommand::class, PendingDataflowRunner::class] as $serviceId) {
             if (!$container->has($serviceId)) {
                 continue;
             }
 
             $definition = $container->findDefinition($serviceId);
-            $definition->setArgument('$logger', new Reference($defaultLogger));
+            $definition->addMethodCall('setLogger', [new Reference($defaultLogger)]);
         }
     }
 }

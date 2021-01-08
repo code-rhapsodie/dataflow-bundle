@@ -14,11 +14,14 @@ use CodeRhapsodie\DataflowBundle\Registry\DataflowTypeRegistryInterface;
 use CodeRhapsodie\DataflowBundle\Repository\JobRepository;
 use Monolog\Logger;
 use Psr\Log\LoggerAwareInterface;
+use Psr\Log\LoggerAwareTrait;
 use Psr\Log\LoggerInterface;
 use Symfony\Component\EventDispatcher\EventDispatcherInterface;
 
-class PendingDataflowRunner implements PendingDataflowRunnerInterface
+class PendingDataflowRunner implements PendingDataflowRunnerInterface, LoggerAwareInterface
 {
+    use LoggerAwareTrait;
+
     /** @var JobRepository */
     private $repository;
 
@@ -28,15 +31,11 @@ class PendingDataflowRunner implements PendingDataflowRunnerInterface
     /** @var EventDispatcherInterface */
     private $dispatcher;
 
-    /** @var LoggerInterface */
-    private $logger;
-
-    public function __construct(JobRepository $repository, DataflowTypeRegistryInterface $registry, EventDispatcherInterface $dispatcher, LoggerInterface $logger)
+    public function __construct(JobRepository $repository, DataflowTypeRegistryInterface $registry, EventDispatcherInterface $dispatcher)
     {
         $this->repository = $repository;
         $this->registry = $registry;
         $this->dispatcher = $dispatcher;
-        $this->logger = $logger;
     }
 
     /**
@@ -48,10 +47,12 @@ class PendingDataflowRunner implements PendingDataflowRunnerInterface
             $this->beforeProcessing($job);
 
             $dataflowType = $this->registry->getDataflowType($job->getDataflowType());
-            $logger = new DelegatingLogger([
-                $this->logger,
-                new Logger('dataflow_internal', [$bufferHandler = new BufferHandler()]),
-            ]);
+            $loggers = [new Logger('dataflow_internal', [$bufferHandler = new BufferHandler()])];
+            if (isset($this->logger)) {
+                $loggers[] = $this->logger;
+            }
+            $logger = new DelegatingLogger($loggers);
+
             if ($dataflowType instanceof LoggerAwareInterface) {
                 $dataflowType->setLogger($logger);
             }

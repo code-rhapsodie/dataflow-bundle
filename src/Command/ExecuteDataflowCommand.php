@@ -7,6 +7,7 @@ namespace CodeRhapsodie\DataflowBundle\Command;
 use CodeRhapsodie\DataflowBundle\Factory\ConnectionFactory;
 use CodeRhapsodie\DataflowBundle\Registry\DataflowTypeRegistryInterface;
 use Psr\Log\LoggerAwareInterface;
+use Psr\Log\LoggerAwareTrait;
 use Psr\Log\LoggerInterface;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputArgument;
@@ -20,8 +21,10 @@ use Symfony\Component\Console\Style\SymfonyStyle;
  *
  * @codeCoverageIgnore
  */
-class ExecuteDataflowCommand extends Command
+class ExecuteDataflowCommand extends Command implements LoggerAwareInterface
 {
+    use LoggerAwareTrait;
+
     protected static $defaultName = 'code-rhapsodie:dataflow:execute';
 
     /** @var DataflowTypeRegistryInterface */
@@ -30,16 +33,12 @@ class ExecuteDataflowCommand extends Command
     /** @var ConnectionFactory */
     private $connectionFactory;
 
-    /** @var LoggerInterface */
-    private $logger;
-
-    public function __construct(DataflowTypeRegistryInterface $registry, ConnectionFactory $connectionFactory, LoggerInterface $logger)
+    public function __construct(DataflowTypeRegistryInterface $registry, ConnectionFactory $connectionFactory)
     {
         parent::__construct();
 
         $this->registry = $registry;
         $this->connectionFactory = $connectionFactory;
-        $this->logger = $logger;
     }
 
     /**
@@ -73,7 +72,7 @@ EOF
         $io = new SymfonyStyle($input, $output);
 
         $dataflowType = $this->registry->getDataflowType($fqcnOrAlias);
-        if ($dataflowType instanceof LoggerAwareInterface) {
+        if ($dataflowType instanceof LoggerAwareInterface && isset($this->logger)) {
             $dataflowType->setLogger($this->logger);
         }
 

@@ -6,6 +6,7 @@ namespace CodeRhapsodie\DataflowBundle\DataflowType;
 
 use Psr\Log\LoggerAwareInterface;
 use Psr\Log\LoggerAwareTrait;
+use Psr\Log\LoggerInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 
 abstract class AbstractDataflowType implements DataflowTypeInterface, LoggerAwareInterface
@@ -31,7 +32,7 @@ abstract class AbstractDataflowType implements DataflowTypeInterface, LoggerAwar
         ;
         $this->buildDataflow($builder, $options);
         $dataflow = $builder->getDataflow();
-        if ($dataflow instanceof LoggerAwareInterface) {
+        if ($dataflow instanceof LoggerAwareInterface && $this->logger instanceof LoggerInterface) {
             $dataflow->setLogger($this->logger);
         }
 
