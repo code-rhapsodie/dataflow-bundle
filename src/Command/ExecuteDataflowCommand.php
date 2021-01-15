@@ -6,20 +6,25 @@ namespace CodeRhapsodie\DataflowBundle\Command;
 
 use CodeRhapsodie\DataflowBundle\Factory\ConnectionFactory;
 use CodeRhapsodie\DataflowBundle\Registry\DataflowTypeRegistryInterface;
+use Psr\Log\LoggerAwareInterface;
+use Psr\Log\LoggerAwareTrait;
 use Psr\Log\LoggerInterface;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
+use Symfony\Component\Console\Style\SymfonyStyle;
 
 /**
  * Runs one dataflow.
  *
  * @codeCoverageIgnore
  */
-class ExecuteDataflowCommand extends Command
+class ExecuteDataflowCommand extends Command implements LoggerAwareInterface
 {
+    use LoggerAwareTrait;
+
     protected static $defaultName = 'code-rhapsodie:dataflow:execute';
 
     /** @var DataflowTypeRegistryInterface */
@@ -28,16 +33,12 @@ class ExecuteDataflowCommand extends Command
     /** @var ConnectionFactory */
     private $connectionFactory;
 
-    /** @var LoggerInterface */
-    private $logger;
-
-    public function __construct(DataflowTypeRegistryInterface $registry, ConnectionFactory $connectionFactory, LoggerInterface $logger)
+    public function __construct(DataflowTypeRegistryInterface $registry, ConnectionFactory $connectionFactory)
     {
         parent::__construct();
 
         $this->registry = $registry;
         $this->connectionFactory = $connectionFactory;
-        $this->logger = $logger;
     }
 
     /**
@@ -68,22 +69,22 @@ EOF
         }
         $fqcnOrAlias = $input->getArgument('fqcn');
         $options = json_decode($input->getArgument('options'), true);
+        $io = new SymfonyStyle($input, $output);
 
         $dataflowType = $this->registry->getDataflowType($fqcnOrAlias);
+        if ($dataflowType instanceof LoggerAwareInterface && isset($this->logger)) {
+            $dataflowType->setLogger($this->logger);
+        }
+
         $result = $dataflowType->process($options);
 
-        $output->writeln('Executed: '.$result->getName());
-        $output->writeln('Start time: '.$result->getStartTime()->format('Y/m/d H:i:s'));
-        $output->writeln('End time: '.$result->getEndTime()->format('Y/m/d H:i:s'));
-        $output->writeln('Success: '.$result->getSuccessCount());
+        $io->writeln('Executed: '.$result->getName());
+        $io->writeln('Start time: '.$result->getStartTime()->format('Y/m/d H:i:s'));
+        $io->writeln('End time: '.$result->getEndTime()->format('Y/m/d H:i:s'));
+        $io->writeln('Success: '.$result->getSuccessCount());
 
-        if ($result->hasErrors() > 0) {
-            $output->writeln('<error> Errors: '.$result->getErrorCount().' </error>');
-            $output->writeln('<error> Exceptions traces are available in the logs. </error>');
-
-            foreach ($result->getExceptions() as $e) {
-                $this->logger->error('Error during processing : '.$e->getMessage(), ['exception' => $e]);
-            }
+        if ($result->hasErrors()) {
+            $io->error("Errors: {$result->getErrorCount()}\nExceptions traces are available in the logs.");
 
             return 1;
         }

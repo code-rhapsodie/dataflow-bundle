@@ -8,12 +8,20 @@ use CodeRhapsodie\DataflowBundle\DataflowType\Result;
 use CodeRhapsodie\DataflowBundle\Entity\Job;
 use CodeRhapsodie\DataflowBundle\Event\Events;
 use CodeRhapsodie\DataflowBundle\Event\ProcessingEvent;
+use CodeRhapsodie\DataflowBundle\Logger\BufferHandler;
+use CodeRhapsodie\DataflowBundle\Logger\DelegatingLogger;
 use CodeRhapsodie\DataflowBundle\Registry\DataflowTypeRegistryInterface;
 use CodeRhapsodie\DataflowBundle\Repository\JobRepository;
+use Monolog\Logger;
+use Psr\Log\LoggerAwareInterface;
+use Psr\Log\LoggerAwareTrait;
+use Psr\Log\LoggerInterface;
 use Symfony\Component\EventDispatcher\EventDispatcherInterface;
 
-class PendingDataflowRunner implements PendingDataflowRunnerInterface
+class PendingDataflowRunner implements PendingDataflowRunnerInterface, LoggerAwareInterface
 {
+    use LoggerAwareTrait;
+
     /** @var JobRepository */
     private $repository;
 
@@ -39,9 +47,25 @@ class PendingDataflowRunner implements PendingDataflowRunnerInterface
             $this->beforeProcessing($job);
 
             $dataflowType = $this->registry->getDataflowType($job->getDataflowType());
+            $loggers = [new Logger('dataflow_internal', [$bufferHandler = new BufferHandler()])];
+            if (isset($this->logger)) {
+                $loggers[] = $this->logger;
+            }
+            $logger = new DelegatingLogger($loggers);
+
+            if ($dataflowType instanceof LoggerAwareInterface) {
+                $dataflowType->setLogger($logger);
+            }
+
             $result = $dataflowType->process($job->getOptions());
 
-            $this->afterProcessing($job, $result);
+            if (!$dataflowType instanceof LoggerAwareInterface) {
+                foreach ($result->getExceptions() as $index => $e) {
+                    $logger->error($e, ['index' => $index]);
+                }
+            }
+
+            $this->afterProcessing($job, $result, $bufferHandler);
         }
     }
 
@@ -61,19 +85,13 @@ class PendingDataflowRunner implements PendingDataflowRunnerInterface
         $this->repository->save($job);
     }
 
-    private function afterProcessing(Job $job, Result $result): void
+    private function afterProcessing(Job $job, Result $result, BufferHandler $bufferLogger): void
     {
-        $exceptions = [];
-        /** @var \Exception $exception */
-        foreach ($result->getExceptions() as $exception) {
-            $exceptions[] = (string) $exception;
-        }
-
         $job
             ->setEndTime($result->getEndTime())
             ->setStatus(Job::STATUS_COMPLETED)
             ->setCount($result->getSuccessCount())
-            ->setExceptions($exceptions)
+            ->setExceptions($bufferLogger->clearBuffer())
         ;
         $this->repository->save($job);
 

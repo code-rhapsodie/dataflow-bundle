@@ -6,6 +6,7 @@ namespace CodeRhapsodie\DataflowBundle;
 
 use CodeRhapsodie\DataflowBundle\DependencyInjection\CodeRhapsodieDataflowExtension;
 use CodeRhapsodie\DataflowBundle\DependencyInjection\Compiler\DataflowTypeCompilerPass;
+use CodeRhapsodie\DataflowBundle\DependencyInjection\Compiler\DefaultLoggerCompilerPass;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
 use Symfony\Component\HttpKernel\Bundle\Bundle;
 
@@ -23,6 +24,9 @@ class CodeRhapsodieDataflowBundle extends Bundle
 
     public function build(ContainerBuilder $container)
     {
-        $container->addCompilerPass(new DataflowTypeCompilerPass());
+        $container
+            ->addCompilerPass(new DataflowTypeCompilerPass())
+            ->addCompilerPass(new DefaultLoggerCompilerPass())
+        ;
     }
 }
