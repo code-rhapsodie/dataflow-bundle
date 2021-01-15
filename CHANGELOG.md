@@ -1,3 +1,7 @@
+# Version 2.2.0
+
+* Improve logging Dataflow job
+
 # Version 2.1.1
 
 * Fixed some Symfony 5 compatibility issues
