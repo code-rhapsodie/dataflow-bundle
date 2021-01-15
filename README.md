@@ -130,6 +130,14 @@ code_rhapsodie_dataflow:
   dbal_default_connection: test #Name of the default connection used by Dataflow bundle
 ```
 
+By default, the `logger` service will be used to log all exceptions and custom messages.
+If you want to use another logger, like a specific Monolog handler, Add this configuration:
+
+```yaml
+code_rhapsodie_dataflow:
+  default_logger: monolog.logger.custom #Service ID of the logger you want Dataflow to use
+```
+
 ## Define a dataflow type
 
 This bundle uses a fixed and simple workflow structure in order to let you focus on the data processing logic part of your dataflow.
@@ -238,6 +246,30 @@ class MyFirstDataflowType extends AbstractDataflowType
 ```
 
 With this configuration, the option `fileName` is required. For an advanced usage of the option resolver, read the [Symfony documentation](https://symfony.com/doc/current/components/options_resolver.html).
+
+### Logging
+
+All exceptions will be caught and written in the logger.
+If you want to add custom messages in the log, you can inject the logger in your readers / steps / writers.
+If your DataflowType class extends `AbstractDataflowType`, the logger is accessible as `$this->logger`.
+
+```php
+<?php
+// ...
+use Symfony\Component\OptionsResolver\OptionsResolver;
+
+class MyDataflowType extends AbstractDataflowType
+{
+    // ...
+    protected function buildDataflow(DataflowBuilder $builder, array $options): void
+    {
+        $this->myWriter->setLogger($this->logger);
+    }
+
+}
+```
+
+When using the `code-rhapsodie:dataflow:run-pending` command, this logger will also be used to save the log in the corresponding job in the database.
 
 ### Check if your DataflowType is ready
 
