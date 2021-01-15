@@ -113,6 +113,6 @@ class Dataflow implements DataflowInterface, LoggerAwareInterface
             return;
         }
 
-        $this->logger->error($e, ['index' => $index]);
+        $this->logger->error($e, ['exception'=>$e, 'index' => $index]);
     }
 }
