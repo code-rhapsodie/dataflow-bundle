@@ -1,3 +1,7 @@
+# Version 2.3.0
+
+* Added PHP 8 support
+
 # Version 2.2.0
 
 * Improve logging Dataflow job
