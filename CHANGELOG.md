@@ -1,3 +1,10 @@
+# Version 3.0.0
+
+* Added PHP 8 support
+* PHP minimum requirements bumped to 7.3
+* Added Doctrine DBAL 3 support
+* Doctrine DBAL minimum requirements bumped to 2.12
+
 # Version 2.2.0
 
 * Improve logging Dataflow job

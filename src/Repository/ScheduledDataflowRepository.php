@@ -6,6 +6,7 @@ namespace CodeRhapsodie\DataflowBundle\Repository;
 
 use CodeRhapsodie\DataflowBundle\Entity\ScheduledDataflow;
 use Doctrine\DBAL\Driver\Connection;
+use Doctrine\DBAL\ParameterType;
 use Doctrine\DBAL\Query\QueryBuilder;
 
 /**
@@ -20,13 +21,13 @@ class ScheduledDataflowRepository
     public const TABLE_NAME = 'cr_dataflow_scheduled';
 
     private const FIELDS_TYPE = [
-        'id' => \PDO::PARAM_INT,
-        'label' => \PDO::PARAM_STR,
-        'dataflow_type' => \PDO::PARAM_STR,
-        'options' => \PDO::PARAM_STR,
-        'frequency' => \PDO::PARAM_STR,
+        'id' => ParameterType::INTEGER,
+        'label' => ParameterType::STRING,
+        'dataflow_type' => ParameterType::STRING,
+        'options' => ParameterType::STRING,
+        'frequency' => ParameterType::STRING,
         'next' => 'datetime',
-        'enabled' => \PDO::PARAM_BOOL,
+        'enabled' => ParameterType::BOOLEAN,
     ];
     /**
      * @var \Doctrine\DBAL\Connection
@@ -58,7 +59,7 @@ class ScheduledDataflowRepository
         if (0 === $stmt->rowCount()) {
             return [];
         }
-        while (false !== ($row = $stmt->fetch(\PDO::FETCH_ASSOC))) {
+        while (false !== ($row = $stmt->fetchAssociative())) {
             yield ScheduledDataflow::createFromArray($this->initDateTime($this->initArray($row)));
         }
     }
@@ -66,7 +67,7 @@ class ScheduledDataflowRepository
     public function find(int $scheduleId): ?ScheduledDataflow
     {
         $qb = $this->createQueryBuilder();
-        $qb->andWhere($qb->expr()->eq('id', $qb->createNamedParameter($scheduleId, \PDO::PARAM_INT)))
+        $qb->andWhere($qb->expr()->eq('id', $qb->createNamedParameter($scheduleId, ParameterType::INTEGER)))
             ->setMaxResults(1)
         ;
 
@@ -82,7 +83,7 @@ class ScheduledDataflowRepository
         if (0 === $stmt->rowCount()) {
             return [];
         }
-        while (false !== ($row = $stmt->fetch(\PDO::FETCH_ASSOC))) {
+        while (false !== ($row = $stmt->fetchAssociative())) {
             yield ScheduledDataflow::createFromArray($this->initDateTime($this->initOptions($row)));
         }
     }
@@ -96,7 +97,7 @@ class ScheduledDataflowRepository
             ->orderBy('w.label', 'ASC')
             ->groupBy('w.id');
 
-        return $query->execute()->fetchAll(\PDO::FETCH_ASSOC);
+        return $query->execute()->fetchAllAssociative();
     }
 
     public function save(ScheduledDataflow $scheduledDataflow)
@@ -147,6 +148,6 @@ class ScheduledDataflowRepository
             return null;
         }
 
-        return ScheduledDataflow::createFromArray($this->initDateTime($this->initArray($stmt->fetch(\PDO::FETCH_ASSOC))));
+        return ScheduledDataflow::createFromArray($this->initDateTime($this->initArray($stmt->fetchAssociative())));
     }
 }

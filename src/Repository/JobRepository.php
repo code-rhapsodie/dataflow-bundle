@@ -7,6 +7,7 @@ namespace CodeRhapsodie\DataflowBundle\Repository;
 use CodeRhapsodie\DataflowBundle\Entity\Job;
 use CodeRhapsodie\DataflowBundle\Entity\ScheduledDataflow;
 use Doctrine\DBAL\Driver\Connection;
+use Doctrine\DBAL\ParameterType;
 use Doctrine\DBAL\Query\QueryBuilder;
 
 /**
@@ -21,15 +22,15 @@ class JobRepository
     public const TABLE_NAME = 'cr_dataflow_job';
 
     private const FIELDS_TYPE = [
-        'id' => \PDO::PARAM_INT,
-        'status' => \PDO::PARAM_INT,
-        'label' => \PDO::PARAM_STR,
-        'dataflow_type' => \PDO::PARAM_STR,
-        'options' => \PDO::PARAM_STR,
+        'id' => ParameterType::INTEGER,
+        'status' => ParameterType::INTEGER,
+        'label' => ParameterType::STRING,
+        'dataflow_type' => ParameterType::STRING,
+        'options' => ParameterType::STRING,
         'requested_date' => 'datetime',
-        'scheduled_dataflow_id' => \PDO::PARAM_INT,
-        'count' => \PDO::PARAM_INT,
-        'exceptions' => \PDO::PARAM_STR,
+        'scheduled_dataflow_id' => ParameterType::INTEGER,
+        'count' => ParameterType::INTEGER,
+        'exceptions' => ParameterType::STRING,
         'start_time' => 'datetime',
         'end_time' => 'datetime',
     ];
@@ -51,7 +52,7 @@ class JobRepository
     {
         $qb = $this->createQueryBuilder();
         $qb
-            ->andWhere($qb->expr()->eq('id', $qb->createNamedParameter($jobId, \PDO::PARAM_INT)))
+            ->andWhere($qb->expr()->eq('id', $qb->createNamedParameter($jobId, ParameterType::INTEGER)))
         ;
 
         return $this->returnFirstOrNull($qb);
@@ -62,12 +63,12 @@ class JobRepository
         $qb = $this->createQueryBuilder();
         $qb
             ->andWhere($qb->expr()->isNull('scheduled_dataflow_id'))
-            ->andWhere($qb->expr()->eq('status', $qb->createNamedParameter(Job::STATUS_PENDING, \PDO::PARAM_INT)));
+            ->andWhere($qb->expr()->eq('status', $qb->createNamedParameter(Job::STATUS_PENDING, ParameterType::INTEGER)));
         $stmt = $qb->execute();
         if (0 === $stmt->rowCount()) {
             return [];
         }
-        while (false !== ($row = $stmt->fetch(\PDO::FETCH_ASSOC))) {
+        while (false !== ($row = $stmt->fetchAssociative())) {
             yield Job::createFromArray($this->initDateTime($this->initArray($row)));
         }
     }
@@ -76,8 +77,8 @@ class JobRepository
     {
         $qb = $this->createQueryBuilder();
         $qb
-            ->andWhere($qb->expr()->eq('scheduled_dataflow_id', $qb->createNamedParameter($scheduled->getId(), \PDO::PARAM_INT)))
-            ->andWhere($qb->expr()->eq('status', $qb->createNamedParameter(Job::STATUS_PENDING, \PDO::PARAM_INT)));
+            ->andWhere($qb->expr()->eq('scheduled_dataflow_id', $qb->createNamedParameter($scheduled->getId(), ParameterType::INTEGER)))
+            ->andWhere($qb->expr()->eq('status', $qb->createNamedParameter(Job::STATUS_PENDING, ParameterType::INTEGER)));
 
         return $this->returnFirstOrNull($qb);
     }
@@ -86,7 +87,7 @@ class JobRepository
     {
         $qb = $this->createQueryBuilder();
         $qb->andWhere($qb->expr()->lte('requested_date', $qb->createNamedParameter(new \DateTime(), 'datetime')))
-            ->andWhere($qb->expr()->eq('status', $qb->createNamedParameter(Job::STATUS_PENDING, \PDO::PARAM_INT)))
+            ->andWhere($qb->expr()->eq('status', $qb->createNamedParameter(Job::STATUS_PENDING, ParameterType::INTEGER)))
             ->orderBy('requested_date', 'ASC')
             ->setMaxResults(1)
         ;
@@ -97,7 +98,7 @@ class JobRepository
     public function findLastForDataflowId(int $dataflowId): ?Job
     {
         $qb = $this->createQueryBuilder();
-        $qb->andWhere($qb->expr()->eq('scheduled_dataflow_id', $qb->createNamedParameter($dataflowId, \PDO::PARAM_INT)))
+        $qb->andWhere($qb->expr()->eq('scheduled_dataflow_id', $qb->createNamedParameter($dataflowId, ParameterType::INTEGER)))
             ->orderBy('requested_date', 'DESC')
             ->setMaxResults(1)
         ;
@@ -115,7 +116,7 @@ class JobRepository
         if (0 === $stmt->rowCount()) {
             return [];
         }
-        while (false !== ($row = $stmt->fetch(\PDO::FETCH_ASSOC))) {
+        while (false !== ($row = $stmt->fetchAssociative())) {
             yield Job::createFromArray($row);
         }
     }
@@ -123,14 +124,14 @@ class JobRepository
     public function findForScheduled(int $id): iterable
     {
         $qb = $this->createQueryBuilder();
-        $qb->andWhere($qb->expr()->eq('scheduled_dataflow_id', $qb->createNamedParameter($id, \PDO::PARAM_INT)))
+        $qb->andWhere($qb->expr()->eq('scheduled_dataflow_id', $qb->createNamedParameter($id, ParameterType::INTEGER)))
             ->orderBy('requested_date', 'DESC')
             ->setMaxResults(20);
         $stmt = $qb->execute();
         if (0 === $stmt->rowCount()) {
             return [];
         }
-        while (false !== ($row = $stmt->fetch(\PDO::FETCH_ASSOC))) {
+        while (false !== ($row = $stmt->fetchAssociative())) {
             yield Job::createFromArray($row);
         }
     }
@@ -172,6 +173,6 @@ class JobRepository
             return null;
         }
 
-        return Job::createFromArray($this->initDateTime($this->initArray($stmt->fetch(\PDO::FETCH_ASSOC))));
+        return Job::createFromArray($this->initDateTime($this->initArray($stmt->fetchAssociative())));
     }
 }
