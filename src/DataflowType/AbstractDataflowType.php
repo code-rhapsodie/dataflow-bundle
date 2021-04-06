@@ -27,9 +27,8 @@ abstract class AbstractDataflowType implements DataflowTypeInterface, LoggerAwar
         $this->configureOptions($optionsResolver);
         $options = $optionsResolver->resolve($options);
 
-        $builder = (new DataflowBuilder())
-            ->setName($this->getLabel())
-        ;
+        $builder = $this->createDataflowBuilder();
+        $builder->setName($this->getLabel());
         $this->buildDataflow($builder, $options);
         $dataflow = $builder->getDataflow();
         if ($dataflow instanceof LoggerAwareInterface && $this->logger instanceof LoggerInterface) {
@@ -37,6 +36,11 @@ abstract class AbstractDataflowType implements DataflowTypeInterface, LoggerAwar
         }
 
         return $dataflow->process();
+    }
+
+    protected function createDataflowBuilder(): DataflowBuilder
+    {
+        return new DataflowBuilder();
     }
 
     /**

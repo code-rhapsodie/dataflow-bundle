@@ -58,9 +58,11 @@
         "symfony/yaml": "^3.4||^4.0||^5.0"
     },
     "require-dev": {
+        "amphp/amp": "^2.5",
         "phpunit/phpunit": "^7||^8"
     },
     "suggest": {
+        "amphp/amp": "Provide asynchronous steps for your dataflows",
         "portphp/portphp": "Provides generic readers, steps and writers for your dataflows."
     },
     "config": {
