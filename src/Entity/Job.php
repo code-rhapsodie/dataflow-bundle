@@ -16,6 +16,7 @@ class Job
     const STATUS_PENDING = 0;
     const STATUS_RUNNING = 1;
     const STATUS_COMPLETED = 2;
+    const STATUS_QUEUED = 3;
 
     private const KEYS = [
         'id',

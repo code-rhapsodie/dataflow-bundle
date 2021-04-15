@@ -2,12 +2,13 @@
 
 declare(strict_types=1);
 
-namespace CodeRhapsodie\DataflowBundle\Runner;
+namespace CodeRhapsodie\DataflowBundle\MessengerMode;
 
 use CodeRhapsodie\DataflowBundle\Processor\JobProcessorInterface;
 use CodeRhapsodie\DataflowBundle\Repository\JobRepository;
+use Symfony\Component\Messenger\Handler\MessageSubscriberInterface;
 
-class PendingDataflowRunner implements PendingDataflowRunnerInterface
+class JobMessageHandler implements MessageSubscriberInterface
 {
     /** @var JobRepository */
     private $repository;
@@ -21,13 +22,13 @@ class PendingDataflowRunner implements PendingDataflowRunnerInterface
         $this->processor = $processor;
     }
 
-    /**
-     * {@inheritdoc}
-     */
-    public function runPendingDataflows(): void
+    public function __invoke(JobMessage $message)
     {
-        while (null !== ($job = $this->repository->findNextPendingDataflow())) {
-            $this->processor->process($job);
-        }
+        $this->processor->process($this->repository->find($message->getJobId()));
+    }
+
+    public static function getHandledMessages(): iterable
+    {
+        return [JobMessage::class];
     }
 }

@@ -53,7 +53,7 @@ class ScheduledDataflowRepository
         $qb->andWhere($qb->expr()->lte('next', $qb->createNamedParameter(new \DateTime(), 'datetime')))
             ->andWhere($qb->expr()->eq('enabled', 1))
             ->orderBy('next', 'ASC')
-            ;
+        ;
 
         $stmt = $qb->execute();
         if (0 === $stmt->rowCount()) {

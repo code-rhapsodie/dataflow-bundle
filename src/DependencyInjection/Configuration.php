@@ -6,6 +6,7 @@ namespace CodeRhapsodie\DataflowBundle\DependencyInjection;
 
 use Symfony\Component\Config\Definition\Builder\TreeBuilder;
 use Symfony\Component\Config\Definition\ConfigurationInterface;
+use Symfony\Component\Messenger\MessageBusInterface;
 
 class Configuration implements ConfigurationInterface
 {
@@ -26,6 +27,21 @@ class Configuration implements ConfigurationInterface
                 ->end()
                 ->scalarNode('default_logger')
                     ->defaultValue('logger')
+                ->end()
+                ->arrayNode('messenger_mode')
+                    ->addDefaultsIfNotSet()
+                    ->children()
+                        ->booleanNode('enabled')
+                            ->defaultFalse()
+                        ->end()
+                        ->scalarNode('bus')
+                            ->defaultValue('messenger.default_bus')
+                        ->end()
+                    ->end()
+                    ->validate()
+                        ->ifTrue(static function ($v): bool { return $v['enabled'] && !interface_exists(MessageBusInterface::class); })
+                        ->thenInvalid('You need "symfony/messenger" in order to use Dataflow messenger mode.')
+                    ->end()
                 ->end()
             ->end()
         ;

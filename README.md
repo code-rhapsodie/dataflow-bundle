@@ -138,6 +138,31 @@ code_rhapsodie_dataflow:
   default_logger: monolog.logger.custom #Service ID of the logger you want Dataflow to use
 ```
 
+### Messenger mode
+
+Dataflow can delegate the execution of its jobs to the Symfony messenger component, if available.
+This allows jobs to be executed concurrently by workers instead of sequentially.
+
+To enable messenger mode:
+```yaml
+code_rhapsodie_dataflow:
+  messenger_mode:
+    enabled: true
+    # bus: 'messenger.default_bus' #Service ID of the bus you want Dataflow to use, if not the default one
+```
+
+You also need to route Dataflow messages to the proper transport:
+```yaml
+# config/packages/messenger.yaml
+framework:
+  messenger:
+    transports:
+      async: '%env(MESSENGER_TRANSPORT_DSN)%'
+
+    routing:
+      CodeRhapsodie\DataflowBundle\MessengerMode\JobMessage: async
+```
+
 ## Define a dataflow type
 
 This bundle uses a fixed and simple workflow structure in order to let you focus on the data processing logic part of your dataflow.
@@ -544,6 +569,8 @@ $ SYMFONY_ENV=prod php bin/console code-rhapsodie:dataflow:run-pending
 Several commands are provided to manage schedules and run jobs.
 
 `code-rhapsodie:dataflow:run-pending` Executes job in the queue according to their schedule.
+
+When messenger mode is enabled, jobs will still be created according to their schedule, but execution will be handled by the messenger component instead.
 
 `code-rhapsodie:dataflow:schedule:list` Display the list of dataflows scheduled.
 
