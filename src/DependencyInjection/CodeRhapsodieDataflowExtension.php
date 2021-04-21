@@ -29,5 +29,10 @@ class CodeRhapsodieDataflowExtension extends Extension
 
         $container->setParameter('coderhapsodie.dataflow.dbal_default_connection', $config['dbal_default_connection']);
         $container->setParameter('coderhapsodie.dataflow.default_logger', $config['default_logger']);
+
+        if ($config['messenger_mode']['enabled']) {
+            $container->setParameter('coderhapsodie.dataflow.bus', $config['messenger_mode']['bus']);
+            $loader->load('messenger_services.yaml');
+        }
     }
 }

@@ -78,5 +78,11 @@ services:
     CodeRhapsodie\DataflowBundle\Runner\PendingDataflowRunner:
         arguments:
             $repository: '@CodeRhapsodie\DataflowBundle\Repository\JobRepository'
+            $processor: '@CodeRhapsodie\DataflowBundle\Processor\JobProcessorInterface'
+
+    CodeRhapsodie\DataflowBundle\Processor\JobProcessorInterface: '@CodeRhapsodie\DataflowBundle\Processor\JobProcessor'
+    CodeRhapsodie\DataflowBundle\Processor\JobProcessor:
+        arguments:
+            $repository: '@CodeRhapsodie\DataflowBundle\Repository\JobRepository'
             $registry: '@CodeRhapsodie\DataflowBundle\Registry\DataflowTypeRegistryInterface'
             $dispatcher: '@event_dispatcher'

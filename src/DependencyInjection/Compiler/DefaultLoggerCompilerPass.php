@@ -5,7 +5,7 @@ declare(strict_types=1);
 namespace CodeRhapsodie\DataflowBundle\DependencyInjection\Compiler;
 
 use CodeRhapsodie\DataflowBundle\Command\ExecuteDataflowCommand;
-use CodeRhapsodie\DataflowBundle\Runner\PendingDataflowRunner;
+use CodeRhapsodie\DataflowBundle\Processor\JobProcessor;
 use Symfony\Component\DependencyInjection\Compiler\CompilerPassInterface;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
 use Symfony\Component\DependencyInjection\Reference;
@@ -22,7 +22,7 @@ class DefaultLoggerCompilerPass implements CompilerPassInterface
             return;
         }
 
-        foreach ([ExecuteDataflowCommand::class, PendingDataflowRunner::class] as $serviceId) {
+        foreach ([ExecuteDataflowCommand::class, JobProcessor::class] as $serviceId) {
             if (!$container->has($serviceId)) {
                 continue;
             }

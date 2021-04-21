@@ -1,0 +1,12 @@
+services:
+    CodeRhapsodie\DataflowBundle\Runner\PendingDataflowRunnerInterface: '@CodeRhapsodie\DataflowBundle\Runner\MessengerDataflowRunner'
+    CodeRhapsodie\DataflowBundle\Runner\MessengerDataflowRunner:
+        arguments:
+            $repository: '@CodeRhapsodie\DataflowBundle\Repository\JobRepository'
+            $bus: ~ # Filled in compiler pass
+
+    CodeRhapsodie\DataflowBundle\MessengerMode\JobMessageHandler:
+        arguments:
+            $repository: '@CodeRhapsodie\DataflowBundle\Repository\JobRepository'
+            $processor: '@CodeRhapsodie\DataflowBundle\Processor\JobProcessorInterface'
+        tags: ['messenger.message_handler']
