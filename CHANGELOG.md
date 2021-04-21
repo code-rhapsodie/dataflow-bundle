@@ -1,3 +1,8 @@
+# Version 3.1.0
+
+* Added optional "messenger mode", to delegate jobs execution to workers from the Symfony messenger component
+* Added support for asynchronous steps execution, using the AMPHP library (contribution from [matyo91](https://github.com/matyo91))
+
 # Version 3.0.0
 
 * Added PHP 8 support
