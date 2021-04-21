@@ -9,7 +9,7 @@ providing an easy way to create import / export dataflow.
 
 Dataflow uses a linear generic workflow in three parts:
  * one reader
- * any number of steps
+ * any number of steps that can be synchronous or asynchronous
  * one or more writers
 
 The reader can read data from anywhere and return data row by row. Each step processes the current row data. 
@@ -217,6 +217,7 @@ If you're using Symfony auto-configuration for your services, this tag will be a
 Otherwise, manually add the tag `coderhapsodie.dataflow.type` in your dataflow type service configuration:
 
 ```yaml
+```yaml
     CodeRhapsodie\DataflowExemple\DataflowType\MyFirstDataflowType:
       tags:
         - { name: coderhapsodie.dataflow.type }
@@ -246,6 +247,10 @@ class MyFirstDataflowType extends AbstractDataflowType
 ```
 
 With this configuration, the option `fileName` is required. For an advanced usage of the option resolver, read the [Symfony documentation](https://symfony.com/doc/current/components/options_resolver.html).
+
+For asynchronous management, `AbstractDataflowType` come with two default options :
+- loopInterval : default to 0. Update this interval if you wish customise the `tick` loop duration.
+- emitInterval : default to 0. Update this interval to have a control when reader must emit new data in the flow pipeline.
 
 ### Logging
 
@@ -340,6 +345,7 @@ $builder->setReader(($this->myReader)())
 *Steps* are operations performed on the elements before they are handled by the *Writers*. Usually, steps are either:
 - converters, that alter the element
 - filters, that conditionally prevent further operations on the element
+- generators, that can include asynchronous operations
 
 A *Step* can be any callable, taking the element as its argument, and returning either:
 - the element, possibly altered
@@ -357,6 +363,16 @@ $builder->addStep(function ($item) {
     return $item;
 });
 
+// asynchronous step with 2 scale factor
+$builder->addStep(function ($item): \Generator {
+    yield new \Amp\Delayed(1000); // asynchronous processing for 1 second long
+
+    // Titles are changed to all caps before export
+    $item['title'] = strtolower($item['title']);
+
+    return $item;
+}, 2);
+
 $builder->addStep(function ($item) {
     // Private items are not exported
     if ($item['private']) {
@@ -367,6 +383,8 @@ $builder->addStep(function ($item) {
 });
 //[...]
 ```
+
+Note : you can ensure writing order for asynchronous operations if all steps are scaled at 1 factor.
 
 ### Writers
 
