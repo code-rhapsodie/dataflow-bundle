@@ -13,13 +13,11 @@ class BufferHandler extends AbstractProcessingHandler
 {
     private const FORMAT = "[%datetime%] %level_name% when processing item %context.index%: %message% %context% %extra%\n";
 
-    private $buffer;
+    private array $buffer = [];
 
     public function __construct($level = Logger::DEBUG, bool $bubble = true)
     {
         parent::__construct($level, $bubble);
-
-        $this->buffer = [];
     }
 
     public function clearBuffer(): array

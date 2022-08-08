@@ -13,10 +13,10 @@ use Symfony\Component\Validator\Constraints as Asserts;
  */
 class Job
 {
-    const STATUS_PENDING = 0;
-    const STATUS_RUNNING = 1;
-    const STATUS_COMPLETED = 2;
-    const STATUS_QUEUED = 3;
+    public const STATUS_PENDING = 0;
+    public const STATUS_RUNNING = 1;
+    public const STATUS_COMPLETED = 2;
+    public const STATUS_QUEUED = 3;
 
     private const KEYS = [
         'id',
@@ -32,74 +32,35 @@ class Job
         'end_time',
     ];
 
-    /**
-     * @var int|null
-     */
-    private $id;
+    private ?int $id = null;
 
-    /**
-     * @var int
-     *
-     * @Asserts\Range(min=0, max=2)
-     */
-    private $status;
+    #[Asserts\Range(min: 0, max: 2)]
+    private int $status = self::STATUS_PENDING;
 
-    /**
-     * @var string|null
-     *
-     * @Asserts\NotBlank()
-     * @Asserts\Length(min=1, max=255)
-     * @Asserts\Regex("#^[[:alnum:] ]+\z#u")
-     */
-    private $label;
+    #[Asserts\NotBlank]
+    #[Asserts\Length(min: 1, max: 255)]
+    #[Asserts\Regex('#^[[:alnum:] ]+\z#u')]
+    private ?string $label = null;
 
-    /**
-     * @var string|null
-     *
-     * @Asserts\NotBlank()
-     * @Asserts\Length(min=1, max=255)
-     * @Asserts\Regex("#^[[:alnum:]\\]+\z#u")
-     */
-    private $dataflowType;
+    #[Asserts\NotBlank]
+    #[Asserts\Length(min: 1, max: 255)]
+    #[Asserts\Regex('#^[[:alnum:]\\\]+\z#u')]
+    private ?string $dataflowType = null;
 
-    /**
-     * @var array|null
-     */
-    private $options;
+    private ?array $options = null;
 
-    /**
-     * @var \DateTimeInterface|null
-     */
-    private $requestedDate;
+    private ?\DateTimeInterface $requestedDate = null;
 
-    /**
-     * @var int|null
-     */
-    private $scheduledDataflowId;
+    private ?int $scheduledDataflowId = null;
 
-    /**
-     * @var int|null
-     */
-    private $count;
+    private ?int $count = 0;
 
-    /**
-     * @var array|null
-     */
-    private $exceptions;
+    private ?array $exceptions = null;
 
-    /**
-     * @var \DateTimeInterface|null
-     */
-    private $startTime;
+    private ?\DateTimeInterface $startTime = null;
 
-    /**
-     * @var \DateTimeInterface|null
-     */
-    private $endTime;
+    private ?\DateTimeInterface $endTime = null;
 
-    /**
-     * @return Job
-     */
     public static function createFromScheduledDataflow(ScheduledDataflow $scheduled): self
     {
         return (new static())
@@ -113,8 +74,6 @@ class Job
 
     public function __construct()
     {
-        $this->count = 0;
-        $this->status = static::STATUS_PENDING;
     }
 
     public static function createFromArray(array $datas)

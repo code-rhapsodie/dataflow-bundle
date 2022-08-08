@@ -26,18 +26,9 @@ class ExecuteDataflowCommand extends Command implements LoggerAwareInterface
 
     protected static $defaultName = 'code-rhapsodie:dataflow:execute';
 
-    /** @var DataflowTypeRegistryInterface */
-    private $registry;
-
-    /** @var ConnectionFactory */
-    private $connectionFactory;
-
-    public function __construct(DataflowTypeRegistryInterface $registry, ConnectionFactory $connectionFactory)
+    public function __construct(private DataflowTypeRegistryInterface $registry, private ConnectionFactory $connectionFactory)
     {
         parent::__construct();
-
-        $this->registry = $registry;
-        $this->connectionFactory = $connectionFactory;
     }
 
     /**
@@ -61,13 +52,13 @@ EOF
     /**
      * {@inheritdoc}
      */
-    protected function execute(InputInterface $input, OutputInterface $output)
+    protected function execute(InputInterface $input, OutputInterface $output): int
     {
         if (null !== $input->getOption('connection')) {
             $this->connectionFactory->setConnectionName($input->getOption('connection'));
         }
         $fqcnOrAlias = $input->getArgument('fqcn');
-        $options = json_decode($input->getArgument('options'), true);
+        $options = json_decode($input->getArgument('options'), true, 512, JSON_THROW_ON_ERROR);
         $io = new SymfonyStyle($input, $output);
 
         $dataflowType = $this->registry->getDataflowType($fqcnOrAlias);

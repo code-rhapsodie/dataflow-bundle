@@ -13,10 +13,10 @@ use CodeRhapsodie\DataflowBundle\Exceptions\UnknownDataflowTypeException;
 class DataflowTypeRegistry implements DataflowTypeRegistryInterface
 {
     /** @var array|DataflowTypeInterface[] */
-    private $fqcnRegistry = [];
+    private array $fqcnRegistry = [];
 
     /** @var array|DataflowTypeInterface[] */
-    private $aliasesRegistry = [];
+    private array $aliasesRegistry = [];
 
     /**
      * {@inheritdoc}
@@ -31,7 +31,7 @@ class DataflowTypeRegistry implements DataflowTypeRegistryInterface
             return $this->aliasesRegistry[$fqcnOrAlias];
         }
 
-        throw UnknownDataflowTypeException::create($fqcnOrAlias, array_merge(array_keys($this->fqcnRegistry), array_keys($this->aliasesRegistry)));
+        throw UnknownDataflowTypeException::create($fqcnOrAlias, [...array_keys($this->fqcnRegistry), ...array_keys($this->aliasesRegistry)]);
     }
 
     /**
@@ -47,7 +47,7 @@ class DataflowTypeRegistry implements DataflowTypeRegistryInterface
      */
     public function registerDataflowType(DataflowTypeInterface $dataflowType): void
     {
-        $this->fqcnRegistry[get_class($dataflowType)] = $dataflowType;
+        $this->fqcnRegistry[$dataflowType::class] = $dataflowType;
         foreach ($dataflowType->getAliases() as $alias) {
             $this->aliasesRegistry[$alias] = $dataflowType;
         }

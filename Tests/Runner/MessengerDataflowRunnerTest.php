@@ -13,14 +13,11 @@ use Symfony\Component\Messenger\MessageBusInterface;
 
 class MessengerDataflowRunnerTest extends TestCase
 {
-    /** @var MessengerDataflowRunner */
-    private $runner;
+    private \CodeRhapsodie\DataflowBundle\Runner\MessengerDataflowRunner $runner;
 
-    /** @var JobRepository|MockObject */
-    private $repository;
+    private \CodeRhapsodie\DataflowBundle\Repository\JobRepository|\PHPUnit\Framework\MockObject\MockObject $repository;
 
-    /** @var MessageBusInterface|MockObject */
-    private $bus;
+    private \Symfony\Component\Messenger\MessageBusInterface|\PHPUnit\Framework\MockObject\MockObject $bus;
 
     protected function setUp(): void
     {
@@ -50,13 +47,9 @@ class MessengerDataflowRunnerTest extends TestCase
             ->expects($this->exactly(2))
             ->method('dispatch')
             ->withConsecutive([
-                $this->callback(function ($message) use ($id1) {
-                    return $message instanceof JobMessage && $message->getJobId() === $id1;
-                })
+                $this->callback(fn($message) => $message instanceof JobMessage && $message->getJobId() === $id1)
             ], [
-                $this->callback(function ($message) use ($id2) {
-                    return $message instanceof JobMessage && $message->getJobId() === $id2;
-                })
+                $this->callback(fn($message) => $message instanceof JobMessage && $message->getJobId() === $id2)
             ])
             ->willReturnOnConsecutiveCalls(
                 new Envelope(new JobMessage($id1)),

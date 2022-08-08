@@ -9,24 +9,19 @@ use CodeRhapsodie\DataflowBundle\Exceptions\UnknownDataflowTypeException;
 use CodeRhapsodie\DataflowBundle\Manager\ScheduledDataflowManager;
 use CodeRhapsodie\DataflowBundle\Repository\JobRepository;
 use CodeRhapsodie\DataflowBundle\Repository\ScheduledDataflowRepository;
-use Doctrine\DBAL\Driver\Connection;
-use Doctrine\ORM\EntityManagerInterface;
+use Doctrine\DBAL\Connection;
 use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;
 
 class ScheduledDataflowManagerTest extends TestCase
 {
-    /** @var ScheduledDataflowManager */
-    private $manager;
+    private \CodeRhapsodie\DataflowBundle\Manager\ScheduledDataflowManager $manager;
 
-    /** @var Connection|MockObject */
-    private $connection;
+    private \Doctrine\DBAL\Connection|\PHPUnit\Framework\MockObject\MockObject $connection;
 
-    /** @var ScheduledDataflowRepository|MockObject */
-    private $scheduledDataflowRepository;
+    private \CodeRhapsodie\DataflowBundle\Repository\ScheduledDataflowRepository|\PHPUnit\Framework\MockObject\MockObject $scheduledDataflowRepository;
 
-    /** @var JobRepository|MockObject */
-    private $jobRepository;
+    private \CodeRhapsodie\DataflowBundle\Repository\JobRepository|\PHPUnit\Framework\MockObject\MockObject $jobRepository;
 
     protected function setUp(): void
     {
@@ -70,16 +65,12 @@ class ScheduledDataflowManagerTest extends TestCase
             ->expects($this->once())
             ->method('save')
             ->with(
-                $this->callback(function (Job $job) use ($type, $options, $next, $label, $scheduled2) {
-                    return (
-                        $job->getStatus() === Job::STATUS_PENDING
-                        && $job->getDataflowType() === $type
-                        && $job->getOptions() === $options
-                        && $job->getRequestedDate() == $next
-                        && $job->getLabel() === $label
-                        && $job->getScheduledDataflowId() === $scheduled2->getId()
-                    );
-                })
+                $this->callback(fn(Job $job) => $job->getStatus() === Job::STATUS_PENDING
+                && $job->getDataflowType() === $type
+                && $job->getOptions() === $options
+                && $job->getRequestedDate() == $next
+                && $job->getLabel() === $label
+                && $job->getScheduledDataflowId() === $scheduled2->getId())
             )
         ;
 

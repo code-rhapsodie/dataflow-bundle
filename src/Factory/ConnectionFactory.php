@@ -13,14 +13,8 @@ use Symfony\Component\DependencyInjection\Container;
  */
 class ConnectionFactory
 {
-    private $connectionName;
-
-    private $container;
-
-    public function __construct(Container $container, string $connectionName)
+    public function __construct(private Container $container, private string $connectionName)
     {
-        $this->connectionName = $connectionName;
-        $this->container = $container;
     }
 
     public function setConnectionName(string $connectionName)
@@ -28,7 +22,7 @@ class ConnectionFactory
         $this->connectionName = $connectionName;
     }
 
-    public function getConnection(): \Doctrine\DBAL\Driver\Connection
+    public function getConnection(): \Doctrine\DBAL\Connection
     {
         return $this->container->get(sprintf('doctrine.dbal.%s_connection', $this->connectionName));
     }

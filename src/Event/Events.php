@@ -6,6 +6,6 @@ namespace CodeRhapsodie\DataflowBundle\Event;
 
 final class Events
 {
-    const BEFORE_PROCESSING = 'coderhapsodie.dataflow.before_processing';
-    const AFTER_PROCESSING = 'coderhapsodie.dataflow.after_processing';
+    public const BEFORE_PROCESSING = 'coderhapsodie.dataflow.before_processing';
+    public const AFTER_PROCESSING = 'coderhapsodie.dataflow.after_processing';
 }

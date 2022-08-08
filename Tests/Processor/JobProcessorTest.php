@@ -16,17 +16,13 @@ use Symfony\Component\EventDispatcher\EventDispatcherInterface;
 
 class JobProcessorTest extends TestCase
 {
-    /** @var JobProcessor */
-    private $processor;
+    private \CodeRhapsodie\DataflowBundle\Processor\JobProcessor $processor;
 
-    /** @var JobRepository|MockObject */
-    private $repository;
+    private \CodeRhapsodie\DataflowBundle\Repository\JobRepository|\PHPUnit\Framework\MockObject\MockObject $repository;
 
-    /** @var DataflowTypeRegistryInterface|MockObject */
-    private $registry;
+    private \CodeRhapsodie\DataflowBundle\Registry\DataflowTypeRegistryInterface|\PHPUnit\Framework\MockObject\MockObject $registry;
 
-    /** @var EventDispatcherInterface|MockObject */
-    private $dispatcher;
+    private \Symfony\Component\EventDispatcher\EventDispatcherInterface|\PHPUnit\Framework\MockObject\MockObject $dispatcher;
 
     protected function setUp(): void
     {
@@ -47,22 +43,18 @@ class JobProcessorTest extends TestCase
         ;
 
         // Symfony 3.4 to 4.4 call
-        if (!class_exists('Symfony\Contracts\EventDispatcher\Event')) {
+        if (!class_exists(\Symfony\Contracts\EventDispatcher\Event::class)) {
             $this->dispatcher
                 ->expects($this->exactly(2))
                 ->method('dispatch')
                 ->withConsecutive(
                     [
                         Events::BEFORE_PROCESSING,
-                        $this->callback(function (ProcessingEvent $event) use ($job) {
-                            return $event->getJob() === $job;
-                        })
+                        $this->callback(fn(ProcessingEvent $event) => $event->getJob() === $job)
                     ],
                     [
                         Events::AFTER_PROCESSING,
-                        $this->callback(function (ProcessingEvent $event) use ($job) {
-                            return $event->getJob() === $job;
-                        })
+                        $this->callback(fn(ProcessingEvent $event) => $event->getJob() === $job)
                     ],
                 );
         } else { // Symfony 5.0+
@@ -71,15 +63,11 @@ class JobProcessorTest extends TestCase
                 ->method('dispatch')
                 ->withConsecutive(
                     [
-                        $this->callback(function (ProcessingEvent $event) use ($job) {
-                            return $event->getJob() === $job;
-                        }),
+                        $this->callback(fn(ProcessingEvent $event) => $event->getJob() === $job),
                         Events::BEFORE_PROCESSING,
                     ],
                     [
-                        $this->callback(function (ProcessingEvent $event) use ($job) {
-                            return $event->getJob() === $job;
-                        }),
+                        $this->callback(fn(ProcessingEvent $event) => $event->getJob() === $job),
                         Events::AFTER_PROCESSING,
                     ],
                 );

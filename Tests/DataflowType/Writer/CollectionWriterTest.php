@@ -43,9 +43,7 @@ class CollectionWriterTest extends TestCase
         $embeddedWriter
             ->expects($this->exactly(count($values)))
             ->method('write')
-            ->withConsecutive(...array_map(function ($item) {
-                return [$item];
-            }, $values))
+            ->withConsecutive(...array_map(fn($item) => [$item], $values))
         ;
 
         $writer = new CollectionWriter($embeddedWriter);

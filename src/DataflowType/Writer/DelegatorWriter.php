@@ -12,14 +12,13 @@ use CodeRhapsodie\DataflowBundle\Exceptions\UnsupportedItemTypeException;
 class DelegatorWriter implements DelegateWriterInterface
 {
     /** @var DelegateWriterInterface[] */
-    private $delegates;
+    private array $delegates = [];
 
     /**
      * DelegatorWriter constructor.
      */
     public function __construct()
     {
-        $this->delegates = [];
     }
 
     /**
@@ -47,7 +46,7 @@ class DelegatorWriter implements DelegateWriterInterface
             return;
         }
 
-        throw new UnsupportedItemTypeException(sprintf('None of the registered delegate writers support the received item of type %s', is_object($item) ? get_class($item) : gettype($item)));
+        throw new UnsupportedItemTypeException(sprintf('None of the registered delegate writers support the received item of type %s', get_debug_type($item)));
     }
 
     /**

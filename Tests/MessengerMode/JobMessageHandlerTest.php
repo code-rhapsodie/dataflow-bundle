@@ -14,14 +14,11 @@ use PHPUnit\Framework\TestCase;
 
 class JobMessageHandlerTest extends TestCase
 {
-    /** @var JobRepository|MockObject */
-    private $repository;
+    private \CodeRhapsodie\DataflowBundle\Repository\JobRepository|\PHPUnit\Framework\MockObject\MockObject $repository;
 
-    /** @var JobProcessorInterface|MockObject */
-    private $processor;
+    private \CodeRhapsodie\DataflowBundle\Processor\JobProcessorInterface|\PHPUnit\Framework\MockObject\MockObject $processor;
 
-    /** @var JobMessageHandler */
-    private $handler;
+    private \CodeRhapsodie\DataflowBundle\MessengerMode\JobMessageHandler $handler;
 
     protected function setUp(): void
     {

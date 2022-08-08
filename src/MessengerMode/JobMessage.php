@@ -6,12 +6,8 @@ namespace CodeRhapsodie\DataflowBundle\MessengerMode;
 
 class JobMessage
 {
-    /** @var int */
-    private $jobId;
-
-    public function __construct(int $jobId)
+    public function __construct(private int $jobId)
     {
-        $this->jobId = $jobId;
     }
 
     public function getJobId(): int

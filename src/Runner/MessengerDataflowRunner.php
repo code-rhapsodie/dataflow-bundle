@@ -11,16 +11,8 @@ use Symfony\Component\Messenger\MessageBusInterface;
 
 class MessengerDataflowRunner implements PendingDataflowRunnerInterface
 {
-    /** @var JobRepository */
-    private $repository;
-
-    /** @var MessageBusInterface */
-    private $bus;
-
-    public function __construct(JobRepository $repository, MessageBusInterface $bus)
+    public function __construct(private JobRepository $repository, private MessageBusInterface $bus)
     {
-        $this->repository = $repository;
-        $this->bus = $bus;
     }
 
     public function runPendingDataflows(): void

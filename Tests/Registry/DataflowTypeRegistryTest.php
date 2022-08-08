@@ -10,8 +10,7 @@ use PHPUnit\Framework\TestCase;
 
 class DataflowTypeRegistryTest extends TestCase
 {
-    /** @var DataflowTypeRegistry */
-    private $registry;
+    private \CodeRhapsodie\DataflowBundle\Registry\DataflowTypeRegistry $registry;
 
     protected function setUp(): void
     {
@@ -33,7 +32,7 @@ class DataflowTypeRegistryTest extends TestCase
 
         $this->registry->registerDataflowType($type);
 
-        $this->assertSame($type, $this->registry->getDataflowType(get_class($type)));
+        $this->assertSame($type, $this->registry->getDataflowType($type::class));
         $this->assertSame($type, $this->registry->getDataflowType($alias1));
         $this->assertSame($type, $this->registry->getDataflowType($alias2));
         $this->assertContains($type, $this->registry->listDataflowTypes());

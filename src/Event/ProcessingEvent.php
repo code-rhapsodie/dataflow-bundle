@@ -13,15 +13,11 @@ use CodeRhapsodie\DataflowBundle\Entity\Job;
  */
 class ProcessingEvent extends CrEvent
 {
-    /** @var Job */
-    private $job;
-
     /**
      * ProcessingEvent constructor.
      */
-    public function __construct(Job $job)
+    public function __construct(private Job $job)
     {
-        $this->job = $job;
     }
 
     public function getJob(): Job

@@ -22,24 +22,9 @@ class AddScheduledDataflowCommand extends Command
 {
     protected static $defaultName = 'code-rhapsodie:dataflow:schedule:add';
 
-    /** @var DataflowTypeRegistryInterface */
-    private $registry;
-    /** @var ScheduledDataflowRepository */
-    private $scheduledDataflowRepository;
-    /** @var ValidatorInterface */
-    private $validator;
-
-    /** @var ConnectionFactory */
-    private $connectionFactory;
-
-    public function __construct(DataflowTypeRegistryInterface $registry, ScheduledDataflowRepository $scheduledDataflowRepository, ValidatorInterface $validator, ConnectionFactory $connectionFactory)
+    public function __construct(private DataflowTypeRegistryInterface $registry, private ScheduledDataflowRepository $scheduledDataflowRepository, private ValidatorInterface $validator, private ConnectionFactory $connectionFactory)
     {
         parent::__construct();
-
-        $this->registry = $registry;
-        $this->scheduledDataflowRepository = $scheduledDataflowRepository;
-        $this->validator = $validator;
-        $this->connectionFactory = $connectionFactory;
     }
 
     /**
@@ -63,7 +48,7 @@ class AddScheduledDataflowCommand extends Command
     /**
      * {@inheritdoc}
      */
-    protected function execute(InputInterface $input, OutputInterface $output)
+    protected function execute(InputInterface $input, OutputInterface $output): int
     {
         if (null !== $input->getOption('connection')) {
             $this->connectionFactory->setConnectionName($input->getOption('connection'));
@@ -108,7 +93,7 @@ class AddScheduledDataflowCommand extends Command
             'id' => null,
             'label' => $label,
             'dataflow_type' => $type,
-            'options' => json_decode($options, true),
+            'options' => json_decode($options, true, 512, JSON_THROW_ON_ERROR),
             'frequency' => $frequency,
             'next' => new \DateTimeImmutable($firstRun),
             'enabled' => $enabled,

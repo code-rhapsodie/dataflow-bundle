@@ -13,24 +13,14 @@ class Dataflow implements DataflowInterface, LoggerAwareInterface
 {
     use LoggerAwareTrait;
 
-    /** @var string */
-    private $name;
-
-    /** @var iterable */
-    private $reader;
-
     /** @var callable[] */
-    private $steps;
+    private array $steps = [];
 
     /** @var WriterInterface[] */
-    private $writers;
+    private array $writers = [];
 
-    public function __construct(iterable $reader, ?string $name)
+    public function __construct(private iterable $reader, private ?string $name)
     {
-        $this->reader = $reader;
-        $this->name = $name;
-        $this->steps = [];
-        $this->writers = [];
     }
 
     /**
@@ -89,10 +79,7 @@ class Dataflow implements DataflowInterface, LoggerAwareInterface
         return new Result($this->name, $startTime, new \DateTimeImmutable(), $count, $exceptions);
     }
 
-    /**
-     * @param mixed $item
-     */
-    private function processItem($item): void
+    private function processItem(mixed $item): void
     {
         foreach ($this->steps as $step) {
             $item = call_user_func($step, $item);

@@ -21,20 +21,8 @@ class JobProcessor implements JobProcessorInterface, LoggerAwareInterface
 {
     use LoggerAwareTrait;
 
-    /** @var JobRepository */
-    private $repository;
-
-    /** @var DataflowTypeRegistryInterface */
-    private $registry;
-
-    /** @var EventDispatcherInterface */
-    private $dispatcher;
-
-    public function __construct(JobRepository $repository, DataflowTypeRegistryInterface $registry, EventDispatcherInterface $dispatcher)
+    public function __construct(private JobRepository $repository, private DataflowTypeRegistryInterface $registry, private EventDispatcherInterface $dispatcher)
     {
-        $this->repository = $repository;
-        $this->registry = $registry;
-        $this->dispatcher = $dispatcher;
     }
 
     public function process(Job $job): void
@@ -66,7 +54,7 @@ class JobProcessor implements JobProcessorInterface, LoggerAwareInterface
     private function beforeProcessing(Job $job): void
     {
         // Symfony 3.4 to 4.4 call
-        if (!class_exists('Symfony\Contracts\EventDispatcher\Event')) {
+        if (!class_exists(\Symfony\Contracts\EventDispatcher\Event::class)) {
             $this->dispatcher->dispatch(Events::BEFORE_PROCESSING, new ProcessingEvent($job));
         } else { // Symfony 5.0+ call
             $this->dispatcher->dispatch(new ProcessingEvent($job), Events::BEFORE_PROCESSING);
@@ -90,7 +78,7 @@ class JobProcessor implements JobProcessorInterface, LoggerAwareInterface
         $this->repository->save($job);
 
         // Symfony 3.4 to 4.4 call
-        if (!class_exists('Symfony\Contracts\EventDispatcher\Event')) {
+        if (!class_exists(\Symfony\Contracts\EventDispatcher\Event::class)) {
             $this->dispatcher->dispatch(Events::AFTER_PROCESSING, new ProcessingEvent($job));
         } else { // Symfony 5.0+ call
             $this->dispatcher->dispatch(new ProcessingEvent($job), Events::AFTER_PROCESSING);

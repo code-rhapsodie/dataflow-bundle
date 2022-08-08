@@ -16,10 +16,8 @@ interface WriterInterface
 
     /**
      * Write an item.
-     *
-     * @param mixed $item
      */
-    public function write($item);
+    public function write(mixed $item);
 
     /**
      * Called after the dataflow is processed.

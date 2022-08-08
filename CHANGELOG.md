@@ -1,3 +1,8 @@
+# Version 4.0.0
+
+* Added Symfony 6 support
+* PHP minimum requirements bumped to 8.0
+
 # Version 3.1.0
 
 * Added optional "messenger mode", to delegate jobs execution to workers from the Symfony messenger component

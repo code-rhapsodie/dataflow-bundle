@@ -10,17 +10,14 @@ use CodeRhapsodie\DataflowBundle\DataflowType\Writer\WriterInterface;
 
 class DataflowBuilder
 {
-    /** @var string */
-    private $name;
+    private ?string $name = null;
 
-    /** @var iterable */
-    private $reader;
+    private ?iterable $reader = null;
 
-    /** @var array */
-    private $steps = [];
+    private array $steps = [];
 
     /** @var WriterInterface[] */
-    private $writers = [];
+    private array $writers = [];
 
     public function setName(string $name): self
     {

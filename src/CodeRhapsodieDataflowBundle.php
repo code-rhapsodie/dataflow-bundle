@@ -9,6 +9,7 @@ use CodeRhapsodie\DataflowBundle\DependencyInjection\Compiler\BusCompilerPass;
 use CodeRhapsodie\DataflowBundle\DependencyInjection\Compiler\DataflowTypeCompilerPass;
 use CodeRhapsodie\DataflowBundle\DependencyInjection\Compiler\DefaultLoggerCompilerPass;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
+use Symfony\Component\DependencyInjection\Extension\ExtensionInterface;
 use Symfony\Component\HttpKernel\Bundle\Bundle;
 
 /**
@@ -18,7 +19,7 @@ class CodeRhapsodieDataflowBundle extends Bundle
 {
     protected $name = 'CodeRhapsodieDataflowBundle';
 
-    public function getContainerExtension()
+    public function getContainerExtension(): ?ExtensionInterface
     {
         return new CodeRhapsodieDataflowExtension();
     }
