@@ -23,7 +23,7 @@ final class DelegatingLogger extends AbstractLogger
         }
     }
 
-    public function log($level, $message, array $context = [])
+    public function log($level, $message, array $context = []): void
     {
         foreach ($this->loggers as $logger) {
             $logger->log($level, $message, $context);
