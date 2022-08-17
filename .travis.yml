@@ -23,91 +23,30 @@ env:
 matrix:
   fast_finish: true
   include:
-    - php: '7.3'
-    - php: '7.4'
     - php: '8.0'
-
-    # Enable code coverage with the previous supported PHP version
-#    - php: '7.4'
-#      env:
-#        - SYMFONY_VERSION=3.4.*
-#        - COVERALLS_ENABLED="true"
-#        - PHPUNIT_FLAGS="-v --coverage-text --coverage-clover var/build/clover.xml"
-
-    # Enable code coverage with the latest supported PHP version
-#    - php: '8.0'
-#      env:
-#        - SYMFONY_VERSION=3.4.*
-#        - COVERALLS_ENABLED="true"
-#        - PHPUNIT_FLAGS="-v --coverage-text --coverage-clover var/build/clover.xml"
-
-    # Minimum supported dependencies with the latest and oldest supported PHP versions
-    - php: '7.3'
       env:
-        - COMPOSER_FLAGS="--prefer-lowest"
-    # Incompatibility between lowest symfony testing utils and phpunit
-#    - php: '8.0'
-#      env:
-#        - COMPOSER_FLAGS="--prefer-lowest"
-
-    # Test each supported Symfony version with lowest supported PHP version
-#    - php: '7.3'
-#      env:
-#        - SYMFONY_VERSION=3.4.*
-    - php: '7.3'
+          - SYMFONY_VERSION=3.4.*
+    - php: '8.0'
       env:
-        - SYMFONY_VERSION=4.4.*
-    - php: '7.3'
+          - SYMFONY_VERSION=4.4.*
+    - php: '8.0'
       env:
-        - COVERALLS_ENABLED="true"
-        - PHPUNIT_FLAGS="-v --coverage-text --coverage-clover var/build/clover.xml"
-        - SYMFONY_VERSION=5.2.*
-    # Test unsupported versions of Symfony
-#    - php: '7.3'
-#      env:
-#        - SYMFONY_VERSION=4.1.*
-#    - php: '7.3'
-#      env:
-#        - SYMFONY_VERSION=4.2.*
-#    - php: '7.3'
-#      env:
-#        - SYMFONY_VERSION=4.3.*
-    - php: '7.3'
+          - SYMFONY_VERSION=5.4.*
+    - php: '8.0'
       env:
-        - SYMFONY_VERSION=5.0.*
-    - php: '7.3'
+          - SYMFONY_VERSION=6.0.*
+    - php: '8.1'
       env:
-        - SYMFONY_VERSION=5.1.*
-
-    # Test upcoming Symfony versions with lowest supported PHP version and dev dependencies
-#    - php: '7.2'
-#      env:
-#        - STABILITY=dev
-#        - SYMFONY_VERSION=5.3.*
-
-    # Test upcoming PHP versions with dev dependencies
-    #- php: '7.5snapshot'
-    #  env:
-    #    - STABILITY=dev
-    #    - COMPOSER_FLAGS="--ignore-platform-reqs --prefer-stable"
-
-  allow_failures:
-    # 4.0 not supported because of https://github.com/advisories/GHSA-pgwj-prpq-jpc2
-    - env:
-        - SYMFONY_VERSION=4.0.*
-    - env:
-        - SYMFONY_VERSION=4.1.*
-    - env:
-        - SYMFONY_VERSION=4.2.*
-    - env:
-        - STABILITY=dev
-        - COMPOSER_FLAGS="--ignore-platform-reqs --prefer-stable"
-    - env:
-        - STABILITY=dev
-        - SYMFONY_VERSION=5.1.*
-    - env:
-        - STABILITY=dev
-        - SYMFONY_VERSION=5.2.*
+          - SYMFONY_VERSION=3.4.*
+    - php: '8.1'
+      env:
+          - SYMFONY_VERSION=4.4.*
+    - php: '8.1'
+      env:
+          - SYMFONY_VERSION=5.4.*
+    - php: '8.1'
+      env:
+          - SYMFONY_VERSION=6.0.*
 
 before_install:
   - if [[ "$SYMFONY_VERSION" != "" ]]; then
