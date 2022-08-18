@@ -23,14 +23,9 @@ class SchemaCommand extends Command
 {
     protected static $defaultName = 'code-rhapsodie:dataflow:dump-schema';
 
-    /** @var ConnectionFactory */
-    private $connectionFactory;
-
-    public function __construct(ConnectionFactory $connectionFactory)
+    public function __construct(private ConnectionFactory $connectionFactory)
     {
         parent::__construct();
-
-        $this->connectionFactory = $connectionFactory;
     }
 
     /**
@@ -49,7 +44,7 @@ class SchemaCommand extends Command
     /**
      * {@inheritdoc}
      */
-    protected function execute(InputInterface $input, OutputInterface $output)
+    protected function execute(InputInterface $input, OutputInterface $output): int
     {
         if (null !== $input->getOption('connection')) {
             $this->connectionFactory->setConnectionName($input->getOption('connection'));

@@ -9,39 +9,19 @@ namespace CodeRhapsodie\DataflowBundle\DataflowType;
  */
 class Result
 {
-    /** @var string */
-    private $name;
+    private \DateInterval $elapsed;
 
-    /** @var \DateTimeInterface */
-    private $startTime;
+    private int $errorCount = 0;
 
-    /** @var \DateTimeInterface */
-    private $endTime;
+    private int $successCount = 0;
 
-    /** @var \DateInterval */
-    private $elapsed;
+    private array $exceptions;
 
-    /** @var int */
-    private $errorCount = 0;
-
-    /** @var int */
-    private $successCount = 0;
-
-    /** @var int */
-    private $totalProcessedCount = 0;
-
-    /** @var array */
-    private $exceptions;
-
-    public function __construct(string $name, \DateTimeInterface $startTime, \DateTimeInterface $endTime, int $totalCount, array $exceptions)
+    public function __construct(private string $name, private \DateTimeInterface $startTime, private \DateTimeInterface $endTime, private int $totalProcessedCount, array $exceptions)
     {
-        $this->name = $name;
-        $this->startTime = $startTime;
-        $this->endTime = $endTime;
         $this->elapsed = $startTime->diff($endTime);
-        $this->totalProcessedCount = $totalCount;
         $this->errorCount = count($exceptions);
-        $this->successCount = $totalCount - $this->errorCount;
+        $this->successCount = $totalProcessedCount - $this->errorCount;
         $this->exceptions = $exceptions;
     }
 

@@ -24,22 +24,9 @@ class RunPendingDataflowsCommand extends Command
 
     protected static $defaultName = 'code-rhapsodie:dataflow:run-pending';
 
-    /** @var ScheduledDataflowManagerInterface */
-    private $manager;
-
-    /** @var PendingDataflowRunnerInterface */
-    private $runner;
-
-    /** @var ConnectionFactory */
-    private $connectionFactory;
-
-    public function __construct(ScheduledDataflowManagerInterface $manager, PendingDataflowRunnerInterface $runner, ConnectionFactory $connectionFactory)
+    public function __construct(private ScheduledDataflowManagerInterface $manager, private PendingDataflowRunnerInterface $runner, private ConnectionFactory $connectionFactory)
     {
         parent::__construct();
-
-        $this->manager = $manager;
-        $this->runner = $runner;
-        $this->connectionFactory = $connectionFactory;
     }
 
     /**
@@ -59,7 +46,7 @@ EOF
     /**
      * {@inheritdoc}
      */
-    protected function execute(InputInterface $input, OutputInterface $output)
+    protected function execute(InputInterface $input, OutputInterface $output): int
     {
         if (!$this->lock()) {
             $output->writeln('The command is already running in another process.');

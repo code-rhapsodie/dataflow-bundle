@@ -11,15 +11,11 @@ use CodeRhapsodie\DataflowBundle\Exceptions\UnsupportedItemTypeException;
  */
 class CollectionWriter implements DelegateWriterInterface
 {
-    /** @var WriterInterface */
-    private $writer;
-
     /**
      * CollectionWriter constructor.
      */
-    public function __construct(WriterInterface $writer)
+    public function __construct(private WriterInterface $writer)
     {
-        $this->writer = $writer;
     }
 
     /**
@@ -36,7 +32,7 @@ class CollectionWriter implements DelegateWriterInterface
     public function write($collection)
     {
         if (!is_iterable($collection)) {
-            throw new UnsupportedItemTypeException(sprintf('Item to write was expected to be an iterable, received %s.', is_object($collection) ? get_class($collection) : gettype($collection)));
+            throw new UnsupportedItemTypeException(sprintf('Item to write was expected to be an iterable, received %s.', get_debug_type($collection)));
         }
 
         foreach ($collection as $item) {

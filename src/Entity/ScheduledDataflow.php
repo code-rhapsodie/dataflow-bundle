@@ -14,7 +14,7 @@ use Symfony\Component\Validator\Constraints as Asserts;
  */
 class ScheduledDataflow
 {
-    const AVAILABLE_FREQUENCIES = [
+    public const AVAILABLE_FREQUENCIES = [
         '1 hour',
         '1 day',
         '1 week',
@@ -23,51 +23,29 @@ class ScheduledDataflow
 
     private const KEYS = ['id', 'label', 'dataflow_type', 'options', 'frequency', 'next', 'enabled'];
 
-    /**
-     * @var int|null
-     */
-    private $id;
+    private ?int $id = null;
+
+    #[Asserts\NotBlank]
+    #[Asserts\Length(min: 1, max: 255)]
+    #[Asserts\Regex('#^[[:alnum:] ]+\z#u')]
+    private ?string $label = null;
+
+    #[Asserts\NotBlank]
+    #[Asserts\Length(min: 1, max: 255)]
+    #[Asserts\Regex('#^[[:alnum:]\\\]+\z#u')]
+    private ?string $dataflowType = null;
+
+    private ?array $options = null;
 
     /**
-     * @var string|null
-     *
-     * @Asserts\NotBlank()
-     * @Asserts\Length(min=1, max=255)
-     * @Asserts\Regex("#^[[:alnum:] ]+\z#u")
-     */
-    private $label;
-
-    /**
-     * @var string|null
-     *
-     * @Asserts\NotBlank()
-     * @Asserts\Length(min=1, max=255)
-     * @Asserts\Regex("#^[[:alnum:]\\]+\z#u")
-     */
-    private $dataflowType;
-
-    /**
-     * @var array|null
-     */
-    private $options;
-
-    /**
-     * @var string|null
-     *
-     * @Asserts\NotBlank()
      * @Frequency()
      */
-    private $frequency;
+    #[Asserts\NotBlank]
+    private ?string $frequency = null;
 
-    /**
-     * @var \DateTimeInterface|null
-     */
-    private $next;
+    private ?\DateTimeInterface $next = null;
 
-    /**
-     * @var bool|null
-     */
-    private $enabled;
+    private ?bool $enabled = null;
 
     public static function createFromArray(array $datas)
     {

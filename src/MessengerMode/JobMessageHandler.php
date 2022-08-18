@@ -10,16 +10,8 @@ use Symfony\Component\Messenger\Handler\MessageSubscriberInterface;
 
 class JobMessageHandler implements MessageSubscriberInterface
 {
-    /** @var JobRepository */
-    private $repository;
-
-    /** @var JobProcessorInterface */
-    private $processor;
-
-    public function __construct(JobRepository $repository, JobProcessorInterface $processor)
+    public function __construct(private JobRepository $repository, private JobProcessorInterface $processor)
     {
-        $this->repository = $repository;
-        $this->processor = $processor;
     }
 
     public function __invoke(JobMessage $message)

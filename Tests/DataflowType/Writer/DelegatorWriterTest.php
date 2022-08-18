@@ -10,34 +10,24 @@ use PHPUnit\Framework\TestCase;
 
 class DelegatorWriterTest extends TestCase
 {
-    /** @var DelegatorWriter */
-    private $delegatorWriter;
+    private \CodeRhapsodie\DataflowBundle\DataflowType\Writer\DelegatorWriter $delegatorWriter;
 
-    /** @var DelegateWriterInterface|MockObject */
-    private $delegateInt;
+    private \CodeRhapsodie\DataflowBundle\DataflowType\Writer\DelegateWriterInterface|\PHPUnit\Framework\MockObject\MockObject $delegateInt;
 
-    /** @var DelegateWriterInterface|MockObject */
-    private $delegateString;
+    private \CodeRhapsodie\DataflowBundle\DataflowType\Writer\DelegateWriterInterface|\PHPUnit\Framework\MockObject\MockObject $delegateString;
 
-    /** @var DelegateWriterInterface|MockObject */
-    private $delegateArray;
+    private \CodeRhapsodie\DataflowBundle\DataflowType\Writer\DelegateWriterInterface|\PHPUnit\Framework\MockObject\MockObject $delegateArray;
 
     protected function setUp(): void
     {
         $this->delegateInt = $this->createMock(DelegateWriterInterface::class);
-        $this->delegateInt->method('supports')->willReturnCallback(function ($argument) {
-            return is_int($argument);
-        });
+        $this->delegateInt->method('supports')->willReturnCallback(fn($argument) => is_int($argument));
 
         $this->delegateString = $this->createMock(DelegateWriterInterface::class);
-        $this->delegateString->method('supports')->willReturnCallback(function ($argument) {
-            return is_string($argument);
-        });
+        $this->delegateString->method('supports')->willReturnCallback(fn($argument) => is_string($argument));
 
         $this->delegateArray = $this->createMock(DelegateWriterInterface::class);
-        $this->delegateArray->method('supports')->willReturnCallback(function ($argument) {
-            return is_array($argument);
-        });
+        $this->delegateArray->method('supports')->willReturnCallback(fn($argument) => is_array($argument));
 
         $this->delegatorWriter = new DelegatorWriter();
         $this->delegatorWriter->addDelegates([

@@ -15,9 +15,7 @@ class AMPAsyncDataflowTest extends TestCase
         $reader = [1, 2, 3];
         $result = [];
         $dataflow = new AMPAsyncDataflow($reader, 'simple');
-        $dataflow->addStep(static function($item) {
-            return $item + 1;
-        });
+        $dataflow->addStep(static fn($item) => $item + 1);
         $dataflow->addStep(static function($item): \Generator {
             yield new Delayed(10); //delay 10 milliseconds
             return $item * 2;

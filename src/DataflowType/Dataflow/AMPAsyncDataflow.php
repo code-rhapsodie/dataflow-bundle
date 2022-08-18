@@ -22,41 +22,18 @@ class AMPAsyncDataflow implements DataflowInterface, LoggerAwareInterface
 {
     use LoggerAwareTrait;
 
-    /** @var string */
-    private $name;
-
-    /** @var iterable */
-    private $reader;
-
     /** @var callable[] */
-    private $steps;
+    private array $steps = [];
 
     /** @var WriterInterface[] */
-    private $writers;
+    private array $writers = [];
 
-    /** @var int */
-    private $loopInterval;
+    private array $states = [];
 
-    /** @var int */
-    private $emitInterval;
+    private array $stepsJobs = [];
 
-    /** @var array */
-    private $states;
-
-    /** @var array */
-    private $stepsJobs;
-
-    public function __construct(iterable $reader, ?string $name, ?int $loopInterval = 0, ?int $emitInterval = 0)
+    public function __construct(private iterable $reader, private ?string $name, private ?int $loopInterval = 0, private ?int $emitInterval = 0)
     {
-        $this->reader = $reader;
-        $this->name = $name;
-        $this->steps = [];
-        $this->writers = [];
-        $this->loopInterval = $loopInterval;
-        $this->emitInterval = $emitInterval;
-        $this->states = [];
-        $this->stepsJobs = [];
-
         if (!function_exists('Amp\\Promise\\wait')) {
             throw new RuntimeException('Amp is not loaded. Suggest install it with composer require amphp/amp');
         }
@@ -137,11 +114,10 @@ class AMPAsyncDataflow implements DataflowInterface, LoggerAwareInterface
     }
 
     /**
-     * @param mixed $state
      * @param int   $count      internal count reference
      * @param array $exceptions internal exceptions
      */
-    private function processState($state, int &$count, array &$exceptions): void
+    private function processState(mixed $state, int &$count, array &$exceptions): void
     {
         [$readIndex, $stepIndex, $item] = $state;
         if ($stepIndex < count($this->steps)) {
@@ -149,7 +125,7 @@ class AMPAsyncDataflow implements DataflowInterface, LoggerAwareInterface
                 $this->stepsJobs[$stepIndex] = [];
             }
             [$step, $scale] = $this->steps[$stepIndex];
-            if (count($this->stepsJobs[$stepIndex]) < $scale && !isset($this->stepsJobs[$stepIndex][$readIndex])) {
+            if ((is_countable($this->stepsJobs[$stepIndex]) ? count($this->stepsJobs[$stepIndex]) : 0) < $scale && !isset($this->stepsJobs[$stepIndex][$readIndex])) {
                 $this->stepsJobs[$stepIndex][$readIndex] = true;
                 /** @var Promise<void> $promise */
                 $promise = coroutine($step)($item);

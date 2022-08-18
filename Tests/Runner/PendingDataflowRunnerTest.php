@@ -11,14 +11,11 @@ use PHPUnit\Framework\TestCase;
 
 class PendingDataflowRunnerTest extends TestCase
 {
-    /** @var PendingDataflowRunner */
-    private $runner;
+    private \CodeRhapsodie\DataflowBundle\Runner\PendingDataflowRunner $runner;
 
-    /** @var JobRepository|MockObject */
-    private $repository;
+    private \CodeRhapsodie\DataflowBundle\Repository\JobRepository|\PHPUnit\Framework\MockObject\MockObject $repository;
 
-    /** @var JobProcessorInterface|MockObject */
-    private $processor;
+    private \CodeRhapsodie\DataflowBundle\Processor\JobProcessorInterface|\PHPUnit\Framework\MockObject\MockObject $processor;
 
     protected function setUp(): void
     {

@@ -8,27 +8,15 @@ use CodeRhapsodie\DataflowBundle\Entity\Job;
 use CodeRhapsodie\DataflowBundle\Entity\ScheduledDataflow;
 use CodeRhapsodie\DataflowBundle\Repository\JobRepository;
 use CodeRhapsodie\DataflowBundle\Repository\ScheduledDataflowRepository;
-use Doctrine\DBAL\Driver\Connection;
+use Doctrine\DBAL\Connection;
 
 /**
  * Handles scheduled dataflows execution dates based on their frequency.
  */
 class ScheduledDataflowManager implements ScheduledDataflowManagerInterface
 {
-    /** @var ScheduledDataflowRepository */
-    private $scheduledDataflowRepository;
-
-    /** @var JobRepository */
-    private $jobRepository;
-
-    /** @var Connection */
-    private $connection;
-
-    public function __construct(Connection $connection, ScheduledDataflowRepository $scheduledDataflowRepository, JobRepository $jobRepository)
+    public function __construct(private Connection $connection, private ScheduledDataflowRepository $scheduledDataflowRepository, private JobRepository $jobRepository)
     {
-        $this->connection = $connection;
-        $this->scheduledDataflowRepository = $scheduledDataflowRepository;
-        $this->jobRepository = $jobRepository;
     }
 
     /**

@@ -7,7 +7,7 @@ namespace CodeRhapsodie\DataflowBundle\Event;
 /*
  * @codeCoverageIgnore
  */
-if (class_exists('Symfony\Contracts\EventDispatcher\Event')) {
+if (class_exists(\Symfony\Contracts\EventDispatcher\Event::class)) {
     // For Symfony 5.0+
     abstract class CrEvent extends \Symfony\Contracts\EventDispatcher\Event
     {

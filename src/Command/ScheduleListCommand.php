@@ -19,18 +19,9 @@ class ScheduleListCommand extends Command
 {
     protected static $defaultName = 'code-rhapsodie:dataflow:schedule:list';
 
-    /** @var ScheduledDataflowRepository */
-    private $scheduledDataflowRepository;
-
-    /** @var ConnectionFactory */
-    private $connectionFactory;
-
-    public function __construct(ScheduledDataflowRepository $scheduledDataflowRepository, ConnectionFactory $connectionFactory)
+    public function __construct(private ScheduledDataflowRepository $scheduledDataflowRepository, private ConnectionFactory $connectionFactory)
     {
         parent::__construct();
-
-        $this->scheduledDataflowRepository = $scheduledDataflowRepository;
-        $this->connectionFactory = $connectionFactory;
     }
 
     /**
@@ -47,7 +38,7 @@ class ScheduleListCommand extends Command
     /**
      * {@inheritdoc}
      */
-    protected function execute(InputInterface $input, OutputInterface $output)
+    protected function execute(InputInterface $input, OutputInterface $output): int
     {
         if (null !== $input->getOption('connection')) {
             $this->connectionFactory->setConnectionName($input->getOption('connection'));

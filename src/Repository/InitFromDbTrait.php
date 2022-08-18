@@ -38,7 +38,7 @@ trait InitFromDbTrait
             return [];
         }
 
-        $array = json_decode($value, true);
+        $array = json_decode($value, true, 512, JSON_THROW_ON_ERROR);
 
         return (false === $array) ? [] : $array;
     }

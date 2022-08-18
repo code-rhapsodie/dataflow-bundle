@@ -6,7 +6,7 @@ namespace CodeRhapsodie\DataflowBundle\Repository;
 
 use CodeRhapsodie\DataflowBundle\Entity\Job;
 use CodeRhapsodie\DataflowBundle\Entity\ScheduledDataflow;
-use Doctrine\DBAL\Driver\Connection;
+use Doctrine\DBAL\Connection;
 use Doctrine\DBAL\ParameterType;
 use Doctrine\DBAL\Query\QueryBuilder;
 
@@ -36,16 +36,10 @@ class JobRepository
     ];
 
     /**
-     * @var \Doctrine\DBAL\Connection
-     */
-    private $connection;
-
-    /**
      * JobRepository constructor.
      */
-    public function __construct(Connection $connection)
+    public function __construct(private Connection $connection)
     {
-        $this->connection = $connection;
     }
 
     public function find(int $jobId)
@@ -64,7 +58,7 @@ class JobRepository
         $qb
             ->andWhere($qb->expr()->isNull('scheduled_dataflow_id'))
             ->andWhere($qb->expr()->eq('status', $qb->createNamedParameter(Job::STATUS_PENDING, ParameterType::INTEGER)));
-        $stmt = $qb->execute();
+        $stmt = $qb->executeQuery();
         if (0 === $stmt->rowCount()) {
             return [];
         }
@@ -112,7 +106,7 @@ class JobRepository
         $qb
             ->orderBy('requested_date', 'DESC')
             ->setMaxResults(20);
-        $stmt = $qb->execute();
+        $stmt = $qb->executeQuery();
         if (0 === $stmt->rowCount()) {
             return [];
         }
@@ -127,7 +121,7 @@ class JobRepository
         $qb->andWhere($qb->expr()->eq('scheduled_dataflow_id', $qb->createNamedParameter($id, ParameterType::INTEGER)))
             ->orderBy('requested_date', 'DESC')
             ->setMaxResults(20);
-        $stmt = $qb->execute();
+        $stmt = $qb->executeQuery();
         if (0 === $stmt->rowCount()) {
             return [];
         }
@@ -142,10 +136,10 @@ class JobRepository
         unset($datas['id']);
 
         if (is_array($datas['options'])) {
-            $datas['options'] = json_encode($datas['options']);
+            $datas['options'] = json_encode($datas['options'], JSON_THROW_ON_ERROR);
         }
         if (is_array($datas['exceptions'])) {
-            $datas['exceptions'] = json_encode($datas['exceptions']);
+            $datas['exceptions'] = json_encode($datas['exceptions'], JSON_THROW_ON_ERROR);
         }
 
         if (null === $job->getId()) {
@@ -168,7 +162,7 @@ class JobRepository
 
     private function returnFirstOrNull(QueryBuilder $qb): ?Job
     {
-        $stmt = $qb->execute();
+        $stmt = $qb->executeQuery();
         if (0 === $stmt->rowCount()) {
             return null;
         }

@@ -5,7 +5,7 @@ declare(strict_types=1);
 namespace CodeRhapsodie\DataflowBundle\Repository;
 
 use CodeRhapsodie\DataflowBundle\Entity\ScheduledDataflow;
-use Doctrine\DBAL\Driver\Connection;
+use Doctrine\DBAL\Connection;
 use Doctrine\DBAL\ParameterType;
 use Doctrine\DBAL\Query\QueryBuilder;
 
@@ -29,17 +29,12 @@ class ScheduledDataflowRepository
         'next' => 'datetime',
         'enabled' => ParameterType::BOOLEAN,
     ];
-    /**
-     * @var \Doctrine\DBAL\Connection
-     */
-    private $connection;
 
     /**
      * JobRepository constructor.
      */
-    public function __construct(Connection $connection)
+    public function __construct(private Connection $connection)
     {
-        $this->connection = $connection;
     }
 
     /**
@@ -55,7 +50,7 @@ class ScheduledDataflowRepository
             ->orderBy('next', 'ASC')
         ;
 
-        $stmt = $qb->execute();
+        $stmt = $qb->executeQuery();
         if (0 === $stmt->rowCount()) {
             return [];
         }
@@ -79,12 +74,12 @@ class ScheduledDataflowRepository
         $qb = $this->createQueryBuilder();
         $qb->orderBy('label', 'ASC');
 
-        $stmt = $qb->execute();
+        $stmt = $qb->executeQuery();
         if (0 === $stmt->rowCount()) {
             return [];
         }
         while (false !== ($row = $stmt->fetchAssociative())) {
-            yield ScheduledDataflow::createFromArray($this->initDateTime($this->initOptions($row)));
+            yield ScheduledDataflow::createFromArray($this->initDateTime($this->initArray($row)));
         }
     }
 
@@ -97,7 +92,7 @@ class ScheduledDataflowRepository
             ->orderBy('w.label', 'ASC')
             ->groupBy('w.id');
 
-        return $query->execute()->fetchAllAssociative();
+        return $query->executeQuery()->fetchAllAssociative();
     }
 
     public function save(ScheduledDataflow $scheduledDataflow)
@@ -106,7 +101,7 @@ class ScheduledDataflowRepository
         unset($datas['id']);
 
         if (is_array($datas['options'])) {
-            $datas['options'] = json_encode($datas['options']);
+            $datas['options'] = json_encode($datas['options'], JSON_THROW_ON_ERROR);
         }
 
         if (null === $scheduledDataflow->getId()) {
@@ -143,7 +138,7 @@ class ScheduledDataflowRepository
 
     private function returnFirstOrNull(QueryBuilder $qb): ?ScheduledDataflow
     {
-        $stmt = $qb->execute();
+        $stmt = $qb->executeQuery();
         if (0 === $stmt->rowCount()) {
             return null;
         }

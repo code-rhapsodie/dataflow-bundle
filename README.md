@@ -20,7 +20,6 @@ As the following schema shows, you can define more than one dataflow:
 
 ![Dataflow schema](src/Resources/doc/schema.png)
 
-
 # Features
 
 * Define and configure a Dataflow
@@ -608,6 +607,8 @@ $ bin/console code-rhapsodie:dataflow:run-pending --connection=default
 # Issues and feature requests
 
 Please report issues and request features at https://github.com/code-rhapsodie/dataflow-bundle/issues.
+
+Please note that only the last release of the 3.x and the 4.x versions of this bundle are actively supported.
 
 # Contributing
 
