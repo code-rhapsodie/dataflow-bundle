@@ -19,6 +19,8 @@ class DataflowBuilder
     /** @var WriterInterface[] */
     private array $writers = [];
 
+    private ?\Closure $customExceptionIndex = null;
+
     public function setName(string $name): self
     {
         $this->name = $name;
@@ -47,6 +49,13 @@ class DataflowBuilder
         return $this;
     }
 
+    public function setCustomExceptionIndex(callable $callable): self
+    {
+        $this->customExceptionIndex = \Closure::fromCallable($callable);
+
+        return $this;
+    }
+
     public function getDataflow(): DataflowInterface
     {
         $dataflow = new Dataflow($this->reader, $this->name);
@@ -60,6 +69,10 @@ class DataflowBuilder
 
         foreach ($this->writers as $writer) {
             $dataflow->addWriter($writer);
+        }
+
+        if (is_callable($this->customExceptionIndex)) {
+            $dataflow->setCustomExceptionIndex($this->customExceptionIndex);
         }
 
         return $dataflow;

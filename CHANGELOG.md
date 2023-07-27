@@ -1,3 +1,7 @@
+# Version 4.1.0
+
+* Added custom index for exception log
+
 # Version 4.0.0
 
 * Added Symfony 6 support

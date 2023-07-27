@@ -19,6 +19,8 @@ class Dataflow implements DataflowInterface, LoggerAwareInterface
     /** @var WriterInterface[] */
     private array $writers = [];
 
+    private ?\Closure $customExceptionIndex = null;
+
     public function __construct(private iterable $reader, private ?string $name)
     {
     }
@@ -44,6 +46,16 @@ class Dataflow implements DataflowInterface, LoggerAwareInterface
     }
 
     /**
+     * @return $this
+     */
+    public function setCustomExceptionIndex(callable $callable): self
+    {
+        $this->customExceptionIndex = \Closure::fromCallable($callable);
+
+        return $this;
+    }
+
+    /**
      * {@inheritdoc}
      */
     public function process(): Result
@@ -61,8 +73,17 @@ class Dataflow implements DataflowInterface, LoggerAwareInterface
                 try {
                     $this->processItem($item);
                 } catch (\Throwable $e) {
-                    $exceptions[$index] = $e;
-                    $this->logException($e, (string) $index);
+                    $exceptionIndex = $index;
+                    try {
+                        if (is_callable($this->customExceptionIndex)) {
+                            $exceptionIndex = (string) ($this->customExceptionIndex)($item, $index);
+                        }
+                    } catch (\Throwable $e2) {
+                        $exceptions[$index] = $e2;
+                        $this->logException($e2, $index);
+                    }
+                    $exceptions[$exceptionIndex] = $e;
+                    $this->logException($e, $exceptionIndex);
                 }
 
                 ++$count;
