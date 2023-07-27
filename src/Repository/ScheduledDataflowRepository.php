@@ -50,7 +50,7 @@ class ScheduledDataflowRepository
             ->orderBy('next', 'ASC')
         ;
 
-        $stmt = $qb->executeQuery();
+        $stmt = $qb->execute();
         if (0 === $stmt->rowCount()) {
             return [];
         }
@@ -74,7 +74,7 @@ class ScheduledDataflowRepository
         $qb = $this->createQueryBuilder();
         $qb->orderBy('label', 'ASC');
 
-        $stmt = $qb->executeQuery();
+        $stmt = $qb->execute();
         if (0 === $stmt->rowCount()) {
             return [];
         }
@@ -92,7 +92,7 @@ class ScheduledDataflowRepository
             ->orderBy('w.label', 'ASC')
             ->groupBy('w.id');
 
-        return $query->executeQuery()->fetchAllAssociative();
+        return $query->execute()->fetchAllAssociative();
     }
 
     public function save(ScheduledDataflow $scheduledDataflow)
@@ -138,7 +138,7 @@ class ScheduledDataflowRepository
 
     private function returnFirstOrNull(QueryBuilder $qb): ?ScheduledDataflow
     {
-        $stmt = $qb->executeQuery();
+        $stmt = $qb->execute();
         if (0 === $stmt->rowCount()) {
             return null;
         }
