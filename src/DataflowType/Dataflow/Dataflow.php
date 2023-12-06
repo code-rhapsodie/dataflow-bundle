@@ -115,7 +115,7 @@ class Dataflow implements DataflowInterface, LoggerAwareInterface
         }
     }
 
-    private function logException(\Throwable $e, ?string $index = null): void
+    private function logException(\Throwable $e, string|int|null $index = null): void
     {
         if (!isset($this->logger)) {
             return;
