@@ -18,7 +18,7 @@ jobs:
           destination: "artifact"
           generate-nomerges: true
           generate-validemails: true
-          generate-limitdepth: 2
+          generate-limitdepth: 0
           generate-fromrepo: true
           analyze-repo: false
           skip-ids: ""
