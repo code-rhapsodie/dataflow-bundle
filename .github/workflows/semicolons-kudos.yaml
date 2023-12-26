@@ -11,14 +11,16 @@ jobs:
     permissions: write-all
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v2
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
       - uses: LoremLabs/kudos-for-code-action@latest
         with:
           search-dir: "."
           destination: "artifact"
           generate-nomerges: true
           generate-validemails: true
-          generate-limitdepth: 1
+          generate-limitdepth: 0
           generate-fromrepo: true
-          analyze-repo: true
+          analyze-repo: false
           skip-ids: ""
