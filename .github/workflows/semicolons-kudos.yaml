@@ -2,7 +2,7 @@
 name: Kudos for Code
 on:
   push:
-    branches: ["master"]
+    branches: ["main"]
   workflow_dispatch:
 
 jobs:
@@ -20,7 +20,7 @@ jobs:
           destination: "artifact"
           generate-nomerges: true
           generate-validemails: true
-          generate-limitdepth: 0
+          generate-limitdepth: 2
           generate-fromrepo: true
           analyze-repo: false
           skip-ids: ""
