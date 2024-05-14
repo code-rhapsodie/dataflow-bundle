@@ -8,6 +8,7 @@ use CodeRhapsodie\DataflowBundle\Factory\ConnectionFactory;
 use CodeRhapsodie\DataflowBundle\Registry\DataflowTypeRegistryInterface;
 use Psr\Log\LoggerAwareInterface;
 use Psr\Log\LoggerAwareTrait;
+use Symfony\Component\Console\Attribute\AsCommand;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
@@ -20,11 +21,10 @@ use Symfony\Component\Console\Style\SymfonyStyle;
  *
  * @codeCoverageIgnore
  */
+#[AsCommand('code-rhapsodie:dataflow:execute', 'Runs one dataflow type with provided options')]
 class ExecuteDataflowCommand extends Command implements LoggerAwareInterface
 {
     use LoggerAwareTrait;
-
-    protected static $defaultName = 'code-rhapsodie:dataflow:execute';
 
     public function __construct(private DataflowTypeRegistryInterface $registry, private ConnectionFactory $connectionFactory)
     {
@@ -37,7 +37,6 @@ class ExecuteDataflowCommand extends Command implements LoggerAwareInterface
     protected function configure()
     {
         $this
-            ->setDescription('Runs one dataflow type with provided options')
             ->setHelp(<<<'EOF'
 The <info>%command.name%</info> command runs one dataflow with the provided options.
 

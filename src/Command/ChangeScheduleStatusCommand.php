@@ -7,6 +7,7 @@ namespace CodeRhapsodie\DataflowBundle\Command;
 use CodeRhapsodie\DataflowBundle\Entity\ScheduledDataflow;
 use CodeRhapsodie\DataflowBundle\Factory\ConnectionFactory;
 use CodeRhapsodie\DataflowBundle\Repository\ScheduledDataflowRepository;
+use Symfony\Component\Console\Attribute\AsCommand;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
@@ -17,10 +18,9 @@ use Symfony\Component\Console\Style\SymfonyStyle;
 /**
  * @codeCoverageIgnore
  */
+#[AsCommand('code-rhapsodie:dataflow:schedule:change-status', 'Change schedule status')]
 class ChangeScheduleStatusCommand extends Command
 {
-    protected static $defaultName = 'code-rhapsodie:dataflow:schedule:change-status';
-
     public function __construct(private ScheduledDataflowRepository $scheduledDataflowRepository, private ConnectionFactory $connectionFactory)
     {
         parent::__construct();
@@ -32,7 +32,6 @@ class ChangeScheduleStatusCommand extends Command
     protected function configure()
     {
         $this
-            ->setDescription('Change schedule status')
             ->setHelp('The <info>%command.name%</info> command able you to change schedule status.')
             ->addArgument('schedule-id', InputArgument::REQUIRED, 'Id of the schedule')
             ->addOption('enable', null, InputOption::VALUE_NONE, 'Enable the schedule')

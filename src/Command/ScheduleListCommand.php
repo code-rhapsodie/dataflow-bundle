@@ -6,6 +6,7 @@ namespace CodeRhapsodie\DataflowBundle\Command;
 
 use CodeRhapsodie\DataflowBundle\Factory\ConnectionFactory;
 use CodeRhapsodie\DataflowBundle\Repository\ScheduledDataflowRepository;
+use Symfony\Component\Console\Attribute\AsCommand;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
@@ -15,10 +16,9 @@ use Symfony\Component\Console\Style\SymfonyStyle;
 /**
  * @codeCoverageIgnore
  */
+#[AsCommand('code-rhapsodie:dataflow:schedule:list', 'List scheduled dataflows')]
 class ScheduleListCommand extends Command
 {
-    protected static $defaultName = 'code-rhapsodie:dataflow:schedule:list';
-
     public function __construct(private ScheduledDataflowRepository $scheduledDataflowRepository, private ConnectionFactory $connectionFactory)
     {
         parent::__construct();
@@ -30,7 +30,6 @@ class ScheduleListCommand extends Command
     protected function configure()
     {
         $this
-            ->setDescription('List scheduled dataflows')
             ->setHelp('The <info>%command.name%</info> lists all scheduled dataflows.')
             ->addOption('connection', null, InputOption::VALUE_REQUIRED, 'Define the DBAL connection to use');
     }
