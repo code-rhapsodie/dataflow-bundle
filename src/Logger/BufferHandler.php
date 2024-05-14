@@ -8,6 +8,7 @@ use Monolog\Formatter\FormatterInterface;
 use Monolog\Formatter\LineFormatter;
 use Monolog\Handler\AbstractProcessingHandler;
 use Monolog\Logger;
+use Monolog\LogRecord;
 
 class BufferHandler extends AbstractProcessingHandler
 {
@@ -23,7 +24,7 @@ class BufferHandler extends AbstractProcessingHandler
         return $logs;
     }
 
-    protected function write(array $record): void
+    protected function write(array|LogRecord $record): void
     {
         $this->buffer[] = $record['formatted'];
     }
