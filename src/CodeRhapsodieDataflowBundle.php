@@ -17,7 +17,7 @@ use Symfony\Component\HttpKernel\Bundle\Bundle;
  */
 class CodeRhapsodieDataflowBundle extends Bundle
 {
-    protected $name = 'CodeRhapsodieDataflowBundle';
+    protected string $name = 'CodeRhapsodieDataflowBundle';
 
     public function getContainerExtension(): ?ExtensionInterface
     {

@@ -13,11 +13,9 @@ use Symfony\Component\Messenger\MessageBusInterface;
 
 class MessengerDataflowRunnerTest extends TestCase
 {
-    private \CodeRhapsodie\DataflowBundle\Runner\MessengerDataflowRunner $runner;
-
-    private \CodeRhapsodie\DataflowBundle\Repository\JobRepository|\PHPUnit\Framework\MockObject\MockObject $repository;
-
-    private \Symfony\Component\Messenger\MessageBusInterface|\PHPUnit\Framework\MockObject\MockObject $bus;
+    private MessengerDataflowRunner $runner;
+    private JobRepository|MockObject $repository;
+    private MessageBusInterface|MockObject $bus;
 
     protected function setUp(): void
     {
@@ -37,20 +35,36 @@ class MessengerDataflowRunnerTest extends TestCase
             ->method('findNextPendingDataflow')
             ->willReturnOnConsecutiveCalls($job1, $job2, null)
         ;
+        $matcher = $this->exactly(2);
         $this->repository
-            ->expects($this->exactly(2))
+            ->expects($matcher)
             ->method('save')
-            ->withConsecutive([$job1], [$job2])
+            ->with($this->callback(function ($arg) use ($matcher, $job1, $job2) {
+                switch ($matcher->numberOfInvocations()) {
+                    case 1:
+                        return $arg === $job1;
+                    case 2:
+                        return $arg === $job2;
+                    default:
+                        return false;
+                }
+            }))
         ;
 
+        $matcher = $this->exactly(2);
         $this->bus
-            ->expects($this->exactly(2))
+            ->expects($matcher)
             ->method('dispatch')
-            ->withConsecutive([
-                $this->callback(fn($message) => $message instanceof JobMessage && $message->getJobId() === $id1)
-            ], [
-                $this->callback(fn($message) => $message instanceof JobMessage && $message->getJobId() === $id2)
-            ])
+            ->with($this->callback(function ($arg) use ($matcher, $id1, $id2) {
+                switch ($matcher->numberOfInvocations()) {
+                    case 1:
+                        return $arg instanceof JobMessage && $arg->getJobId() === $id1;
+                    case 2:
+                        return $arg instanceof JobMessage && $arg->getJobId() === $id2;
+                    default:
+                        return false;
+                }
+            }))
             ->willReturnOnConsecutiveCalls(
                 new Envelope(new JobMessage($id1)),
                 new Envelope(new JobMessage($id2))

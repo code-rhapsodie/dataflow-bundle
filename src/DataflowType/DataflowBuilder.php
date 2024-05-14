@@ -11,9 +11,7 @@ use CodeRhapsodie\DataflowBundle\DataflowType\Writer\WriterInterface;
 class DataflowBuilder
 {
     private ?string $name = null;
-
     private ?iterable $reader = null;
-
     private array $steps = [];
 
     /** @var WriterInterface[] */

@@ -40,10 +40,13 @@ class CollectionWriterTest extends TestCase
             ->expects($this->once())
             ->method('finish')
         ;
+        $matcher = $this->exactly(count($values));
         $embeddedWriter
-            ->expects($this->exactly(count($values)))
+            ->expects($matcher)
             ->method('write')
-            ->withConsecutive(...array_map(fn($item) => [$item], $values))
+            ->with($this->callback(function ($arg) use ($matcher, $values) {
+                return $arg === $values[$matcher->numberOfInvocations() - 1];
+            }))
         ;
 
         $writer = new CollectionWriter($embeddedWriter);

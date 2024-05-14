@@ -72,10 +72,6 @@ class Job
             ->setScheduledDataflowId($scheduled->getId());
     }
 
-    public function __construct()
-    {
-    }
-
     public static function createFromArray(array $datas)
     {
         $lost = array_diff(static::KEYS, array_keys($datas));

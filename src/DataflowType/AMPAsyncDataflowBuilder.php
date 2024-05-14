@@ -11,18 +11,16 @@ use Symfony\Component\OptionsResolver\OptionsResolver;
 
 class AMPAsyncDataflowBuilder extends DataflowBuilder
 {
-    public function __construct(protected ?int $loopInterval = 0, protected ?int $emitInterval = 0)
-    {
-    }
-
     private ?string $name = null;
-
     private ?iterable $reader = null;
-
     private array $steps = [];
 
     /** @var WriterInterface[] */
     private array $writers = [];
+
+    public function __construct(protected ?int $loopInterval = 0, protected ?int $emitInterval = 0)
+    {
+    }
 
     public function setName(string $name): self
     {

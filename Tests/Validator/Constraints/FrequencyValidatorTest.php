@@ -4,18 +4,18 @@ namespace CodeRhapsodie\DataflowBundle\Tests\Validator\Constraints;
 
 use CodeRhapsodie\DataflowBundle\Validator\Constraints\Frequency;
 use CodeRhapsodie\DataflowBundle\Validator\Constraints\FrequencyValidator;
+use PHPUnit\Framework\Attributes\DataProvider;
+use Symfony\Component\Validator\ConstraintValidatorInterface;
 use Symfony\Component\Validator\Test\ConstraintValidatorTestCase;
 
 class FrequencyValidatorTest extends ConstraintValidatorTestCase
 {
-    protected function createValidator()
+    protected function createValidator(): ConstraintValidatorInterface
     {
         return new FrequencyValidator();
     }
 
-    /**
-     * @dataProvider getValidValues
-     */
+    #[DataProvider('getValidValues')]
     public function testValidValues($value)
     {
         $this->validator->validate($value, new Frequency());
@@ -23,7 +23,7 @@ class FrequencyValidatorTest extends ConstraintValidatorTestCase
         $this->assertNoViolation();
     }
 
-    public function getValidValues()
+    public static function getValidValues()
     {
         return [
             ['3 days'],
@@ -47,9 +47,7 @@ class FrequencyValidatorTest extends ConstraintValidatorTestCase
         ;
     }
 
-    /**
-     * @dataProvider getNegativeValues
-     */
+    #[DataProvider('getNegativeValues')]
     public function testNegativeIntervals($value)
     {
         $constraint = new Frequency([
@@ -64,7 +62,7 @@ class FrequencyValidatorTest extends ConstraintValidatorTestCase
         ;
     }
 
-    public function getNegativeValues()
+    public static function getNegativeValues()
     {
         return [
             ['now'],

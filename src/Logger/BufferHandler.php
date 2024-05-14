@@ -15,11 +15,6 @@ class BufferHandler extends AbstractProcessingHandler
 
     private array $buffer = [];
 
-    public function __construct($level = Logger::DEBUG, bool $bubble = true)
-    {
-        parent::__construct($level, $bubble);
-    }
-
     public function clearBuffer(): array
     {
         $logs = $this->buffer;

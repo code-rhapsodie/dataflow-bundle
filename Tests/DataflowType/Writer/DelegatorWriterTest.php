@@ -10,13 +10,10 @@ use PHPUnit\Framework\TestCase;
 
 class DelegatorWriterTest extends TestCase
 {
-    private \CodeRhapsodie\DataflowBundle\DataflowType\Writer\DelegatorWriter $delegatorWriter;
-
-    private \CodeRhapsodie\DataflowBundle\DataflowType\Writer\DelegateWriterInterface|\PHPUnit\Framework\MockObject\MockObject $delegateInt;
-
-    private \CodeRhapsodie\DataflowBundle\DataflowType\Writer\DelegateWriterInterface|\PHPUnit\Framework\MockObject\MockObject $delegateString;
-
-    private \CodeRhapsodie\DataflowBundle\DataflowType\Writer\DelegateWriterInterface|\PHPUnit\Framework\MockObject\MockObject $delegateArray;
+    private DelegatorWriter $delegatorWriter;
+    private DelegateWriterInterface|MockObject $delegateInt;
+    private DelegateWriterInterface|MockObject $delegateString;
+    private DelegateWriterInterface|MockObject $delegateArray;
 
     protected function setUp(): void
     {

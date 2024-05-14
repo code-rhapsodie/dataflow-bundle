@@ -12,7 +12,7 @@ class PortWriterAdapterTest extends TestCase
         $value = 'not an array';
 
         $writer = $this->getMockBuilder('\Port\Writer')
-            ->setMethods(['prepare', 'finish', 'writeItem'])
+            ->onlyMethods(['prepare', 'finish', 'writeItem'])
             ->getMock()
         ;
         $writer

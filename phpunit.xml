@@ -1,15 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!-- http://www.phpunit.de/manual/current/en/appendixes.configuration.html -->
-<phpunit xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" backupGlobals="false" backupStaticAttributes="false" bootstrap="Tests/bootstrap.php" convertErrorsToExceptions="true" convertNoticesToExceptions="true" convertWarningsToExceptions="true" colors="false" xsi:noNamespaceSchemaLocation="https://schema.phpunit.de/9.3/phpunit.xsd">
-  <coverage>
-    <include>
-      <directory>./src/</directory>
-    </include>
-    <exclude>
-      <directory>Tests/</directory>
-      <directory>vendor/</directory>
-    </exclude>
-  </coverage>
+<phpunit xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" backupGlobals="false" bootstrap="Tests/bootstrap.php" colors="false" xsi:noNamespaceSchemaLocation="https://schema.phpunit.de/11.1/phpunit.xsd" cacheDirectory=".phpunit.cache" backupStaticProperties="false">
   <php>
     <ini name="error_reporting" value="-1"/>
   </php>
@@ -18,4 +9,13 @@
       <directory suffix="Test.php">./Tests</directory>
     </testsuite>
   </testsuites>
+  <source>
+    <include>
+      <directory>./src/</directory>
+    </include>
+    <exclude>
+      <directory>Tests/</directory>
+      <directory>vendor/</directory>
+    </exclude>
+  </source>
 </phpunit>

@@ -10,7 +10,7 @@ use PHPUnit\Framework\TestCase;
 
 class DataflowTypeRegistryTest extends TestCase
 {
-    private \CodeRhapsodie\DataflowBundle\Registry\DataflowTypeRegistry $registry;
+    private DataflowTypeRegistry $registry;
 
     protected function setUp(): void
     {

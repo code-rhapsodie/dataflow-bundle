@@ -13,7 +13,7 @@ class FrequencyValidator extends ConstraintValidator
     /**
      * {@inheritdoc}
      */
-    public function validate($value, Constraint $constraint)
+    public function validate(mixed $value, Constraint $constraint)
     {
         if (!$constraint instanceof Frequency) {
             throw new UnexpectedTypeException($constraint, Frequency::class);
@@ -42,8 +42,6 @@ class FrequencyValidator extends ConstraintValidator
                 ->setParameter('{{ string }}', $value)
                 ->addViolation()
             ;
-
-            return;
         }
     }
 }
