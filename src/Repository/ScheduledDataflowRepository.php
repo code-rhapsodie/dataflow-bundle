@@ -20,16 +20,6 @@ class ScheduledDataflowRepository
 
     public const TABLE_NAME = 'cr_dataflow_scheduled';
 
-    private const FIELDS_TYPE = [
-        'id' => ParameterType::INTEGER,
-        'label' => ParameterType::STRING,
-        'dataflow_type' => ParameterType::STRING,
-        'options' => ParameterType::STRING,
-        'frequency' => ParameterType::STRING,
-        'next' => 'datetime',
-        'enabled' => ParameterType::BOOLEAN,
-    ];
-
     /**
      * JobRepository constructor.
      */
@@ -105,12 +95,12 @@ class ScheduledDataflowRepository
         }
 
         if (null === $scheduledDataflow->getId()) {
-            $this->connection->insert(static::TABLE_NAME, $datas, static::FIELDS_TYPE);
+            $this->connection->insert(static::TABLE_NAME, $datas, $this->getFields());
             $scheduledDataflow->setId((int) $this->connection->lastInsertId());
 
             return;
         }
-        $this->connection->update(static::TABLE_NAME, $datas, ['id' => $scheduledDataflow->getId()], static::FIELDS_TYPE);
+        $this->connection->update(static::TABLE_NAME, $datas, ['id' => $scheduledDataflow->getId()], $this->getFields());
     }
 
     public function delete(int $id): void
@@ -144,5 +134,18 @@ class ScheduledDataflowRepository
         }
 
         return ScheduledDataflow::createFromArray($this->initDateTime($this->initArray($stmt->fetchAssociative())));
+    }
+
+    private function getFields(): array
+    {
+        return [
+            'id' => ParameterType::INTEGER,
+            'label' => ParameterType::STRING,
+            'dataflow_type' => ParameterType::STRING,
+            'options' => ParameterType::STRING,
+            'frequency' => ParameterType::STRING,
+            'next' => 'datetime',
+            'enabled' => ParameterType::BOOLEAN,
+        ];
     }
 }

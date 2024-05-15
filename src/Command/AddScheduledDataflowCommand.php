@@ -94,7 +94,7 @@ class AddScheduledDataflowCommand extends Command
             'dataflow_type' => $type,
             'options' => json_decode($options, true, 512, JSON_THROW_ON_ERROR),
             'frequency' => $frequency,
-            'next' => new \DateTimeImmutable($firstRun),
+            'next' => new \DateTime($firstRun),
             'enabled' => $enabled,
         ]);
 

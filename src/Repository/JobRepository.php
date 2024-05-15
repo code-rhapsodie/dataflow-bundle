@@ -21,20 +21,6 @@ class JobRepository
 
     public const TABLE_NAME = 'cr_dataflow_job';
 
-    private const FIELDS_TYPE = [
-        'id' => ParameterType::INTEGER,
-        'status' => ParameterType::INTEGER,
-        'label' => ParameterType::STRING,
-        'dataflow_type' => ParameterType::STRING,
-        'options' => ParameterType::STRING,
-        'requested_date' => 'datetime',
-        'scheduled_dataflow_id' => ParameterType::INTEGER,
-        'count' => ParameterType::INTEGER,
-        'exceptions' => ParameterType::STRING,
-        'start_time' => 'datetime',
-        'end_time' => 'datetime',
-    ];
-
     /**
      * JobRepository constructor.
      */
@@ -143,12 +129,12 @@ class JobRepository
         }
 
         if (null === $job->getId()) {
-            $this->connection->insert(static::TABLE_NAME, $datas, static::FIELDS_TYPE);
+            $this->connection->insert(static::TABLE_NAME, $datas, $this->getFields());
             $job->setId((int) $this->connection->lastInsertId());
 
             return;
         }
-        $this->connection->update(static::TABLE_NAME, $datas, ['id' => $job->getId()], static::FIELDS_TYPE);
+        $this->connection->update(static::TABLE_NAME, $datas, ['id' => $job->getId()], $this->getFields());
     }
 
     public function createQueryBuilder($alias = null): QueryBuilder
@@ -168,5 +154,22 @@ class JobRepository
         }
 
         return Job::createFromArray($this->initDateTime($this->initArray($stmt->fetchAssociative())));
+    }
+
+    private function getFields(): array
+    {
+        return [
+            'id' => ParameterType::INTEGER,
+            'status' => ParameterType::INTEGER,
+            'label' => ParameterType::STRING,
+            'dataflow_type' => ParameterType::STRING,
+            'options' => ParameterType::STRING,
+            'requested_date' => 'datetime',
+            'scheduled_dataflow_id' => ParameterType::INTEGER,
+            'count' => ParameterType::INTEGER,
+            'exceptions' => ParameterType::STRING,
+            'start_time' => 'datetime',
+            'end_time' => 'datetime',
+        ];
     }
 }
