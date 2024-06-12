@@ -47,23 +47,23 @@
         "doctrine/doctrine-bundle": "^1.0||^2.0",
         "monolog/monolog": "^2.0||^3.0",
         "psr/log": "^1.1||^2.0||^3.0",
-        "symfony/config": "^5.0||^6.0||^7.0",
-        "symfony/console": "^5.0||^6.0||^7.0",
-        "symfony/dependency-injection": "^5.0||^6.0||^7.0",
-        "symfony/event-dispatcher": "^5.0||^6.0||^7.0",
-        "symfony/http-kernel": "^5.0||^6.0||^7.0",
-        "symfony/lock": "^5.0||^6.0||^7.0",
-        "symfony/monolog-bridge": "^5.0||^6.0||^7.0",
-        "symfony/options-resolver": "^5.0||^6.0||^7.0",
-        "symfony/validator": "^5.0||^6.0||^7.0",
-        "symfony/yaml": "^5.0||^6.0||^7.0"
+        "symfony/config": "^6.0||^7.0",
+        "symfony/console": "^6.0||^7.0",
+        "symfony/dependency-injection": "^6.0||^7.0",
+        "symfony/event-dispatcher": "^6.0||^7.0",
+        "symfony/http-kernel": "^6.0||^7.0",
+        "symfony/lock": "^6.0||^7.0",
+        "symfony/monolog-bridge": "^6.0||^7.0",
+        "symfony/options-resolver": "^6.0||^7.0",
+        "symfony/validator": "^6.0||^7.0",
+        "symfony/yaml": "^6.0||^7.0"
     },
     "require-dev": {
         "amphp/amp": "^2.5",
         "phpunit/phpunit": "^11",
         "portphp/portphp": "^1.9",
         "rector/rector": "^1.0",
-        "symfony/messenger": "^5.0||^6.0||^7.0"
+        "symfony/messenger": "^6.0||^7.0"
     },
     "suggest": {
         "amphp/amp": "Provide asynchronous steps for your dataflows",

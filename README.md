@@ -299,7 +299,7 @@ When using the `code-rhapsodie:dataflow:run-pending` command, this logger will a
 Execute this command to check if your DataflowType is correctly registered:
 
 ```shell script
-$ bin/console debug:container --tag coderhapsodie.dataflow.type --show-private
+$ bin/console debug:container --tag coderhapsodie.dataflow.type
 ```
 
 The result is like this:
@@ -602,7 +602,7 @@ $ bin/console code-rhapsodie:dataflow:run-pending --connection=default
 
 Please report issues and request features at https://github.com/code-rhapsodie/dataflow-bundle/issues.
 
-Please note that only the last release of the 3.x and the 4.x versions of this bundle are actively supported.
+Please note that only the last release of the 4.x and the 5.x versions of this bundle are actively supported.
 
 # Contributing
 
