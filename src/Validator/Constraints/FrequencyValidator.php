@@ -23,7 +23,12 @@ class FrequencyValidator extends ConstraintValidator
             return;
         }
 
-        $interval = @\DateInterval::createFromDateString($value);
+        try {
+            $interval = \DateInterval::createFromDateString($value);
+        } catch (\Exception){
+            $interval = false;
+        }
+
         if (!$interval) {
             $this->context->buildViolation($constraint->message)
                 ->setParameter('{{ string }}', $value)
