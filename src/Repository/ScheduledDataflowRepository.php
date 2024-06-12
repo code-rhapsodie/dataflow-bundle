@@ -36,7 +36,7 @@ class ScheduledDataflowRepository
     {
         $qb = $this->createQueryBuilder();
         $qb->andWhere($qb->expr()->lte('next', $qb->createNamedParameter(new \DateTime(), 'datetime')))
-            ->andWhere($qb->expr()->eq('enabled', 1))
+            ->andWhere($qb->expr()->eq('enabled', $qb->createNamedParameter(1, ParameterType::INTEGER)))
             ->orderBy('next', 'ASC')
         ;
 
