@@ -30,7 +30,7 @@ class AddScheduledDataflowCommand extends Command
     /**
      * {@inheritdoc}
      */
-    protected function configure()
+    protected function configure(): void
     {
         $this
             ->setHelp('The <info>%command.name%</info> allows you to create a new scheduled dataflow.')

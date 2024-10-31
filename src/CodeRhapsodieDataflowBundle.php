@@ -24,7 +24,7 @@ class CodeRhapsodieDataflowBundle extends Bundle
         return new CodeRhapsodieDataflowExtension();
     }
 
-    public function build(ContainerBuilder $container)
+    public function build(ContainerBuilder $container): void
     {
         $container
             ->addCompilerPass(new DataflowTypeCompilerPass())

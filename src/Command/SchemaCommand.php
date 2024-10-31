@@ -8,6 +8,7 @@ use CodeRhapsodie\DataflowBundle\Factory\ConnectionFactory;
 use CodeRhapsodie\DataflowBundle\Repository\JobRepository;
 use CodeRhapsodie\DataflowBundle\Repository\ScheduledDataflowRepository;
 use CodeRhapsodie\DataflowBundle\SchemaProvider\DataflowSchemaProvider;
+use Doctrine\DBAL\Schema\Comparator;
 use Doctrine\DBAL\Schema\Schema;
 use Doctrine\DBAL\Schema\Table;
 use Symfony\Component\Console\Attribute\AsCommand;
@@ -31,7 +32,7 @@ class SchemaCommand extends Command
     /**
      * {@inheritdoc}
      */
-    protected function configure()
+    protected function configure(): void
     {
         $this
             ->setHelp('The <info>%command.name%</info> help you to generate SQL Query to create or update your database schema for this bundle')
@@ -57,7 +58,7 @@ class SchemaCommand extends Command
         $sqls = $schema->toSql($connection->getDatabasePlatform());
 
         if ($input->getOption('update')) {
-            $sm = $connection->getSchemaManager();
+            $sm = $connection->createSchemaManager();
 
             $tableArray = [JobRepository::TABLE_NAME, ScheduledDataflowRepository::TABLE_NAME];
             $tables = [];
@@ -71,7 +72,7 @@ class SchemaCommand extends Command
             $namespaces = [];
 
             if ($connection->getDatabasePlatform()->supportsSchemas()) {
-                $namespaces = $sm->listNamespaceNames();
+                $namespaces = $sm->listSchemaNames();
             }
 
             $sequences = [];
@@ -82,7 +83,7 @@ class SchemaCommand extends Command
 
             $oldSchema = new Schema($tables, $sequences, $sm->createSchemaConfig(), $namespaces);
 
-            $sqls = $schema->getMigrateFromSql($oldSchema, $connection->getDatabasePlatform());
+            $sqls = $connection->getDatabasePlatform()->getAlterSchemaSQL((new Comparator($connection->getDatabasePlatform()))->compareSchemas($oldSchema, $schema));
         }
         $io = new SymfonyStyle($input, $output);
         $io->text('Execute these SQL Queries on your database:');
@@ -90,6 +91,6 @@ class SchemaCommand extends Command
             $io->text($sql.';');
         }
 
-        return 0;
+        return parent::SUCCESS;
     }
 }

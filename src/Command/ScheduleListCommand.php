@@ -27,7 +27,7 @@ class ScheduleListCommand extends Command
     /**
      * {@inheritdoc}
      */
-    protected function configure()
+    protected function configure(): void
     {
         $this
             ->setHelp('The <info>%command.name%</info> lists all scheduled dataflows.')
