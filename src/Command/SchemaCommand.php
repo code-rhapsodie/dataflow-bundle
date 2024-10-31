@@ -10,6 +10,7 @@ use CodeRhapsodie\DataflowBundle\Repository\ScheduledDataflowRepository;
 use CodeRhapsodie\DataflowBundle\SchemaProvider\DataflowSchemaProvider;
 use Doctrine\DBAL\Schema\Schema;
 use Doctrine\DBAL\Schema\Table;
+use Symfony\Component\Console\Attribute\AsCommand;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
@@ -19,10 +20,9 @@ use Symfony\Component\Console\Style\SymfonyStyle;
 /**
  * @codeCoverageIgnore
  */
+#[AsCommand('code-rhapsodie:dataflow:dump-schema', 'Generates schema create / update SQL queries')]
 class SchemaCommand extends Command
 {
-    protected static $defaultName = 'code-rhapsodie:dataflow:dump-schema';
-
     public function __construct(private ConnectionFactory $connectionFactory)
     {
         parent::__construct();
@@ -34,7 +34,6 @@ class SchemaCommand extends Command
     protected function configure()
     {
         $this
-            ->setDescription('Generates schema create / update SQL queries')
             ->setHelp('The <info>%command.name%</info> help you to generate SQL Query to create or update your database schema for this bundle')
             ->addOption('update', null, InputOption::VALUE_NONE, 'Dump only the update SQL queries.')
             ->addOption('connection', null, InputOption::VALUE_REQUIRED, 'Define the DBAL connection to use')

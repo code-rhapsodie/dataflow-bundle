@@ -47,7 +47,7 @@ class DataflowSchemaProvider
         $tableSchedule->addColumn('next', 'datetime', ['notnull' => false]);
         $tableSchedule->addColumn('enabled', 'boolean', ['notnull' => true]);
 
-        $tableJob->addForeignKeyConstraint($tableSchedule, ['scheduled_dataflow_id'], ['id']);
+        $tableJob->addForeignKeyConstraint($tableSchedule->getName(), ['scheduled_dataflow_id'], ['id']);
 
         return $schema;
     }

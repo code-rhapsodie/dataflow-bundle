@@ -1,14 +1,23 @@
 # Code Rhapsodie Dataflow Bundle
 
-DataflowBundle is a bundle for Symfony 3.4+ 
+DataflowBundle is a bundle for Symfony 3.4+
 providing an easy way to create import / export dataflow.
 
-Dataflow uses a linear generic workflow in three parts:
- * one reader
- * any number of steps that can be synchronous or asynchronous
- * one or more writers
+| Dataflow | Symfony                  | Support |
+|----------|--------------------------|---------|
+| 5.x      | 7.x                      | yes     |
+| 4.x      | 3.4 \| 4.x \| 5.x \| 6.x | yes     |
+| 3.x      | 3.4 \| 4.x \| 5.x        | no      |
+| 2.x      | 3.4 \| 4.x               | no      |
+| 1.x      | 3.4 \| 4.x               | no      |
 
-The reader can read data from anywhere and return data row by row. Each step processes the current row data. 
+Dataflow uses a linear generic workflow in three parts:
+
+* one reader
+* any number of steps that can be synchronous or asynchronous
+* one or more writers
+
+The reader can read data from anywhere and return data row by row. Each step processes the current row data.
 The steps are executed in the order in which they are added.
 And, one or more writers save the row anywhere you want.
 
@@ -27,7 +36,6 @@ As the following schema shows, you can define more than one dataflow:
 * Display the result for the last Job for a Dataflow from the command line
 * Work with multiple Doctrine DBAL connections
 
-
 ## Installation
 
 Security notice: Symfony 4.x is not supported before 4.1.12, see https://github.com/advisories/GHSA-pgwj-prpq-jpc2
@@ -44,7 +52,8 @@ $ composer require code-rhapsodie/dataflow-bundle
 
 You can use the generic readers, writers and steps from [PortPHP](https://github.com/portphp/portphp).
 
-For the writers, you must use the adapter `CodeRhapsodie\DataflowBundle\DataflowType\Writer\PortWriterAdapter` like this:
+For the writers, you must use the adapter `CodeRhapsodie\DataflowBundle\DataflowType\Writer\PortWriterAdapter` like
+this:
 
 ```php
 <?php
@@ -57,9 +66,7 @@ $builder->addWriter(new \CodeRhapsodie\DataflowBundle\DataflowType\Writer\PortWr
 
 ### Register the bundle
 
-#### Symfony 4 (new tree)
-
-For Symfony 4, add `CodeRhapsodie\DataflowBundle\CodeRhapsodieDataflowBundle::class => ['all' => true],
+Add `CodeRhapsodie\DataflowBundle\CodeRhapsodieDataflowBundle::class => ['all' => true],
 ` in the `config/bundles.php` file.
 
 Like this:
@@ -74,32 +81,13 @@ return [
 ];
 ```
 
-#### Symfony 3.4 (old tree)
-
-For Symfony 3.4, add a new line in the `app/AppKernel.php` file.
-
-Like this:
-
-```php
-<?php
-// app/AppKernel.php
-
-public function registerBundles()
-{
-    $bundles = [
-        // ...
-        new CodeRhapsodie\DataflowBundle\CodeRhapsodieDataflowBundle(),
-        // ...
-    ];
-}
-```
-
 ### Update the database
 
 This bundle uses Doctrine DBAL to store Dataflow schedule into the database table (`cr_dataflow_scheduled`)
 and jobs (`cr_dataflow_job`).
 
-If you use [Doctrine Migration Bundle](https://symfony.com/doc/master/bundles/DoctrineMigrationsBundle/index.html) or [Phinx](https://phinx.org/) 
+If you use [Doctrine Migration Bundle](https://symfony.com/doc/master/bundles/DoctrineMigrationsBundle/index.html)
+or [Phinx](https://phinx.org/)
 or [Kaliop Migration Bundle](https://github.com/kaliop-uk/ezmigrationbundle) or whatever,
 you can add a new migration with the generated SQL query from this command:
 
@@ -137,6 +125,7 @@ Dataflow can delegate the execution of its jobs to the Symfony messenger compone
 This allows jobs to be executed concurrently by workers instead of sequentially.
 
 To enable messenger mode:
+
 ```yaml
 code_rhapsodie_dataflow:
   messenger_mode:
@@ -145,6 +134,7 @@ code_rhapsodie_dataflow:
 ```
 
 You also need to route Dataflow messages to the proper transport:
+
 ```yaml
 # config/packages/messenger.yaml
 framework:
@@ -158,9 +148,11 @@ framework:
 
 ## Define a dataflow type
 
-This bundle uses a fixed and simple workflow structure in order to let you focus on the data processing logic part of your dataflow.
+This bundle uses a fixed and simple workflow structure in order to let you focus on the data processing logic part of
+your dataflow.
 
 A dataflow type defines the different parts of your dataflow. A dataflow is made of:
+
 - exactly one *Reader*
 - any number of *Steps*
 - one or more *Writers*
@@ -169,8 +161,10 @@ Dataflow types can be configured with options.
 
 A dataflow type must implement `CodeRhapsodie\DataflowBundle\DataflowType\DataflowTypeInterface`.
 
-To help with creating your dataflow types, an abstract class `CodeRhapsodie\DataflowBundle\DataflowType\AbstractDataflowType`
-is provided, allowing you to define your dataflow through a handy builder `CodeRhapsodie\DataflowBundle\DataflowType\DataflowBuilder`.
+To help with creating your dataflow types, an abstract
+class `CodeRhapsodie\DataflowBundle\DataflowType\AbstractDataflowType`
+is provided, allowing you to define your dataflow through a handy
+builder `CodeRhapsodie\DataflowBundle\DataflowType\DataflowBuilder`.
 
 This is an example to define one class DataflowType:
 
@@ -230,15 +224,16 @@ class MyFirstDataflowType extends AbstractDataflowType
 
 Dataflow types must be tagged with `coderhapsodie.dataflow.type`.
 
-If you're using Symfony auto-configuration for your services, this tag will be automatically added to all services implementing `DataflowTypeInterface`.
+If you're using Symfony auto-configuration for your services, this tag will be automatically added to all services
+implementing `DataflowTypeInterface`.
 
 Otherwise, manually add the tag `coderhapsodie.dataflow.type` in your dataflow type service configuration:
 
 ```yaml
 ```yaml
-    CodeRhapsodie\DataflowExemple\DataflowType\MyFirstDataflowType:
-      tags:
-        - { name: coderhapsodie.dataflow.type }
+CodeRhapsodie\DataflowExemple\DataflowType\MyFirstDataflowType:
+  tags:
+    - { name: coderhapsodie.dataflow.type }
 ```
 
 ### Use options for your dataflow type
@@ -264,11 +259,14 @@ class MyFirstDataflowType extends AbstractDataflowType
 }
 ```
 
-With this configuration, the option `fileName` is required. For an advanced usage of the option resolver, read the [Symfony documentation](https://symfony.com/doc/current/components/options_resolver.html).
+With this configuration, the option `fileName` is required. For an advanced usage of the option resolver, read
+the [Symfony documentation](https://symfony.com/doc/current/components/options_resolver.html).
 
 For asynchronous management, `AbstractDataflowType` come with two default options :
+
 - loopInterval : default to 0. Update this interval if you wish customise the `tick` loop duration.
-- emitInterval : default to 0. Update this interval to have a control when reader must emit new data in the flow pipeline.
+- emitInterval : default to 0. Update this interval to have a control when reader must emit new data in the flow
+  pipeline.
 
 ### Logging
 
@@ -292,14 +290,15 @@ class MyDataflowType extends AbstractDataflowType
 }
 ```
 
-When using the `code-rhapsodie:dataflow:run-pending` command, this logger will also be used to save the log in the corresponding job in the database.
+When using the `code-rhapsodie:dataflow:run-pending` command, this logger will also be used to save the log in the
+corresponding job in the database.
 
 ### Check if your DataflowType is ready
 
 Execute this command to check if your DataflowType is correctly registered:
 
 ```shell script
-$ bin/console debug:container --tag coderhapsodie.dataflow.type --show-private
+$ bin/console debug:container --tag coderhapsodie.dataflow.type
 ```
 
 The result is like this:
@@ -316,10 +315,10 @@ Symfony Container Public and Private Services Tagged with "coderhapsodie.dataflo
 
 ```
 
-
 ### Readers
 
-*Readers* provide the dataflow with elements to import / export. Usually, elements are read from an external resource (file, database, webservice, etc).
+*Readers* provide the dataflow with elements to import / export. Usually, elements are read from an external resource (
+file, database, webservice, etc).
 
 A *Reader* can be any `iterable`.
 
@@ -357,15 +356,16 @@ You can set up this reader as follows:
 $builder->setReader(($this->myReader)())
 ``` 
 
-
 ### Steps
 
 *Steps* are operations performed on the elements before they are handled by the *Writers*. Usually, steps are either:
+
 - converters, that alter the element
 - filters, that conditionally prevent further operations on the element
 - generators, that can include asynchronous operations
 
 A *Step* can be any callable, taking the element as its argument, and returning either:
+
 - the element, possibly altered
 - `false`, if no further operations should be performed on this element
 
@@ -409,7 +409,8 @@ Note : you can ensure writing order for asynchronous operations if all steps are
 *Writers* perform the actual import / export operations.
 
 A *Writer* must implement `CodeRhapsodie\DataflowBundle\DataflowType\Writer\WriterInterface`.
-As this interface is not compatible with `Port\Writer`, the adapter `CodeRhapsodie\DataflowBundle\DataflowType\Writer\PortWriterAdapter` is provided.
+As this interface is not compatible with `Port\Writer`, the
+adapter `CodeRhapsodie\DataflowBundle\DataflowType\Writer\PortWriterAdapter` is provided.
 
 This example show how to use the predefined PhpPort Writer :
 
@@ -460,7 +461,9 @@ class FileWriter implements WriterInterface
 
 #### CollectionWriter
 
-If you want to write multiple items from a single item read, you can use the generic `CollectionWriter`. This writer will iterate over any `iterable` it receives, and pass each item from that collection to your own writer that handles single items.
+If you want to write multiple items from a single item read, you can use the generic `CollectionWriter`. This writer
+will iterate over any `iterable` it receives, and pass each item from that collection to your own writer that handles
+single items.
 
 ```php
 $builder->addWriter(new CollectionWriter($mySingleItemWriter));
@@ -470,9 +473,11 @@ $builder->addWriter(new CollectionWriter($mySingleItemWriter));
 
 If you want to call different writers depending on what item is read, you can use the generic `DelegatorWriter`.
 
-As an example, let's suppose our items are arrays with the first entry being either `product` or `order`. We want to use a different writer based on that value.
+As an example, let's suppose our items are arrays with the first entry being either `product` or `order`. We want to use
+a different writer based on that value.
 
-First, create your writers implementing `DelegateWriterInterface` (this interface extends `WriterInterface` so your writers can still be used without the `DelegatorWriter`).
+First, create your writers implementing `DelegateWriterInterface` (this interface extends `WriterInterface` so your
+writers can still be used without the `DelegatorWriter`).
 
 ```php
 <?php
@@ -545,7 +550,8 @@ Then, configure your `DelegatorWriter` and add it to your dataflow type.
     }
 ```
 
-During execution, the `DelegatorWriter` will simply pass each item received to its first delegate (in the order those were added) that supports it. If no delegate supports an item, an exception will be thrown.
+During execution, the `DelegatorWriter` will simply pass each item received to its first delegate (in the order those
+were added) that supports it. If no delegate supports an item, an exception will be thrown.
 
 ## Queue
 
@@ -563,7 +569,8 @@ Several commands are provided to manage schedules and run jobs.
 
 `code-rhapsodie:dataflow:run-pending` Executes job in the queue according to their schedule.
 
-When messenger mode is enabled, jobs will still be created according to their schedule, but execution will be handled by the messenger component instead.
+When messenger mode is enabled, jobs will still be created according to their schedule, but execution will be handled by
+the messenger component instead.
 
 `code-rhapsodie:dataflow:schedule:list` Display the list of dataflows scheduled.
 
@@ -602,7 +609,7 @@ $ bin/console code-rhapsodie:dataflow:run-pending --connection=default
 
 Please report issues and request features at https://github.com/code-rhapsodie/dataflow-bundle/issues.
 
-Please note that only the last release of the 3.x and the 4.x versions of this bundle are actively supported.
+Please note that only the last release of the 4.x and the 5.x versions of this bundle are actively supported.
 
 # Contributing
 

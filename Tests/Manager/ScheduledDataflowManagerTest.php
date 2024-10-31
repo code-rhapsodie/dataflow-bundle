@@ -2,10 +2,8 @@
 
 namespace CodeRhapsodie\DataflowBundle\Tests\Manager;
 
-use CodeRhapsodie\DataflowBundle\DataflowType\DataflowTypeInterface;
 use CodeRhapsodie\DataflowBundle\Entity\Job;
 use CodeRhapsodie\DataflowBundle\Entity\ScheduledDataflow;
-use CodeRhapsodie\DataflowBundle\Exceptions\UnknownDataflowTypeException;
 use CodeRhapsodie\DataflowBundle\Manager\ScheduledDataflowManager;
 use CodeRhapsodie\DataflowBundle\Repository\JobRepository;
 use CodeRhapsodie\DataflowBundle\Repository\ScheduledDataflowRepository;
@@ -15,13 +13,10 @@ use PHPUnit\Framework\TestCase;
 
 class ScheduledDataflowManagerTest extends TestCase
 {
-    private \CodeRhapsodie\DataflowBundle\Manager\ScheduledDataflowManager $manager;
-
-    private \Doctrine\DBAL\Connection|\PHPUnit\Framework\MockObject\MockObject $connection;
-
-    private \CodeRhapsodie\DataflowBundle\Repository\ScheduledDataflowRepository|\PHPUnit\Framework\MockObject\MockObject $scheduledDataflowRepository;
-
-    private \CodeRhapsodie\DataflowBundle\Repository\JobRepository|\PHPUnit\Framework\MockObject\MockObject $jobRepository;
+    private ScheduledDataflowManager $manager;
+    private Connection|MockObject $connection;
+    private ScheduledDataflowRepository|MockObject $scheduledDataflowRepository;
+    private JobRepository|MockObject $jobRepository;
 
     protected function setUp(): void
     {
@@ -50,10 +45,20 @@ class ScheduledDataflowManagerTest extends TestCase
             ->willReturn([$scheduled1, $scheduled2])
         ;
 
+        $matcher = $this->exactly(2);
         $this->jobRepository
-            ->expects($this->exactly(2))
+            ->expects($matcher)
             ->method('findPendingForScheduledDataflow')
-            ->withConsecutive([$scheduled1], [$scheduled2])
+            ->with($this->callback(function ($arg) use ($matcher, $scheduled1, $scheduled2) {
+                switch ($matcher->numberOfInvocations()) {
+                    case 1:
+                        return $arg === $scheduled1;
+                    case 2:
+                        return $arg === $scheduled2;
+                    default:
+                        return false;
+                }
+            }))
             ->willReturnOnConsecutiveCalls(new Job(), null)
         ;
 
@@ -103,7 +108,7 @@ class ScheduledDataflowManagerTest extends TestCase
         $this->jobRepository
             ->expects($this->exactly(1))
             ->method('findPendingForScheduledDataflow')
-            ->withConsecutive([$scheduled1])
+            ->with($scheduled1)
             ->willThrowException(new \Exception())
         ;
 

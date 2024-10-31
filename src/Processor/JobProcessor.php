@@ -53,12 +53,7 @@ class JobProcessor implements JobProcessorInterface, LoggerAwareInterface
 
     private function beforeProcessing(Job $job): void
     {
-        // Symfony 3.4 to 4.4 call
-        if (!class_exists(\Symfony\Contracts\EventDispatcher\Event::class)) {
-            $this->dispatcher->dispatch(Events::BEFORE_PROCESSING, new ProcessingEvent($job));
-        } else { // Symfony 5.0+ call
-            $this->dispatcher->dispatch(new ProcessingEvent($job), Events::BEFORE_PROCESSING);
-        }
+        $this->dispatcher->dispatch(new ProcessingEvent($job), Events::BEFORE_PROCESSING);
 
         $job
             ->setStatus(Job::STATUS_RUNNING)
@@ -77,11 +72,6 @@ class JobProcessor implements JobProcessorInterface, LoggerAwareInterface
         ;
         $this->repository->save($job);
 
-        // Symfony 3.4 to 4.4 call
-        if (!class_exists(\Symfony\Contracts\EventDispatcher\Event::class)) {
-            $this->dispatcher->dispatch(Events::AFTER_PROCESSING, new ProcessingEvent($job));
-        } else { // Symfony 5.0+ call
-            $this->dispatcher->dispatch(new ProcessingEvent($job), Events::AFTER_PROCESSING);
-        }
+        $this->dispatcher->dispatch(new ProcessingEvent($job), Events::AFTER_PROCESSING);
     }
 }

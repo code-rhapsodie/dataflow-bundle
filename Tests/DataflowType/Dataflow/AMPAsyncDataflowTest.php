@@ -4,7 +4,6 @@ namespace CodeRhapsodie\DataflowBundle\Tests\DataflowType\Dataflow;
 
 use Amp\Delayed;
 use CodeRhapsodie\DataflowBundle\DataflowType\Dataflow\AMPAsyncDataflow;
-use CodeRhapsodie\DataflowBundle\DataflowType\Dataflow\Dataflow;
 use CodeRhapsodie\DataflowBundle\DataflowType\Writer\WriterInterface;
 use PHPUnit\Framework\TestCase;
 

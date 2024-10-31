@@ -6,9 +6,10 @@ namespace CodeRhapsodie\DataflowBundle\MessengerMode;
 
 use CodeRhapsodie\DataflowBundle\Processor\JobProcessorInterface;
 use CodeRhapsodie\DataflowBundle\Repository\JobRepository;
-use Symfony\Component\Messenger\Handler\MessageSubscriberInterface;
+use Symfony\Component\Messenger\Attribute\AsMessageHandler;
 
-class JobMessageHandler implements MessageSubscriberInterface
+#[AsMessageHandler]
+class JobMessageHandler
 {
     public function __construct(private JobRepository $repository, private JobProcessorInterface $processor)
     {
@@ -17,10 +18,5 @@ class JobMessageHandler implements MessageSubscriberInterface
     public function __invoke(JobMessage $message)
     {
         $this->processor->process($this->repository->find($message->getJobId()));
-    }
-
-    public static function getHandledMessages(): iterable
-    {
-        return [JobMessage::class];
     }
 }

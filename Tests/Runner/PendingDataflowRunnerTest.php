@@ -11,11 +11,9 @@ use PHPUnit\Framework\TestCase;
 
 class PendingDataflowRunnerTest extends TestCase
 {
-    private \CodeRhapsodie\DataflowBundle\Runner\PendingDataflowRunner $runner;
-
-    private \CodeRhapsodie\DataflowBundle\Repository\JobRepository|\PHPUnit\Framework\MockObject\MockObject $repository;
-
-    private \CodeRhapsodie\DataflowBundle\Processor\JobProcessorInterface|\PHPUnit\Framework\MockObject\MockObject $processor;
+    private PendingDataflowRunner $runner;
+    private JobRepository|MockObject $repository;
+    private JobProcessorInterface|MockObject $processor;
 
     protected function setUp(): void
     {
@@ -36,10 +34,20 @@ class PendingDataflowRunnerTest extends TestCase
             ->willReturnOnConsecutiveCalls($job1, $job2, null)
         ;
 
+        $matcher = $this->exactly(2);
         $this->processor
-            ->expects($this->exactly(2))
+            ->expects($matcher)
             ->method('process')
-            ->withConsecutive([$job1], [$job2])
+            ->with($this->callback(function ($arg) use ($matcher, $job1, $job2) {
+                switch ($matcher->numberOfInvocations()) {
+                    case 1:
+                        return $arg === $job1;
+                    case 2:
+                        return $arg === $job2;
+                    default:
+                        return false;
+                }
+            }))
         ;
 
         $this->runner->runPendingDataflows();

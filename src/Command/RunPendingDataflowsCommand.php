@@ -7,6 +7,7 @@ namespace CodeRhapsodie\DataflowBundle\Command;
 use CodeRhapsodie\DataflowBundle\Factory\ConnectionFactory;
 use CodeRhapsodie\DataflowBundle\Manager\ScheduledDataflowManagerInterface;
 use CodeRhapsodie\DataflowBundle\Runner\PendingDataflowRunnerInterface;
+use Symfony\Component\Console\Attribute\AsCommand;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Command\LockableTrait;
 use Symfony\Component\Console\Input\InputInterface;
@@ -18,11 +19,10 @@ use Symfony\Component\Console\Output\OutputInterface;
  *
  * @codeCoverageIgnore
  */
+#[AsCommand('code-rhapsodie:dataflow:run-pending', 'Runs dataflows based on the scheduled defined in the UI.')]
 class RunPendingDataflowsCommand extends Command
 {
     use LockableTrait;
-
-    protected static $defaultName = 'code-rhapsodie:dataflow:run-pending';
 
     public function __construct(private ScheduledDataflowManagerInterface $manager, private PendingDataflowRunnerInterface $runner, private ConnectionFactory $connectionFactory)
     {
@@ -35,7 +35,6 @@ class RunPendingDataflowsCommand extends Command
     protected function configure()
     {
         $this
-            ->setDescription('Runs dataflows based on the scheduled defined in the UI.')
             ->setHelp(<<<'EOF'
 The <info>%command.name%</info> command runs dataflows according to the schedule defined in the UI by the user.
 EOF

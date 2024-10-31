@@ -20,16 +20,6 @@ class ScheduledDataflowRepository
 
     public const TABLE_NAME = 'cr_dataflow_scheduled';
 
-    private const FIELDS_TYPE = [
-        'id' => ParameterType::INTEGER,
-        'label' => ParameterType::STRING,
-        'dataflow_type' => ParameterType::STRING,
-        'options' => ParameterType::STRING,
-        'frequency' => ParameterType::STRING,
-        'next' => 'datetime',
-        'enabled' => ParameterType::BOOLEAN,
-    ];
-
     /**
      * JobRepository constructor.
      */
@@ -46,11 +36,11 @@ class ScheduledDataflowRepository
     {
         $qb = $this->createQueryBuilder();
         $qb->andWhere($qb->expr()->lte('next', $qb->createNamedParameter(new \DateTime(), 'datetime')))
-            ->andWhere($qb->expr()->eq('enabled', 1))
+            ->andWhere($qb->expr()->eq('enabled', $qb->createNamedParameter(1, ParameterType::INTEGER)))
             ->orderBy('next', 'ASC')
         ;
 
-        $stmt = $qb->execute();
+        $stmt = $qb->executeQuery();
         if (0 === $stmt->rowCount()) {
             return [];
         }
@@ -74,7 +64,7 @@ class ScheduledDataflowRepository
         $qb = $this->createQueryBuilder();
         $qb->orderBy('label', 'ASC');
 
-        $stmt = $qb->execute();
+        $stmt = $qb->executeQuery();
         if (0 === $stmt->rowCount()) {
             return [];
         }
@@ -92,7 +82,7 @@ class ScheduledDataflowRepository
             ->orderBy('w.label', 'ASC')
             ->groupBy('w.id');
 
-        return $query->execute()->fetchAllAssociative();
+        return $query->executeQuery()->fetchAllAssociative();
     }
 
     public function save(ScheduledDataflow $scheduledDataflow)
@@ -105,12 +95,12 @@ class ScheduledDataflowRepository
         }
 
         if (null === $scheduledDataflow->getId()) {
-            $this->connection->insert(static::TABLE_NAME, $datas, static::FIELDS_TYPE);
+            $this->connection->insert(static::TABLE_NAME, $datas, $this->getFields());
             $scheduledDataflow->setId((int) $this->connection->lastInsertId());
 
             return;
         }
-        $this->connection->update(static::TABLE_NAME, $datas, ['id' => $scheduledDataflow->getId()], static::FIELDS_TYPE);
+        $this->connection->update(static::TABLE_NAME, $datas, ['id' => $scheduledDataflow->getId()], $this->getFields());
     }
 
     public function delete(int $id): void
@@ -138,11 +128,24 @@ class ScheduledDataflowRepository
 
     private function returnFirstOrNull(QueryBuilder $qb): ?ScheduledDataflow
     {
-        $stmt = $qb->execute();
+        $stmt = $qb->executeQuery();
         if (0 === $stmt->rowCount()) {
             return null;
         }
 
         return ScheduledDataflow::createFromArray($this->initDateTime($this->initArray($stmt->fetchAssociative())));
+    }
+
+    private function getFields(): array
+    {
+        return [
+            'id' => ParameterType::INTEGER,
+            'label' => ParameterType::STRING,
+            'dataflow_type' => ParameterType::STRING,
+            'options' => ParameterType::STRING,
+            'frequency' => ParameterType::STRING,
+            'next' => 'datetime',
+            'enabled' => ParameterType::BOOLEAN,
+        ];
     }
 }

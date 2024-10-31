@@ -68,7 +68,7 @@ class AMPAsyncDataflow implements DataflowInterface, LoggerAwareInterface
     {
         $count = 0;
         $exceptions = [];
-        $startTime = new \DateTimeImmutable();
+        $startTime = new \DateTime();
 
         try {
             foreach ($this->writers as $writer) {
@@ -110,7 +110,7 @@ class AMPAsyncDataflow implements DataflowInterface, LoggerAwareInterface
             $this->logException($e);
         }
 
-        return new Result($this->name, $startTime, new \DateTimeImmutable(), $count, $exceptions);
+        return new Result($this->name, $startTime, new \DateTime(), $count, $exceptions);
     }
 
     /**

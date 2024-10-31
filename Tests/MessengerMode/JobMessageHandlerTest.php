@@ -14,11 +14,9 @@ use PHPUnit\Framework\TestCase;
 
 class JobMessageHandlerTest extends TestCase
 {
-    private \CodeRhapsodie\DataflowBundle\Repository\JobRepository|\PHPUnit\Framework\MockObject\MockObject $repository;
-
-    private \CodeRhapsodie\DataflowBundle\Processor\JobProcessorInterface|\PHPUnit\Framework\MockObject\MockObject $processor;
-
-    private \CodeRhapsodie\DataflowBundle\MessengerMode\JobMessageHandler $handler;
+    private JobRepository|MockObject $repository;
+    private JobProcessorInterface|MockObject $processor;
+    private JobMessageHandler $handler;
 
     protected function setUp(): void
     {
@@ -26,11 +24,6 @@ class JobMessageHandlerTest extends TestCase
         $this->processor = $this->createMock(JobProcessorInterface::class);
 
         $this->handler = new JobMessageHandler($this->repository, $this->processor);
-    }
-
-    public function testGetHandledMessages()
-    {
-        $this->assertSame([JobMessage::class], JobMessageHandler::getHandledMessages());
     }
 
     public function testInvoke()

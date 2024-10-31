@@ -9,9 +9,11 @@ namespace CodeRhapsodie\DataflowBundle\Repository;
  */
 trait InitFromDbTrait
 {
+    abstract private function getFields(): array;
+
     private function initDateTime(array $datas): array
     {
-        foreach (static::FIELDS_TYPE as $key => $type) {
+        foreach ($this->getFields() as $key => $type) {
             if ('datetime' === $type && null !== $datas[$key]) {
                 $datas[$key] = new \DateTime($datas[$key]);
             }

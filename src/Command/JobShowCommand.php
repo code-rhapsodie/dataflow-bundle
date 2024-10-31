@@ -7,6 +7,7 @@ namespace CodeRhapsodie\DataflowBundle\Command;
 use CodeRhapsodie\DataflowBundle\Entity\Job;
 use CodeRhapsodie\DataflowBundle\Factory\ConnectionFactory;
 use CodeRhapsodie\DataflowBundle\Repository\JobRepository;
+use Symfony\Component\Console\Attribute\AsCommand;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
@@ -16,6 +17,7 @@ use Symfony\Component\Console\Style\SymfonyStyle;
 /**
  * @codeCoverageIgnore
  */
+#[AsCommand('code-rhapsodie:dataflow:job:show', 'Display job details for schedule or specific job')]
 class JobShowCommand extends Command
 {
     private const STATUS_MAPPING = [
@@ -23,8 +25,6 @@ class JobShowCommand extends Command
         Job::STATUS_RUNNING => 'Running',
         Job::STATUS_COMPLETED => 'Completed',
     ];
-
-    protected static $defaultName = 'code-rhapsodie:dataflow:job:show';
 
     public function __construct(private JobRepository $jobRepository, private ConnectionFactory $connectionFactory)
     {
@@ -37,7 +37,6 @@ class JobShowCommand extends Command
     protected function configure()
     {
         $this
-            ->setDescription('Display job details for schedule or specific job')
             ->setHelp('The <info>%command.name%</info> display job details for schedule or specific job.')
             ->addOption('job-id', null, InputOption::VALUE_REQUIRED, 'Id of the job to get details')
             ->addOption('schedule-id', null, InputOption::VALUE_REQUIRED, 'Id of schedule for last execution details')

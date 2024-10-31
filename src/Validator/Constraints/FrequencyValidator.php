@@ -13,7 +13,7 @@ class FrequencyValidator extends ConstraintValidator
     /**
      * {@inheritdoc}
      */
-    public function validate($value, Constraint $constraint)
+    public function validate(mixed $value, Constraint $constraint)
     {
         if (!$constraint instanceof Frequency) {
             throw new UnexpectedTypeException($constraint, Frequency::class);
@@ -23,7 +23,12 @@ class FrequencyValidator extends ConstraintValidator
             return;
         }
 
-        $interval = @\DateInterval::createFromDateString($value);
+        try {
+            $interval = \DateInterval::createFromDateString($value);
+        } catch (\Exception){
+            $interval = false;
+        }
+
         if (!$interval) {
             $this->context->buildViolation($constraint->message)
                 ->setParameter('{{ string }}', $value)
@@ -42,8 +47,6 @@ class FrequencyValidator extends ConstraintValidator
                 ->setParameter('{{ string }}', $value)
                 ->addViolation()
             ;
-
-            return;
         }
     }
 }

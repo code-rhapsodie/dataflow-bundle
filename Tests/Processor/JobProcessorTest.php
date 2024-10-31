@@ -16,13 +16,10 @@ use Symfony\Component\EventDispatcher\EventDispatcherInterface;
 
 class JobProcessorTest extends TestCase
 {
-    private \CodeRhapsodie\DataflowBundle\Processor\JobProcessor $processor;
-
-    private \CodeRhapsodie\DataflowBundle\Repository\JobRepository|\PHPUnit\Framework\MockObject\MockObject $repository;
-
-    private \CodeRhapsodie\DataflowBundle\Registry\DataflowTypeRegistryInterface|\PHPUnit\Framework\MockObject\MockObject $registry;
-
-    private \Symfony\Component\EventDispatcher\EventDispatcherInterface|\PHPUnit\Framework\MockObject\MockObject $dispatcher;
+    private JobProcessor $processor;
+    private JobRepository|MockObject $repository;
+    private DataflowTypeRegistryInterface|MockObject $registry;
+    private EventDispatcherInterface|MockObject $dispatcher;
 
     protected function setUp(): void
     {
@@ -42,36 +39,25 @@ class JobProcessorTest extends TestCase
             ->setOptions($options = ['option1' => 'value1'])
         ;
 
-        // Symfony 3.4 to 4.4 call
-        if (!class_exists(\Symfony\Contracts\EventDispatcher\Event::class)) {
-            $this->dispatcher
-                ->expects($this->exactly(2))
-                ->method('dispatch')
-                ->withConsecutive(
-                    [
-                        Events::BEFORE_PROCESSING,
-                        $this->callback(fn(ProcessingEvent $event) => $event->getJob() === $job)
-                    ],
-                    [
-                        Events::AFTER_PROCESSING,
-                        $this->callback(fn(ProcessingEvent $event) => $event->getJob() === $job)
-                    ],
-                );
-        } else { // Symfony 5.0+
-            $this->dispatcher
-                ->expects($this->exactly(2))
-                ->method('dispatch')
-                ->withConsecutive(
-                    [
-                        $this->callback(fn(ProcessingEvent $event) => $event->getJob() === $job),
-                        Events::BEFORE_PROCESSING,
-                    ],
-                    [
-                        $this->callback(fn(ProcessingEvent $event) => $event->getJob() === $job),
-                        Events::AFTER_PROCESSING,
-                    ],
-                );
-        }
+        $matcher = $this->exactly(2);
+        $this->dispatcher
+            ->expects($matcher)
+            ->method('dispatch')
+            ->with(
+                $this->callback(function ($arg) use ($job) {
+                    return $arg instanceof ProcessingEvent && $arg->getJob() === $job;
+                }),
+                $this->callback(function ($arg) use ($matcher) {
+                    switch ($matcher->numberOfInvocations()) {
+                        case 1:
+                            return $arg === Events::BEFORE_PROCESSING;
+                        case 2:
+                            return $arg === Events::AFTER_PROCESSING;
+                        default:
+                            return false;
+                    }
+                })
+            );
 
         $dataflowType = $this->createMock(DataflowTypeInterface::class);
 

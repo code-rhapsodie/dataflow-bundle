@@ -8,17 +8,13 @@ use Monolog\Formatter\FormatterInterface;
 use Monolog\Formatter\LineFormatter;
 use Monolog\Handler\AbstractProcessingHandler;
 use Monolog\Logger;
+use Monolog\LogRecord;
 
 class BufferHandler extends AbstractProcessingHandler
 {
     private const FORMAT = "[%datetime%] %level_name% when processing item %context.index%: %message% %context% %extra%\n";
 
     private array $buffer = [];
-
-    public function __construct($level = Logger::DEBUG, bool $bubble = true)
-    {
-        parent::__construct($level, $bubble);
-    }
 
     public function clearBuffer(): array
     {
@@ -28,7 +24,7 @@ class BufferHandler extends AbstractProcessingHandler
         return $logs;
     }
 
-    protected function write(array $record): void
+    protected function write(array|LogRecord $record): void
     {
         $this->buffer[] = $record['formatted'];
     }

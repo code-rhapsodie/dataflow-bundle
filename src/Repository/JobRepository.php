@@ -21,20 +21,6 @@ class JobRepository
 
     public const TABLE_NAME = 'cr_dataflow_job';
 
-    private const FIELDS_TYPE = [
-        'id' => ParameterType::INTEGER,
-        'status' => ParameterType::INTEGER,
-        'label' => ParameterType::STRING,
-        'dataflow_type' => ParameterType::STRING,
-        'options' => ParameterType::STRING,
-        'requested_date' => 'datetime',
-        'scheduled_dataflow_id' => ParameterType::INTEGER,
-        'count' => ParameterType::INTEGER,
-        'exceptions' => ParameterType::STRING,
-        'start_time' => 'datetime',
-        'end_time' => 'datetime',
-    ];
-
     /**
      * JobRepository constructor.
      */
@@ -58,7 +44,7 @@ class JobRepository
         $qb
             ->andWhere($qb->expr()->isNull('scheduled_dataflow_id'))
             ->andWhere($qb->expr()->eq('status', $qb->createNamedParameter(Job::STATUS_PENDING, ParameterType::INTEGER)));
-        $stmt = $qb->execute();
+        $stmt = $qb->executeQuery();
         if (0 === $stmt->rowCount()) {
             return [];
         }
@@ -106,7 +92,7 @@ class JobRepository
         $qb
             ->orderBy('requested_date', 'DESC')
             ->setMaxResults(20);
-        $stmt = $qb->execute();
+        $stmt = $qb->executeQuery();
         if (0 === $stmt->rowCount()) {
             return [];
         }
@@ -121,7 +107,7 @@ class JobRepository
         $qb->andWhere($qb->expr()->eq('scheduled_dataflow_id', $qb->createNamedParameter($id, ParameterType::INTEGER)))
             ->orderBy('requested_date', 'DESC')
             ->setMaxResults(20);
-        $stmt = $qb->execute();
+        $stmt = $qb->executeQuery();
         if (0 === $stmt->rowCount()) {
             return [];
         }
@@ -143,12 +129,12 @@ class JobRepository
         }
 
         if (null === $job->getId()) {
-            $this->connection->insert(static::TABLE_NAME, $datas, static::FIELDS_TYPE);
+            $this->connection->insert(static::TABLE_NAME, $datas, $this->getFields());
             $job->setId((int) $this->connection->lastInsertId());
 
             return;
         }
-        $this->connection->update(static::TABLE_NAME, $datas, ['id' => $job->getId()], static::FIELDS_TYPE);
+        $this->connection->update(static::TABLE_NAME, $datas, ['id' => $job->getId()], $this->getFields());
     }
 
     public function createQueryBuilder($alias = null): QueryBuilder
@@ -162,11 +148,28 @@ class JobRepository
 
     private function returnFirstOrNull(QueryBuilder $qb): ?Job
     {
-        $stmt = $qb->execute();
+        $stmt = $qb->executeQuery();
         if (0 === $stmt->rowCount()) {
             return null;
         }
 
         return Job::createFromArray($this->initDateTime($this->initArray($stmt->fetchAssociative())));
+    }
+
+    private function getFields(): array
+    {
+        return [
+            'id' => ParameterType::INTEGER,
+            'status' => ParameterType::INTEGER,
+            'label' => ParameterType::STRING,
+            'dataflow_type' => ParameterType::STRING,
+            'options' => ParameterType::STRING,
+            'requested_date' => 'datetime',
+            'scheduled_dataflow_id' => ParameterType::INTEGER,
+            'count' => ParameterType::INTEGER,
+            'exceptions' => ParameterType::STRING,
+            'start_time' => 'datetime',
+            'end_time' => 'datetime',
+        ];
     }
 }

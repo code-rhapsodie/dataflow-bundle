@@ -8,6 +8,7 @@ use CodeRhapsodie\DataflowBundle\Entity\ScheduledDataflow;
 use CodeRhapsodie\DataflowBundle\Factory\ConnectionFactory;
 use CodeRhapsodie\DataflowBundle\Registry\DataflowTypeRegistryInterface;
 use CodeRhapsodie\DataflowBundle\Repository\ScheduledDataflowRepository;
+use Symfony\Component\Console\Attribute\AsCommand;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
@@ -18,10 +19,9 @@ use Symfony\Component\Validator\Validator\ValidatorInterface;
 /**
  * @codeCoverageIgnore
  */
+#[AsCommand('code-rhapsodie:dataflow:schedule:add', 'Create a scheduled dataflow')]
 class AddScheduledDataflowCommand extends Command
 {
-    protected static $defaultName = 'code-rhapsodie:dataflow:schedule:add';
-
     public function __construct(private DataflowTypeRegistryInterface $registry, private ScheduledDataflowRepository $scheduledDataflowRepository, private ValidatorInterface $validator, private ConnectionFactory $connectionFactory)
     {
         parent::__construct();
@@ -33,7 +33,6 @@ class AddScheduledDataflowCommand extends Command
     protected function configure()
     {
         $this
-            ->setDescription('Create a scheduled dataflow')
             ->setHelp('The <info>%command.name%</info> allows you to create a new scheduled dataflow.')
             ->addOption('label', null, InputOption::VALUE_REQUIRED, 'Label of the scheduled dataflow')
             ->addOption('type', null, InputOption::VALUE_REQUIRED, 'Type of the scheduled dataflow (FQCN)')
@@ -95,7 +94,7 @@ class AddScheduledDataflowCommand extends Command
             'dataflow_type' => $type,
             'options' => json_decode($options, true, 512, JSON_THROW_ON_ERROR),
             'frequency' => $frequency,
-            'next' => new \DateTimeImmutable($firstRun),
+            'next' => new \DateTime($firstRun),
             'enabled' => $enabled,
         ]);
 
