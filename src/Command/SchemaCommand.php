@@ -46,9 +46,19 @@ class SchemaCommand extends Command
         $io = new SymfonyStyle($input, $output);
         $io->warning('This command is deprecated and will be removed in 6.0, use this command "code-rhapsodie:dataflow:database-schema" instead.');
 
+        $options = array_filter($input->getOptions());
+
+        //add -- before each keys
+        $options = array_combine(
+            array_map(fn($key) => '--' . $key, array_keys($options)),
+            array_values($options)
+        );
+
+        $options['--dump-sql'] = true;
+
         $inputArray = new ArrayInput([
             'command' => 'code-rhapsodie:dataflow:database-schema',
-            ...$input->getOptions()
+            ...$options
         ]);
 
         return $this->getApplication()->doRun($inputArray, $output);
