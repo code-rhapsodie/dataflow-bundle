@@ -36,7 +36,6 @@ class DatabaseSchemaCommand extends Command
             ->setHelp('The <info>%command.name%</info> help you to generate SQL Query to create or update your database schema for this bundle')
             ->addOption('dump-sql', null, InputOption::VALUE_NONE, 'Dump only the update SQL queries.')
             ->addOption('update', null, InputOption::VALUE_NONE, 'Dump/execute only the update SQL queries.')
-            ->addOption('no-interaction', null, InputOption::VALUE_NONE, 'Remove interactions')
             ->addOption('connection', null, InputOption::VALUE_REQUIRED, 'Define the DBAL connection to use');
     }
 
@@ -82,6 +81,10 @@ class DatabaseSchemaCommand extends Command
             $oldSchema = new Schema($tables, $sequences, $sm->createSchemaConfig(), $namespaces);
 
             $sqls = $connection->getDatabasePlatform()->getAlterSchemaSQL((new Comparator($connection->getDatabasePlatform()))->compareSchemas($oldSchema, $schema));
+
+            if (empty($sqls)) {
+                $io->info('There is no update SQL queries.');
+            }
         }
 
         if ($input->getOption('dump-sql')) {
@@ -93,24 +96,17 @@ class DatabaseSchemaCommand extends Command
             return Command::SUCCESS;
         }
 
-        if ($input->getOption('no-interation') === null && !$this->getHelper('question')->ask($input, $output, new ConfirmationQuestion('Are you sure to update database ?', false))) {
+        if (!$io->askQuestion(new ConfirmationQuestion('Are you sure to update database ?', true))) {
             $io->text("Execution canceled.");
 
             return Command::SUCCESS;
         }
 
-        try {
-            $connection->beginTransaction();
-            foreach ($sqls as $sql) {
-                $connection->executeQuery($sql);
-            }
-            $connection->commit();
-        } catch (\Exception $e) {
-            $io->error($e->getMessage());
-            $connection->rollBack();
-            $io->text("Execution canceled. Rollback database");
-            return Command::FAILURE;
+        foreach ($sqls as $sql) {
+            $connection->executeQuery($sql);
         }
+
+        $io->success(sprintf('%d queries executed.', \count($sqls)));
 
         return parent::SUCCESS;
     }
