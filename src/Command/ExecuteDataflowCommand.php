@@ -34,7 +34,7 @@ class ExecuteDataflowCommand extends Command implements LoggerAwareInterface
     /**
      * {@inheritdoc}
      */
-    protected function configure()
+    protected function configure(): void
     {
         $this
             ->setHelp(<<<'EOF'

@@ -29,7 +29,7 @@ class ChangeScheduleStatusCommand extends Command
     /**
      * {@inheritdoc}
      */
-    protected function configure()
+    protected function configure(): void
     {
         $this
             ->setHelp('The <info>%command.name%</info> command able you to change schedule status.')

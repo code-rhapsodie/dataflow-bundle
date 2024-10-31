@@ -34,7 +34,7 @@ class JobShowCommand extends Command
     /**
      * {@inheritdoc}
      */
-    protected function configure()
+    protected function configure(): void
     {
         $this
             ->setHelp('The <info>%command.name%</info> display job details for schedule or specific job.')
