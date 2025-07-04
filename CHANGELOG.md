@@ -1,5 +1,7 @@
 # Version 4.1.0
+* Added custom index for job status
 
+# Version 4.1.0
 * Added custom index for exception log
 
 # Version 4.0.0
