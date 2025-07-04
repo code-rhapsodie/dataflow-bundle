@@ -1,5 +1,27 @@
-# Version 4.2.0
+# Version 5.2.0
 * Added custom index for job status
+
+# Version 5.1.0
+* Refactor SchemaDump command
+
+# Version 5.0.1
+* Fix compatibility with doctrine 4
+
+# Version 5.0.0
+* Initiate Kudos on dataflow-bundle
+* Added Symfony 7 support
+* Removed Symfony 6 compatibility
+* Removed Symfony 5 compatibility
+* Removed Symfony 4 compatibility
+* Removed Symfony 3 compatibility
+* Changed README.md
+* Added CI
+
+# Version 4.1.3
+* Fix log exception argument typing
+
+# Version 4.1.2
+* Fix DBAL 2.12 compatibility break
 
 # Version 4.1.0
 
