@@ -48,6 +48,7 @@ class DataflowSchemaProvider
         $tableSchedule->addColumn('enabled', 'boolean', ['notnull' => true]);
 
         $tableJob->addForeignKeyConstraint($tableSchedule->getName(), ['scheduled_dataflow_id'], ['id']);
+        $tableJob->addIndex(['status'], 'idx_status');
 
         return $schema;
     }
