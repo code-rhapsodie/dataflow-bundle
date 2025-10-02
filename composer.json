@@ -60,6 +60,7 @@
     },
     "require-dev": {
         "amphp/amp": "^2.5",
+        "friendsofphp/php-cs-fixer": "^3.75",
         "phpunit/phpunit": "^11",
         "portphp/portphp": "^1.9",
         "rector/rector": "^1.0",

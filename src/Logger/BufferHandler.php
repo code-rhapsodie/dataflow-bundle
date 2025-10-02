@@ -7,7 +7,6 @@ namespace CodeRhapsodie\DataflowBundle\Logger;
 use Monolog\Formatter\FormatterInterface;
 use Monolog\Formatter\LineFormatter;
 use Monolog\Handler\AbstractProcessingHandler;
-use Monolog\Logger;
 use Monolog\LogRecord;
 
 class BufferHandler extends AbstractProcessingHandler

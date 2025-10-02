@@ -26,9 +26,6 @@ class ChangeScheduleStatusCommand extends Command
         parent::__construct();
     }
 
-    /**
-     * {@inheritdoc}
-     */
     protected function configure(): void
     {
         $this
@@ -39,12 +36,9 @@ class ChangeScheduleStatusCommand extends Command
             ->addOption('connection', null, InputOption::VALUE_REQUIRED, 'Define the DBAL connection to use');
     }
 
-    /**
-     * {@inheritdoc}
-     */
     protected function execute(InputInterface $input, OutputInterface $output): int
     {
-        if (null !== $input->getOption('connection')) {
+        if ($input->getOption('connection') !== null) {
             $this->connectionFactory->setConnectionName($input->getOption('connection'));
         }
         $io = new SymfonyStyle($input, $output);
@@ -52,7 +46,7 @@ class ChangeScheduleStatusCommand extends Command
         $schedule = $this->scheduledDataflowRepository->find((int) $input->getArgument('schedule-id'));
 
         if (!$schedule) {
-            $io->error(sprintf('Cannot find scheduled dataflow with id "%d".', $input->getArgument('schedule-id')));
+            $io->error(\sprintf('Cannot find scheduled dataflow with id "%d".', $input->getArgument('schedule-id')));
 
             return 1;
         }
@@ -71,9 +65,9 @@ class ChangeScheduleStatusCommand extends Command
         try {
             $schedule->setEnabled($input->getOption('enable'));
             $this->scheduledDataflowRepository->save($schedule);
-            $io->success(sprintf('Schedule with id "%s" has been successfully updated.', $schedule->getId()));
+            $io->success(\sprintf('Schedule with id "%s" has been successfully updated.', $schedule->getId()));
         } catch (\Exception $e) {
-            $io->error(sprintf('An error occured when changing schedule status : "%s".', $e->getMessage()));
+            $io->error(\sprintf('An error occured when changing schedule status : "%s".', $e->getMessage()));
 
             return 4;
         }

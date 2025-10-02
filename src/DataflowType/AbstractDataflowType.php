@@ -10,7 +10,7 @@ use Psr\Log\LoggerAwareTrait;
 use Psr\Log\LoggerInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 
-abstract class AbstractDataflowType implements DataflowTypeInterface, LoggerAwareInterface, RepositoryInterface
+abstract class AbstractDataflowType implements DataflowTypeInterface, LoggerAwareInterface, AutoUpdateCountInterface
 {
     use LoggerAwareTrait;
 
@@ -28,7 +28,7 @@ abstract class AbstractDataflowType implements DataflowTypeInterface, LoggerAwar
 
     public function process(array $options, ?int $jobId = null): Result
     {
-        $this->saveDate = new \DateTime();
+        $this->saveDate = new \DateTime('+1 minute');
 
         $optionsResolver = new OptionsResolver();
         $this->configureOptions($optionsResolver);
@@ -36,7 +36,7 @@ abstract class AbstractDataflowType implements DataflowTypeInterface, LoggerAwar
 
         $builder = $this->createDataflowBuilder();
         $builder->setName($this->getLabel());
-        $builder->addAfterItemProcessors(function (int|string $index, mixed $item, int $count) use ($jobId) {
+        $builder->addAfterItemProcessor(function (int|string $index, mixed $item, int $count) use ($jobId) {
             if ($jobId === null || $this->saveDate > new \DateTime()) {
                 return;
             }
@@ -53,6 +53,11 @@ abstract class AbstractDataflowType implements DataflowTypeInterface, LoggerAwar
         return $dataflow->process();
     }
 
+    public function setRepository(JobRepository $repository): void
+    {
+        $this->repository = $repository;
+    }
+
     protected function createDataflowBuilder(): DataflowBuilder
     {
         return new DataflowBuilder();
@@ -66,9 +71,4 @@ abstract class AbstractDataflowType implements DataflowTypeInterface, LoggerAwar
     }
 
     abstract protected function buildDataflow(DataflowBuilder $builder, array $options): void;
-
-    public function setRepository(JobRepository $repository): void
-    {
-        $this->repository = $repository;
-    }
 }

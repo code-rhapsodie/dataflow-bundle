@@ -45,7 +45,7 @@ class JobRepository
             ->andWhere($qb->expr()->isNull('scheduled_dataflow_id'))
             ->andWhere($qb->expr()->eq('status', $qb->createNamedParameter(Job::STATUS_PENDING, ParameterType::INTEGER)));
         $stmt = $qb->executeQuery();
-        if (0 === $stmt->rowCount()) {
+        if ($stmt->rowCount() === 0) {
             return [];
         }
         while (false !== ($row = $stmt->fetchAssociative())) {
@@ -93,7 +93,7 @@ class JobRepository
             ->orderBy('requested_date', 'DESC')
             ->setMaxResults(20);
         $stmt = $qb->executeQuery();
-        if (0 === $stmt->rowCount()) {
+        if ($stmt->rowCount() === 0) {
             return [];
         }
         while (false !== ($row = $stmt->fetchAssociative())) {
@@ -108,7 +108,7 @@ class JobRepository
             ->orderBy('requested_date', 'DESC')
             ->setMaxResults(20);
         $stmt = $qb->executeQuery();
-        if (0 === $stmt->rowCount()) {
+        if ($stmt->rowCount() === 0) {
             return [];
         }
         while (false !== ($row = $stmt->fetchAssociative())) {
@@ -121,14 +121,14 @@ class JobRepository
         $datas = $job->toArray();
         unset($datas['id']);
 
-        if (is_array($datas['options'])) {
-            $datas['options'] = json_encode($datas['options'], JSON_THROW_ON_ERROR);
+        if (\is_array($datas['options'])) {
+            $datas['options'] = json_encode($datas['options'], \JSON_THROW_ON_ERROR);
         }
-        if (is_array($datas['exceptions'])) {
-            $datas['exceptions'] = json_encode($datas['exceptions'], JSON_THROW_ON_ERROR);
+        if (\is_array($datas['exceptions'])) {
+            $datas['exceptions'] = json_encode($datas['exceptions'], \JSON_THROW_ON_ERROR);
         }
 
-        if (null === $job->getId()) {
+        if ($job->getId() === null) {
             $this->connection->insert(static::TABLE_NAME, $datas, $this->getFields());
             $job->setId((int) $this->connection->lastInsertId());
 
@@ -154,7 +154,7 @@ class JobRepository
     private function returnFirstOrNull(QueryBuilder $qb): ?Job
     {
         $stmt = $qb->executeQuery();
-        if (0 === $stmt->rowCount()) {
+        if ($stmt->rowCount() === 0) {
             return null;
         }
 

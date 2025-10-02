@@ -41,7 +41,7 @@ class ScheduledDataflowRepository
         ;
 
         $stmt = $qb->executeQuery();
-        if (0 === $stmt->rowCount()) {
+        if ($stmt->rowCount() === 0) {
             return [];
         }
         while (false !== ($row = $stmt->fetchAssociative())) {
@@ -65,7 +65,7 @@ class ScheduledDataflowRepository
         $qb->orderBy('label', 'ASC');
 
         $stmt = $qb->executeQuery();
-        if (0 === $stmt->rowCount()) {
+        if ($stmt->rowCount() === 0) {
             return [];
         }
         while (false !== ($row = $stmt->fetchAssociative())) {
@@ -90,11 +90,11 @@ class ScheduledDataflowRepository
         $datas = $scheduledDataflow->toArray();
         unset($datas['id']);
 
-        if (is_array($datas['options'])) {
-            $datas['options'] = json_encode($datas['options'], JSON_THROW_ON_ERROR);
+        if (\is_array($datas['options'])) {
+            $datas['options'] = json_encode($datas['options'], \JSON_THROW_ON_ERROR);
         }
 
-        if (null === $scheduledDataflow->getId()) {
+        if ($scheduledDataflow->getId() === null) {
             $this->connection->insert(static::TABLE_NAME, $datas, $this->getFields());
             $scheduledDataflow->setId((int) $this->connection->lastInsertId());
 
@@ -129,7 +129,7 @@ class ScheduledDataflowRepository
     private function returnFirstOrNull(QueryBuilder $qb): ?ScheduledDataflow
     {
         $stmt = $qb->executeQuery();
-        if (0 === $stmt->rowCount()) {
+        if ($stmt->rowCount() === 0) {
             return null;
         }
 

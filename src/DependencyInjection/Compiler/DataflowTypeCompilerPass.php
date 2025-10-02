@@ -16,9 +16,6 @@ use Symfony\Component\DependencyInjection\Reference;
  */
 class DataflowTypeCompilerPass implements CompilerPassInterface
 {
-    /**
-     * {@inheritdoc}
-     */
     public function process(ContainerBuilder $container)
     {
         if (!$container->has(DataflowTypeRegistry::class)) {

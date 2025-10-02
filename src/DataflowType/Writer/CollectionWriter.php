@@ -18,21 +18,15 @@ class CollectionWriter implements DelegateWriterInterface
     {
     }
 
-    /**
-     * {@inheritdoc}
-     */
     public function prepare()
     {
         $this->writer->prepare();
     }
 
-    /**
-     * {@inheritdoc}
-     */
     public function write($collection)
     {
         if (!is_iterable($collection)) {
-            throw new UnsupportedItemTypeException(sprintf('Item to write was expected to be an iterable, received %s.', get_debug_type($collection)));
+            throw new UnsupportedItemTypeException(\sprintf('Item to write was expected to be an iterable, received %s.', get_debug_type($collection)));
         }
 
         foreach ($collection as $item) {
@@ -40,17 +34,11 @@ class CollectionWriter implements DelegateWriterInterface
         }
     }
 
-    /**
-     * {@inheritdoc}
-     */
     public function finish()
     {
         $this->writer->finish();
     }
 
-    /**
-     * {@inheritdoc}
-     */
     public function supports($item): bool
     {
         return is_iterable($item);

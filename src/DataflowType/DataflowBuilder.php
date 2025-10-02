@@ -58,7 +58,7 @@ class DataflowBuilder
         return $this;
     }
 
-    public function addAfterItemProcessors(callable $callable): self
+    public function addAfterItemProcessor(callable $callable): self
     {
         $this->afterItemProcessors[] = \Closure::fromCallable($callable);
 
@@ -80,7 +80,7 @@ class DataflowBuilder
             $dataflow->addWriter($writer);
         }
 
-        if (is_callable($this->customExceptionIndex)) {
+        if (\is_callable($this->customExceptionIndex)) {
             $dataflow->setCustomExceptionIndex($this->customExceptionIndex);
         }
 

@@ -6,7 +6,7 @@ namespace CodeRhapsodie\DataflowBundle\DataflowType;
 
 use CodeRhapsodie\DataflowBundle\Repository\JobRepository;
 
-interface RepositoryInterface
+interface AutoUpdateCountInterface
 {
     public function setRepository(JobRepository $repository): void;
 }

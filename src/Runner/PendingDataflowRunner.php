@@ -13,9 +13,6 @@ class PendingDataflowRunner implements PendingDataflowRunnerInterface
     {
     }
 
-    /**
-     * {@inheritdoc}
-     */
     public function runPendingDataflows(): void
     {
         while (null !== ($job = $this->repository->findNextPendingDataflow())) {

@@ -20,7 +20,7 @@ class Result
     public function __construct(private string $name, private \DateTimeInterface $startTime, private \DateTimeInterface $endTime, private int $totalProcessedCount, array $exceptions)
     {
         $this->elapsed = $startTime->diff($endTime);
-        $this->errorCount = count($exceptions);
+        $this->errorCount = \count($exceptions);
         $this->successCount = $totalProcessedCount - $this->errorCount;
         $this->exceptions = $exceptions;
     }

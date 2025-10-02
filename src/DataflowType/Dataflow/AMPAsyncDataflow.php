@@ -5,18 +5,19 @@ declare(strict_types=1);
 namespace CodeRhapsodie\DataflowBundle\DataflowType\Dataflow;
 
 use function Amp\coroutine;
+
 use Amp\Deferred;
 use Amp\Delayed;
 use Amp\Loop;
 use Amp\Producer;
 use Amp\Promise;
+
 use function Amp\Promise\wait;
+
 use CodeRhapsodie\DataflowBundle\DataflowType\Result;
 use CodeRhapsodie\DataflowBundle\DataflowType\Writer\WriterInterface;
 use Psr\Log\LoggerAwareInterface;
 use Psr\Log\LoggerAwareTrait;
-use RuntimeException;
-use Throwable;
 
 class AMPAsyncDataflow implements DataflowInterface, LoggerAwareInterface
 {
@@ -34,8 +35,8 @@ class AMPAsyncDataflow implements DataflowInterface, LoggerAwareInterface
 
     public function __construct(private iterable $reader, private ?string $name, private ?int $loopInterval = 0, private ?int $emitInterval = 0)
     {
-        if (!function_exists('Amp\\Promise\\wait')) {
-            throw new RuntimeException('Amp is not loaded. Suggest install it with composer require amphp/amp');
+        if (!\function_exists('Amp\\Promise\\wait')) {
+            throw new \RuntimeException('Amp is not loaded. Suggest install it with composer require amphp/amp');
         }
     }
 
@@ -61,9 +62,6 @@ class AMPAsyncDataflow implements DataflowInterface, LoggerAwareInterface
         return $this;
     }
 
-    /**
-     * {@inheritdoc}
-     */
     public function process(): Result
     {
         $count = 0;
@@ -76,7 +74,7 @@ class AMPAsyncDataflow implements DataflowInterface, LoggerAwareInterface
             }
 
             $deferred = new Deferred();
-            $resolved = false; //missing $deferred->isResolved() in version 2.5
+            $resolved = false; // missing $deferred->isResolved() in version 2.5
             $producer = new Producer(function (callable $emit) {
                 foreach ($this->reader as $index => $item) {
                     yield new Delayed($this->emitInterval);
@@ -89,7 +87,7 @@ class AMPAsyncDataflow implements DataflowInterface, LoggerAwareInterface
                     $it = $producer->getCurrent();
                     [$index, $item] = $it;
                     $this->states[$index] = [$index, 0, $item];
-                } elseif (!$resolved && 0 === count($this->states)) {
+                } elseif (!$resolved && \count($this->states) === 0) {
                     $resolved = true;
                     $deferred->resolve();
                 }
@@ -120,20 +118,20 @@ class AMPAsyncDataflow implements DataflowInterface, LoggerAwareInterface
     private function processState(mixed $state, int &$count, array &$exceptions): void
     {
         [$readIndex, $stepIndex, $item] = $state;
-        if ($stepIndex < count($this->steps)) {
+        if ($stepIndex < \count($this->steps)) {
             if (!isset($this->stepsJobs[$stepIndex])) {
                 $this->stepsJobs[$stepIndex] = [];
             }
             [$step, $scale] = $this->steps[$stepIndex];
-            if ((is_countable($this->stepsJobs[$stepIndex]) ? count($this->stepsJobs[$stepIndex]) : 0) < $scale && !isset($this->stepsJobs[$stepIndex][$readIndex])) {
+            if ((is_countable($this->stepsJobs[$stepIndex]) ? \count($this->stepsJobs[$stepIndex]) : 0) < $scale && !isset($this->stepsJobs[$stepIndex][$readIndex])) {
                 $this->stepsJobs[$stepIndex][$readIndex] = true;
                 /** @var Promise<void> $promise */
                 $promise = coroutine($step)($item);
-                $promise->onResolve(function (?Throwable $exception = null, $newItem = null) use ($stepIndex, $readIndex, &$exceptions) {
+                $promise->onResolve(function (?\Throwable $exception = null, $newItem = null) use ($stepIndex, $readIndex, &$exceptions) {
                     if ($exception) {
                         $exceptions[$stepIndex] = $exception;
                         $this->logException($exception, (string) $stepIndex);
-                    } elseif (false === $newItem) {
+                    } elseif ($newItem === false) {
                         unset($this->states[$readIndex]);
                     } else {
                         $this->states[$readIndex] = [$readIndex, $stepIndex + 1, $newItem];
@@ -153,7 +151,7 @@ class AMPAsyncDataflow implements DataflowInterface, LoggerAwareInterface
         }
     }
 
-    private function logException(Throwable $e, ?string $index = null): void
+    private function logException(\Throwable $e, ?string $index = null): void
     {
         if (!isset($this->logger)) {
             return;

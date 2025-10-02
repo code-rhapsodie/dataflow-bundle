@@ -7,7 +7,6 @@ namespace CodeRhapsodie\DataflowBundle\DataflowType;
 use CodeRhapsodie\DataflowBundle\DataflowType\Dataflow\AMPAsyncDataflow;
 use CodeRhapsodie\DataflowBundle\DataflowType\Dataflow\DataflowInterface;
 use CodeRhapsodie\DataflowBundle\DataflowType\Writer\WriterInterface;
-use Symfony\Component\OptionsResolver\OptionsResolver;
 
 class AMPAsyncDataflowBuilder extends DataflowBuilder
 {

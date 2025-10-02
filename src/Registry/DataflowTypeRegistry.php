@@ -18,9 +18,6 @@ class DataflowTypeRegistry implements DataflowTypeRegistryInterface
     /** @var array|DataflowTypeInterface[] */
     private array $aliasesRegistry = [];
 
-    /**
-     * {@inheritdoc}
-     */
     public function getDataflowType(string $fqcnOrAlias): DataflowTypeInterface
     {
         if (isset($this->fqcnRegistry[$fqcnOrAlias])) {
@@ -34,17 +31,11 @@ class DataflowTypeRegistry implements DataflowTypeRegistryInterface
         throw UnknownDataflowTypeException::create($fqcnOrAlias, [...array_keys($this->fqcnRegistry), ...array_keys($this->aliasesRegistry)]);
     }
 
-    /**
-     * {@inheritdoc}
-     */
     public function listDataflowTypes(): iterable
     {
         return $this->fqcnRegistry;
     }
 
-    /**
-     * {@inheritdoc}
-     */
     public function registerDataflowType(DataflowTypeInterface $dataflowType): void
     {
         $this->fqcnRegistry[$dataflowType::class] = $dataflowType;

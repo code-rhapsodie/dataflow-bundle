@@ -4,8 +4,6 @@ declare(strict_types=1);
 
 namespace CodeRhapsodie\DataflowBundle\DataflowType;
 
-use CodeRhapsodie\DataflowBundle\Repository\JobRepository;
-
 interface DataflowTypeInterface
 {
     public function getLabel(): string;

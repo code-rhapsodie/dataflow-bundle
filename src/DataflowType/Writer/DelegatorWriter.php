@@ -21,9 +21,6 @@ class DelegatorWriter implements DelegateWriterInterface
     {
     }
 
-    /**
-     * {@inheritdoc}
-     */
     public function prepare()
     {
         foreach ($this->delegates as $delegate) {
@@ -31,9 +28,6 @@ class DelegatorWriter implements DelegateWriterInterface
         }
     }
 
-    /**
-     * {@inheritdoc}
-     */
     public function write($item)
     {
         foreach ($this->delegates as $delegate) {
@@ -46,12 +40,9 @@ class DelegatorWriter implements DelegateWriterInterface
             return;
         }
 
-        throw new UnsupportedItemTypeException(sprintf('None of the registered delegate writers support the received item of type %s', get_debug_type($item)));
+        throw new UnsupportedItemTypeException(\sprintf('None of the registered delegate writers support the received item of type %s', get_debug_type($item)));
     }
 
-    /**
-     * {@inheritdoc}
-     */
     public function finish()
     {
         foreach ($this->delegates as $delegate) {
@@ -59,9 +50,6 @@ class DelegatorWriter implements DelegateWriterInterface
         }
     }
 
-    /**
-     * {@inheritdoc}
-     */
     public function supports($item): bool
     {
         foreach ($this->delegates as $delegate) {

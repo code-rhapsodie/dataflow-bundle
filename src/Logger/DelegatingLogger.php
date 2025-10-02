@@ -16,7 +16,7 @@ final class DelegatingLogger extends AbstractLogger
     {
         foreach ($loggers as $logger) {
             if (!$logger instanceof LoggerInterface) {
-                throw new \InvalidArgumentException(sprintf('Only instances of %s should be passed to the constructor of %s. An instance of %s was passed instead.', LoggerInterface::class, self::class, $logger::class));
+                throw new \InvalidArgumentException(\sprintf('Only instances of %s should be passed to the constructor of %s. An instance of %s was passed instead.', LoggerInterface::class, self::class, $logger::class));
             }
 
             $this->loggers[] = $logger;

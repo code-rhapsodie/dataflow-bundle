@@ -24,9 +24,6 @@ class ScheduleListCommand extends Command
         parent::__construct();
     }
 
-    /**
-     * {@inheritdoc}
-     */
     protected function configure(): void
     {
         $this
@@ -34,12 +31,9 @@ class ScheduleListCommand extends Command
             ->addOption('connection', null, InputOption::VALUE_REQUIRED, 'Define the DBAL connection to use');
     }
 
-    /**
-     * {@inheritdoc}
-     */
     protected function execute(InputInterface $input, OutputInterface $output): int
     {
-        if (null !== $input->getOption('connection')) {
+        if ($input->getOption('connection') !== null) {
             $this->connectionFactory->setConnectionName($input->getOption('connection'));
         }
         $io = new SymfonyStyle($input, $output);

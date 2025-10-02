@@ -27,29 +27,27 @@ class AddScheduledDataflowCommand extends Command
         parent::__construct();
     }
 
-    /**
-     * {@inheritdoc}
-     */
     protected function configure(): void
     {
         $this
             ->setHelp('The <info>%command.name%</info> allows you to create a new scheduled dataflow.')
             ->addOption('label', null, InputOption::VALUE_REQUIRED, 'Label of the scheduled dataflow')
             ->addOption('type', null, InputOption::VALUE_REQUIRED, 'Type of the scheduled dataflow (FQCN)')
-            ->addOption('options', null, InputOption::VALUE_OPTIONAL,
-                'Options of the scheduled dataflow (ex: {"option1": "value1", "option2": "value2"})')
+            ->addOption(
+                'options',
+                null,
+                InputOption::VALUE_OPTIONAL,
+                'Options of the scheduled dataflow (ex: {"option1": "value1", "option2": "value2"})'
+            )
             ->addOption('frequency', null, InputOption::VALUE_REQUIRED, 'Frequency of the scheduled dataflow')
             ->addOption('first_run', null, InputOption::VALUE_REQUIRED, 'Date for the first run of the scheduled dataflow (Y-m-d H:i:s)')
             ->addOption('enabled', null, InputOption::VALUE_REQUIRED, 'State of the scheduled dataflow')
             ->addOption('connection', null, InputOption::VALUE_REQUIRED, 'Define the DBAL connection to use');
     }
 
-    /**
-     * {@inheritdoc}
-     */
     protected function execute(InputInterface $input, OutputInterface $output): int
     {
-        if (null !== $input->getOption('connection')) {
+        if ($input->getOption('connection') !== null) {
             $this->connectionFactory->setConnectionName($input->getOption('connection'));
         }
         $choices = [];
@@ -71,13 +69,17 @@ class AddScheduledDataflowCommand extends Command
         }
         $options = $input->getOption('options');
         if (!$options) {
-            $options = $io->ask('What are the launch options for the scheduled dataflow? (ex: {"option1": "value1", "option2": "value2"})',
-                json_encode([]));
+            $options = $io->ask(
+                'What are the launch options for the scheduled dataflow? (ex: {"option1": "value1", "option2": "value2"})',
+                json_encode([])
+            );
         }
         $frequency = $input->getOption('frequency');
         if (!$frequency) {
-            $frequency = $io->choice('What is the frequency for the scheduled dataflow?',
-                ScheduledDataflow::AVAILABLE_FREQUENCIES);
+            $frequency = $io->choice(
+                'What is the frequency for the scheduled dataflow?',
+                ScheduledDataflow::AVAILABLE_FREQUENCIES
+            );
         }
         $firstRun = $input->getOption('first_run');
         if (!$firstRun) {
@@ -92,22 +94,25 @@ class AddScheduledDataflowCommand extends Command
             'id' => null,
             'label' => $label,
             'dataflow_type' => $type,
-            'options' => json_decode($options, true, 512, JSON_THROW_ON_ERROR),
+            'options' => json_decode($options, true, 512, \JSON_THROW_ON_ERROR),
             'frequency' => $frequency,
             'next' => new \DateTime($firstRun),
             'enabled' => $enabled,
         ]);
 
         $errors = $this->validator->validate($newScheduledDataflow);
-        if (count($errors) > 0) {
+        if (\count($errors) > 0) {
             $io->error((string) $errors);
 
             return 2;
         }
 
         $this->scheduledDataflowRepository->save($newScheduledDataflow);
-        $io->success(sprintf('New scheduled dataflow "%s" (id:%d) was created successfully.',
-            $newScheduledDataflow->getLabel(), $newScheduledDataflow->getId()));
+        $io->success(\sprintf(
+            'New scheduled dataflow "%s" (id:%d) was created successfully.',
+            $newScheduledDataflow->getLabel(),
+            $newScheduledDataflow->getId()
+        ));
 
         return 0;
     }

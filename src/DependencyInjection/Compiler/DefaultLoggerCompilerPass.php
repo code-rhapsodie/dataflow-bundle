@@ -12,9 +12,6 @@ use Symfony\Component\DependencyInjection\Reference;
 
 class DefaultLoggerCompilerPass implements CompilerPassInterface
 {
-    /**
-     * {@inheritdoc}
-     */
     public function process(ContainerBuilder $container)
     {
         $defaultLogger = $container->getParameter('coderhapsodie.dataflow.default_logger');

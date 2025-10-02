@@ -12,9 +12,6 @@ use Symfony\Component\DependencyInjection\Reference;
 
 class BusCompilerPass implements CompilerPassInterface
 {
-    /**
-     * {@inheritdoc}
-     */
     public function process(ContainerBuilder $container)
     {
         if (!$container->hasParameter('coderhapsodie.dataflow.bus')) {
@@ -23,7 +20,7 @@ class BusCompilerPass implements CompilerPassInterface
 
         $bus = $container->getParameter('coderhapsodie.dataflow.bus');
         if (!$container->has($bus)) {
-            throw new InvalidArgumentException(sprintf('Service "%s" not found', $bus));
+            throw new InvalidArgumentException(\sprintf('Service "%s" not found', $bus));
         }
 
         if (!$container->has(MessengerDataflowRunner::class)) {

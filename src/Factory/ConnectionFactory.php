@@ -24,6 +24,6 @@ class ConnectionFactory
 
     public function getConnection(): \Doctrine\DBAL\Connection
     {
-        return $this->container->get(sprintf('doctrine.dbal.%s_connection', $this->connectionName));
+        return $this->container->get(\sprintf('doctrine.dbal.%s_connection', $this->connectionName));
     }
 }

@@ -10,3 +10,5 @@ jobs:
       - uses: actions/checkout@v4
       - uses: php-actions/composer@v6 # or alternative dependency management
       - uses: php-actions/phpunit@v4
+      - name: Run PHP CS Fixer
+        run: php vendor/bin/php-cs-fixer fix --dry-run --diff

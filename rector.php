@@ -17,7 +17,7 @@ return static function (RectorConfig $rectorConfig): void {
     $rectorConfig->rule(InlineConstructorDefaultToPropertyRector::class);
 
     $rectorConfig->sets([
-        SymfonySetList::SYMFONY_60,
+        SymfonySetList::SYMFONY_70,
         SymfonySetList::SYMFONY_CODE_QUALITY,
         SymfonySetList::SYMFONY_CONSTRUCTOR_INJECTION,
         LevelSetList::UP_TO_PHP_80,

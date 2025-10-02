@@ -10,7 +10,7 @@ use Symfony\Component\Messenger\MessageBusInterface;
 
 class Configuration implements ConfigurationInterface
 {
-    public function getConfigTreeBuilder(): \Symfony\Component\Config\Definition\Builder\TreeBuilder
+    public function getConfigTreeBuilder(): TreeBuilder
     {
         $treeBuilder = new TreeBuilder('code_rhapsodie_dataflow');
         $rootNode = $treeBuilder->getRootNode();
@@ -34,7 +34,7 @@ class Configuration implements ConfigurationInterface
                         ->end()
                     ->end()
                     ->validate()
-                        ->ifTrue(static fn($v): bool => $v['enabled'] && !interface_exists(MessageBusInterface::class))
+                        ->ifTrue(static fn ($v): bool => $v['enabled'] && !interface_exists(MessageBusInterface::class))
                         ->thenInvalid('You need "symfony/messenger" in order to use Dataflow messenger mode.')
                     ->end()
                 ->end()

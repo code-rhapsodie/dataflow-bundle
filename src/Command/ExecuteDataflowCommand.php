@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace CodeRhapsodie\DataflowBundle\Command;
 
-use CodeRhapsodie\DataflowBundle\DataflowType\RepositoryInterface;
+use CodeRhapsodie\DataflowBundle\DataflowType\AutoUpdateCountInterface;
 use CodeRhapsodie\DataflowBundle\Factory\ConnectionFactory;
 use CodeRhapsodie\DataflowBundle\Registry\DataflowTypeRegistryInterface;
 use CodeRhapsodie\DataflowBundle\Repository\JobRepository;
@@ -33,13 +33,11 @@ class ExecuteDataflowCommand extends Command implements LoggerAwareInterface
         parent::__construct();
     }
 
-    /**
-     * {@inheritdoc}
-     */
     protected function configure(): void
     {
         $this
-            ->setHelp(<<<'EOF'
+            ->setHelp(
+                <<<'EOF'
 The <info>%command.name%</info> command runs one dataflow with the provided options.
 
   <info>php %command.full_name% App\Dataflow\MyDataflow '{"option1": "value1", "option2": "value2"}'</info>
@@ -50,20 +48,17 @@ EOF
             ->addOption('connection', null, InputOption::VALUE_REQUIRED, 'Define the DBAL connection to use');
     }
 
-    /**
-     * {@inheritdoc}
-     */
     protected function execute(InputInterface $input, OutputInterface $output): int
     {
-        if (null !== $input->getOption('connection')) {
+        if ($input->getOption('connection') !== null) {
             $this->connectionFactory->setConnectionName($input->getOption('connection'));
         }
         $fqcnOrAlias = $input->getArgument('fqcn');
-        $options = json_decode($input->getArgument('options'), true, 512, JSON_THROW_ON_ERROR);
+        $options = json_decode($input->getArgument('options'), true, 512, \JSON_THROW_ON_ERROR);
         $io = new SymfonyStyle($input, $output);
 
         $dataflowType = $this->registry->getDataflowType($fqcnOrAlias);
-        if ($dataflowType instanceof RepositoryInterface) {
+        if ($dataflowType instanceof AutoUpdateCountInterface) {
             $dataflowType->setRepository($this->jobRepository);
         }
 
