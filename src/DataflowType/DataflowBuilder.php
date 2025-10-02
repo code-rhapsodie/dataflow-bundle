@@ -18,6 +18,10 @@ class DataflowBuilder
     private array $writers = [];
 
     private ?\Closure $customExceptionIndex = null;
+    /**
+     * @var \Closure[]
+     */
+    private array $afterItemProcessors = [];
 
     public function setName(string $name): self
     {
@@ -54,6 +58,13 @@ class DataflowBuilder
         return $this;
     }
 
+    public function addAfterItemProcessor(callable $callable): self
+    {
+        $this->afterItemProcessors[] = \Closure::fromCallable($callable);
+
+        return $this;
+    }
+
     public function getDataflow(): DataflowInterface
     {
         $dataflow = new Dataflow($this->reader, $this->name);
@@ -69,9 +80,11 @@ class DataflowBuilder
             $dataflow->addWriter($writer);
         }
 
-        if (is_callable($this->customExceptionIndex)) {
+        if (\is_callable($this->customExceptionIndex)) {
             $dataflow->setCustomExceptionIndex($this->customExceptionIndex);
         }
+
+        $dataflow->setAfterItemProcessors($this->afterItemProcessors);
 
         return $dataflow;
     }

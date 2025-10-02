@@ -39,15 +39,10 @@ class MessengerDataflowRunnerTest extends TestCase
         $this->repository
             ->expects($matcher)
             ->method('save')
-            ->with($this->callback(function ($arg) use ($matcher, $job1, $job2) {
-                switch ($matcher->numberOfInvocations()) {
-                    case 1:
-                        return $arg === $job1;
-                    case 2:
-                        return $arg === $job2;
-                    default:
-                        return false;
-                }
+            ->with($this->callback(fn($arg) => match ($matcher->numberOfInvocations()) {
+                1 => $arg === $job1,
+                2 => $arg === $job2,
+                default => false,
             }))
         ;
 
@@ -55,15 +50,10 @@ class MessengerDataflowRunnerTest extends TestCase
         $this->bus
             ->expects($matcher)
             ->method('dispatch')
-            ->with($this->callback(function ($arg) use ($matcher, $id1, $id2) {
-                switch ($matcher->numberOfInvocations()) {
-                    case 1:
-                        return $arg instanceof JobMessage && $arg->getJobId() === $id1;
-                    case 2:
-                        return $arg instanceof JobMessage && $arg->getJobId() === $id2;
-                    default:
-                        return false;
-                }
+            ->with($this->callback(fn($arg) => match ($matcher->numberOfInvocations()) {
+                1 => $arg instanceof JobMessage && $arg->getJobId() === $id1,
+                2 => $arg instanceof JobMessage && $arg->getJobId() === $id2,
+                default => false,
             }))
             ->willReturnOnConsecutiveCalls(
                 new Envelope(new JobMessage($id1)),

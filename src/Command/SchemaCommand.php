@@ -4,13 +4,6 @@ declare(strict_types=1);
 
 namespace CodeRhapsodie\DataflowBundle\Command;
 
-use CodeRhapsodie\DataflowBundle\Factory\ConnectionFactory;
-use CodeRhapsodie\DataflowBundle\Repository\JobRepository;
-use CodeRhapsodie\DataflowBundle\Repository\ScheduledDataflowRepository;
-use CodeRhapsodie\DataflowBundle\SchemaProvider\DataflowSchemaProvider;
-use Doctrine\DBAL\Schema\Comparator;
-use Doctrine\DBAL\Schema\Schema;
-use Doctrine\DBAL\Schema\Table;
 use Symfony\Component\Console\Attribute\AsCommand;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\ArrayInput;
@@ -21,14 +14,12 @@ use Symfony\Component\Console\Style\SymfonyStyle;
 
 /**
  * @codeCoverageIgnore
+ *
  * @deprecated This command is deprecated and will be removed in 6.0, use this command "code-rhapsodie:dataflow:database-schema" instead.
  */
 #[AsCommand('code-rhapsodie:dataflow:dump-schema', 'Generates schema create / update SQL queries')]
 class SchemaCommand extends Command
 {
-    /**
-     * {@inheritdoc}
-     */
     protected function configure(): void
     {
         $this
@@ -38,9 +29,6 @@ class SchemaCommand extends Command
         ;
     }
 
-    /**
-     * {@inheritdoc}
-     */
     protected function execute(InputInterface $input, OutputInterface $output): int
     {
         $io = new SymfonyStyle($input, $output);
@@ -48,9 +36,9 @@ class SchemaCommand extends Command
 
         $options = array_filter($input->getOptions());
 
-        //add -- before each keys
+        // add -- before each keys
         $options = array_combine(
-            array_map(fn($key) => '--' . $key, array_keys($options)),
+            array_map(fn ($key) => '--'.$key, array_keys($options)),
             array_values($options)
         );
 
@@ -58,7 +46,7 @@ class SchemaCommand extends Command
 
         $inputArray = new ArrayInput([
             'command' => 'code-rhapsodie:dataflow:database-schema',
-            ...$options
+            ...$options,
         ]);
 
         return $this->getApplication()->doRun($inputArray, $output);

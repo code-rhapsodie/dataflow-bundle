@@ -14,7 +14,7 @@ trait InitFromDbTrait
     private function initDateTime(array $datas): array
     {
         foreach ($this->getFields() as $key => $type) {
-            if ('datetime' === $type && null !== $datas[$key]) {
+            if ($type === 'datetime' && $datas[$key] !== null) {
                 $datas[$key] = new \DateTime($datas[$key]);
             }
         }
@@ -24,10 +24,10 @@ trait InitFromDbTrait
 
     private function initArray(array $datas): array
     {
-        if (!is_array($datas['options'])) {
+        if (!\is_array($datas['options'])) {
             $datas['options'] = $this->strToArray($datas['options']);
         }
-        if (array_key_exists('exceptions', $datas) && !is_array($datas['exceptions'])) {
+        if (\array_key_exists('exceptions', $datas) && !\is_array($datas['exceptions'])) {
             $datas['exceptions'] = $this->strToArray($datas['exceptions']);
         }
 
@@ -36,12 +36,12 @@ trait InitFromDbTrait
 
     private function strToArray($value): array
     {
-        if (null === $value) {
+        if ($value === null) {
             return [];
         }
 
-        $array = json_decode($value, true, 512, JSON_THROW_ON_ERROR);
+        $array = json_decode($value, true, 512, \JSON_THROW_ON_ERROR);
 
-        return (false === $array) ? [] : $array;
+        return ($array === false) ? [] : $array;
     }
 }

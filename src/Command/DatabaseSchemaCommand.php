@@ -27,9 +27,6 @@ class DatabaseSchemaCommand extends Command
         parent::__construct();
     }
 
-    /**
-     * {@inheritdoc}
-     */
     protected function configure(): void
     {
         $this
@@ -43,7 +40,7 @@ class DatabaseSchemaCommand extends Command
     {
         $io = new SymfonyStyle($input, $output);
 
-        if (null !== $input->getOption('connection')) {
+        if ($input->getOption('connection') !== null) {
             $this->connectionFactory->setConnectionName($input->getOption('connection'));
         }
 
@@ -61,7 +58,7 @@ class DatabaseSchemaCommand extends Command
             $tables = [];
             foreach ($sm->listTables() as $table) {
                 /** @var Table $table */
-                if (in_array($table->getName(), $tableArray)) {
+                if (\in_array($table->getName(), $tableArray)) {
                     $tables[] = $table;
                 }
             }
@@ -90,14 +87,14 @@ class DatabaseSchemaCommand extends Command
         if ($input->getOption('dump-sql')) {
             $io->text('Execute these SQL Queries on your database:');
             foreach ($sqls as $sql) {
-                $io->text($sql . ';');
+                $io->text($sql.';');
             }
 
             return Command::SUCCESS;
         }
 
         if (!$io->askQuestion(new ConfirmationQuestion('Are you sure to update database ?', true))) {
-            $io->text("Execution canceled.");
+            $io->text('Execution canceled.');
 
             return Command::SUCCESS;
         }
@@ -106,7 +103,7 @@ class DatabaseSchemaCommand extends Command
             $connection->executeQuery($sql);
         }
 
-        $io->success(sprintf('%d queries executed.', \count($sqls)));
+        $io->success(\sprintf('%d queries executed.', \count($sqls)));
 
         return parent::SUCCESS;
     }

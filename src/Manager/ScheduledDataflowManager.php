@@ -19,15 +19,12 @@ class ScheduledDataflowManager implements ScheduledDataflowManagerInterface
     {
     }
 
-    /**
-     * {@inheritdoc}
-     */
     public function createJobsFromScheduledDataflows(): void
     {
         $this->connection->beginTransaction();
         try {
             foreach ($this->scheduledDataflowRepository->findReadyToRun() as $scheduled) {
-                if (null !== $this->jobRepository->findPendingForScheduledDataflow($scheduled)) {
+                if ($this->jobRepository->findPendingForScheduledDataflow($scheduled) !== null) {
                     continue;
                 }
 

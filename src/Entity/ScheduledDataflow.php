@@ -50,19 +50,19 @@ class ScheduledDataflow
     public static function createFromArray(array $datas)
     {
         $lost = array_diff(static::KEYS, array_keys($datas));
-        if (count($lost) > 0) {
+        if (\count($lost) > 0) {
             throw new \LogicException('The first argument of '.__METHOD__.'  must be contains: "'.implode(', ', $lost).'"');
         }
 
         $scheduledDataflow = new self();
-        $scheduledDataflow->id = null === $datas['id'] ? null : (int) $datas['id'];
+        $scheduledDataflow->id = $datas['id'] === null ? null : (int) $datas['id'];
 
         $scheduledDataflow->setLabel($datas['label']);
         $scheduledDataflow->setDataflowType($datas['dataflow_type']);
         $scheduledDataflow->setOptions($datas['options']);
         $scheduledDataflow->setFrequency($datas['frequency']);
         $scheduledDataflow->setNext($datas['next']);
-        $scheduledDataflow->setEnabled(null === $datas['enabled'] ? null : (bool) $datas['enabled']);
+        $scheduledDataflow->setEnabled($datas['enabled'] === null ? null : (bool) $datas['enabled']);
 
         return $scheduledDataflow;
     }
@@ -80,7 +80,7 @@ class ScheduledDataflow
         ];
     }
 
-    public function setId(int $id): ScheduledDataflow
+    public function setId(int $id): self
     {
         $this->id = $id;
 
@@ -97,7 +97,7 @@ class ScheduledDataflow
         return $this->label;
     }
 
-    public function setLabel(?string $label): ScheduledDataflow
+    public function setLabel(?string $label): self
     {
         $this->label = $label;
 
@@ -109,7 +109,7 @@ class ScheduledDataflow
         return $this->dataflowType;
     }
 
-    public function setDataflowType(?string $dataflowType): ScheduledDataflow
+    public function setDataflowType(?string $dataflowType): self
     {
         $this->dataflowType = $dataflowType;
 
@@ -121,7 +121,7 @@ class ScheduledDataflow
         return $this->options;
     }
 
-    public function setOptions(?array $options): ScheduledDataflow
+    public function setOptions(?array $options): self
     {
         $this->options = $options;
 
@@ -133,7 +133,7 @@ class ScheduledDataflow
         return $this->frequency;
     }
 
-    public function setFrequency(?string $frequency): ScheduledDataflow
+    public function setFrequency(?string $frequency): self
     {
         $this->frequency = $frequency;
 
@@ -145,7 +145,7 @@ class ScheduledDataflow
         return $this->next;
     }
 
-    public function setNext(?\DateTimeInterface $next): ScheduledDataflow
+    public function setNext(?\DateTimeInterface $next): self
     {
         $this->next = $next;
 
@@ -157,7 +157,7 @@ class ScheduledDataflow
         return $this->enabled;
     }
 
-    public function setEnabled(?bool $enabled): ScheduledDataflow
+    public function setEnabled(?bool $enabled): self
     {
         $this->enabled = $enabled;
 

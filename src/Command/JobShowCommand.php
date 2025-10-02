@@ -31,9 +31,6 @@ class JobShowCommand extends Command
         parent::__construct();
     }
 
-    /**
-     * {@inheritdoc}
-     */
     protected function configure(): void
     {
         $this
@@ -44,12 +41,9 @@ class JobShowCommand extends Command
             ->addOption('connection', null, InputOption::VALUE_REQUIRED, 'Define the DBAL connection to use');
     }
 
-    /**
-     * {@inheritdoc}
-     */
     protected function execute(InputInterface $input, OutputInterface $output): int
     {
-        if (null !== $input->getOption('connection')) {
+        if ($input->getOption('connection') !== null) {
             $this->connectionFactory->setConnectionName($input->getOption('connection'));
         }
 
@@ -73,7 +67,7 @@ class JobShowCommand extends Command
             return 2;
         }
 
-        if (null === $job) {
+        if ($job === null) {
             $io->error('Cannot find job :/');
 
             return 3;
@@ -87,19 +81,19 @@ class JobShowCommand extends Command
             ['Started at', $job->getStartTime() ? $job->getStartTime()->format('Y-m-d H:i:s') : '-'],
             ['Ended at', $job->getEndTime() ? $job->getEndTime()->format('Y-m-d H:i:s') : '-'],
             ['Object number', $job->getCount()],
-            ['Errors', count((array) $job->getExceptions())],
+            ['Errors', \count((array) $job->getExceptions())],
             ['Status', $this->translateStatus($job->getStatus())],
         ];
         if ($input->getOption('details')) {
             $display[] = ['Type', $job->getDataflowType()];
-            $display[] = ['Options', json_encode($job->getOptions(), JSON_THROW_ON_ERROR)];
+            $display[] = ['Options', json_encode($job->getOptions(), \JSON_THROW_ON_ERROR)];
             $io->section('Summary');
         }
 
         $io->table(['Field', 'Value'], $display);
         if ($input->getOption('details')) {
             $io->section('Exceptions');
-            $exceptions = array_map(fn(string $exception) => substr($exception, 0, 900).'…', $job->getExceptions());
+            $exceptions = array_map(fn (string $exception) => substr($exception, 0, 900).'…', $job->getExceptions());
 
             $io->write($exceptions);
         }

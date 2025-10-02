@@ -38,15 +38,10 @@ class PendingDataflowRunnerTest extends TestCase
         $this->processor
             ->expects($matcher)
             ->method('process')
-            ->with($this->callback(function ($arg) use ($matcher, $job1, $job2) {
-                switch ($matcher->numberOfInvocations()) {
-                    case 1:
-                        return $arg === $job1;
-                    case 2:
-                        return $arg === $job2;
-                    default:
-                        return false;
-                }
+            ->with($this->callback(fn($arg) => match ($matcher->numberOfInvocations()) {
+                1 => $arg === $job1,
+                2 => $arg === $job2,
+                default => false,
             }))
         ;
 

@@ -10,5 +10,5 @@ interface DataflowTypeInterface
 
     public function getAliases(): iterable;
 
-    public function process(array $options): Result;
+    public function process(array $options, ?int $jobId = null): Result;
 }

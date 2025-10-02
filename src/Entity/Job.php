@@ -75,19 +75,19 @@ class Job
     public static function createFromArray(array $datas)
     {
         $lost = array_diff(static::KEYS, array_keys($datas));
-        if (count($lost) > 0) {
+        if (\count($lost) > 0) {
             throw new \LogicException('The first argument of '.__METHOD__.'  must be contains: "'.implode(', ', $lost).'"');
         }
 
         $job = new self();
-        $job->id = null === $datas['id'] ? null : (int) $datas['id'];
-        $job->setStatus(null === $datas['status'] ? null : (int) $datas['status']);
+        $job->id = $datas['id'] === null ? null : (int) $datas['id'];
+        $job->setStatus($datas['status'] === null ? null : (int) $datas['status']);
         $job->setLabel($datas['label']);
         $job->setDataflowType($datas['dataflow_type']);
         $job->setOptions($datas['options']);
         $job->setRequestedDate($datas['requested_date']);
-        $job->setScheduledDataflowId(null === $datas['scheduled_dataflow_id'] ? null : (int) $datas['scheduled_dataflow_id']);
-        $job->setCount(null === $datas['count'] ? null : (int) $datas['count']);
+        $job->setScheduledDataflowId($datas['scheduled_dataflow_id'] === null ? null : (int) $datas['scheduled_dataflow_id']);
+        $job->setCount($datas['count'] === null ? null : (int) $datas['count']);
         $job->setExceptions($datas['exceptions']);
         $job->setStartTime($datas['start_time']);
         $job->setEndTime($datas['end_time']);
@@ -112,7 +112,7 @@ class Job
         ];
     }
 
-    public function setId(int $id): Job
+    public function setId(int $id): self
     {
         $this->id = $id;
 
@@ -129,7 +129,7 @@ class Job
         return $this->status;
     }
 
-    public function setStatus(int $status): Job
+    public function setStatus(int $status): self
     {
         $this->status = $status;
 
@@ -141,7 +141,7 @@ class Job
         return $this->label;
     }
 
-    public function setLabel(?string $label): Job
+    public function setLabel(?string $label): self
     {
         $this->label = $label;
 
@@ -153,7 +153,7 @@ class Job
         return $this->dataflowType;
     }
 
-    public function setDataflowType(?string $dataflowType): Job
+    public function setDataflowType(?string $dataflowType): self
     {
         $this->dataflowType = $dataflowType;
 
@@ -165,7 +165,7 @@ class Job
         return $this->options;
     }
 
-    public function setOptions(?array $options): Job
+    public function setOptions(?array $options): self
     {
         $this->options = $options;
 
@@ -177,7 +177,7 @@ class Job
         return $this->requestedDate;
     }
 
-    public function setRequestedDate(?\DateTimeInterface $requestedDate): Job
+    public function setRequestedDate(?\DateTimeInterface $requestedDate): self
     {
         $this->requestedDate = $requestedDate;
 
@@ -189,7 +189,7 @@ class Job
         return $this->scheduledDataflowId;
     }
 
-    public function setScheduledDataflowId(?int $scheduledDataflowId): Job
+    public function setScheduledDataflowId(?int $scheduledDataflowId): self
     {
         $this->scheduledDataflowId = $scheduledDataflowId;
 
@@ -201,7 +201,7 @@ class Job
         return $this->count;
     }
 
-    public function setCount(?int $count): Job
+    public function setCount(?int $count): self
     {
         $this->count = $count;
 
@@ -213,7 +213,7 @@ class Job
         return $this->exceptions;
     }
 
-    public function setExceptions(?array $exceptions): Job
+    public function setExceptions(?array $exceptions): self
     {
         $this->exceptions = $exceptions;
 
@@ -225,7 +225,7 @@ class Job
         return $this->startTime;
     }
 
-    public function setStartTime(?\DateTimeInterface $startTime): Job
+    public function setStartTime(?\DateTimeInterface $startTime): self
     {
         $this->startTime = $startTime;
 
@@ -237,7 +237,7 @@ class Job
         return $this->endTime;
     }
 
-    public function setEndTime(?\DateTimeInterface $endTime): Job
+    public function setEndTime(?\DateTimeInterface $endTime): self
     {
         $this->endTime = $endTime;
 

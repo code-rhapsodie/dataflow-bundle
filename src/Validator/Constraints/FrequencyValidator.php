@@ -10,22 +10,19 @@ use Symfony\Component\Validator\Exception\UnexpectedTypeException;
 
 class FrequencyValidator extends ConstraintValidator
 {
-    /**
-     * {@inheritdoc}
-     */
     public function validate(mixed $value, Constraint $constraint)
     {
         if (!$constraint instanceof Frequency) {
             throw new UnexpectedTypeException($constraint, Frequency::class);
         }
 
-        if (null === $value) {
+        if ($value === null) {
             return;
         }
 
         try {
             $interval = \DateInterval::createFromDateString($value);
-        } catch (\Exception){
+        } catch (\Exception) {
             $interval = false;
         }
 

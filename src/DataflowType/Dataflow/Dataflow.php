@@ -21,6 +21,13 @@ class Dataflow implements DataflowInterface, LoggerAwareInterface
 
     private ?\Closure $customExceptionIndex = null;
 
+    private ?\DateTimeInterface $dateTime = null;
+
+    /**
+     * @var \Closure[]
+     */
+    private array $afterItemProcessors = [];
+
     public function __construct(private iterable $reader, private ?string $name)
     {
     }
@@ -56,8 +63,15 @@ class Dataflow implements DataflowInterface, LoggerAwareInterface
     }
 
     /**
-     * {@inheritdoc}
+     * @param array<callable> $processors
      */
+    public function setAfterItemProcessors(array $processors): self
+    {
+        $this->afterItemProcessors = array_map(fn (callable $callable) => \Closure::fromCallable($callable), $processors);
+
+        return $this;
+    }
+
     public function process(): Result
     {
         $count = 0;
@@ -75,7 +89,7 @@ class Dataflow implements DataflowInterface, LoggerAwareInterface
                 } catch (\Throwable $e) {
                     $exceptionIndex = $index;
                     try {
-                        if (is_callable($this->customExceptionIndex)) {
+                        if (\is_callable($this->customExceptionIndex)) {
                             $exceptionIndex = (string) ($this->customExceptionIndex)($item, $index);
                         }
                     } catch (\Throwable $e2) {
@@ -87,6 +101,10 @@ class Dataflow implements DataflowInterface, LoggerAwareInterface
                 }
 
                 ++$count;
+
+                foreach ($this->afterItemProcessors as $afterItemProcessor) {
+                    $afterItemProcessor($index, $item, $count);
+                }
             }
 
             foreach ($this->writers as $writer) {
@@ -103,9 +121,9 @@ class Dataflow implements DataflowInterface, LoggerAwareInterface
     private function processItem(mixed $item): void
     {
         foreach ($this->steps as $step) {
-            $item = call_user_func($step, $item);
+            $item = \call_user_func($step, $item);
 
-            if (false === $item) {
+            if ($item === false) {
                 return;
             }
         }

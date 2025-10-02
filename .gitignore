@@ -6,3 +6,4 @@ composer.lock
 .idea
 .phpunit.cache
 .php-version
+.php-cs-fixer.cache

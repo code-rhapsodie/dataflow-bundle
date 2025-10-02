@@ -44,9 +44,7 @@ class CollectionWriterTest extends TestCase
         $embeddedWriter
             ->expects($matcher)
             ->method('write')
-            ->with($this->callback(function ($arg) use ($matcher, $values) {
-                return $arg === $values[$matcher->numberOfInvocations() - 1];
-            }))
+            ->with($this->callback(fn($arg) => $arg === $values[$matcher->numberOfInvocations() - 1]))
         ;
 
         $writer = new CollectionWriter($embeddedWriter);
