@@ -44,18 +44,11 @@ class JobProcessorTest extends TestCase
             ->expects($matcher)
             ->method('dispatch')
             ->with(
-                $this->callback(function ($arg) use ($job) {
-                    return $arg instanceof ProcessingEvent && $arg->getJob() === $job;
-                }),
-                $this->callback(function ($arg) use ($matcher) {
-                    switch ($matcher->numberOfInvocations()) {
-                        case 1:
-                            return $arg === Events::BEFORE_PROCESSING;
-                        case 2:
-                            return $arg === Events::AFTER_PROCESSING;
-                        default:
-                            return false;
-                    }
+                $this->callback(fn($arg) => $arg instanceof ProcessingEvent && $arg->getJob() === $job),
+                $this->callback(fn($arg) => match ($matcher->numberOfInvocations()) {
+                    1 => $arg === Events::BEFORE_PROCESSING,
+                    2 => $arg === Events::AFTER_PROCESSING,
+                    default => false,
                 })
             );
 

@@ -49,15 +49,10 @@ class ScheduledDataflowManagerTest extends TestCase
         $this->jobRepository
             ->expects($matcher)
             ->method('findPendingForScheduledDataflow')
-            ->with($this->callback(function ($arg) use ($matcher, $scheduled1, $scheduled2) {
-                switch ($matcher->numberOfInvocations()) {
-                    case 1:
-                        return $arg === $scheduled1;
-                    case 2:
-                        return $arg === $scheduled2;
-                    default:
-                        return false;
-                }
+            ->with($this->callback(fn($arg) => match ($matcher->numberOfInvocations()) {
+                1 => $arg === $scheduled1,
+                2 => $arg === $scheduled2,
+                default => false,
             }))
             ->willReturnOnConsecutiveCalls(new Job(), null)
         ;
