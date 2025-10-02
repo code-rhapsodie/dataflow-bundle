@@ -1,3 +1,6 @@
+# Version 5.3.0
+* Added auto update count processed item while running job
+
 # Version 5.2.0
 * Added custom index for job status
 

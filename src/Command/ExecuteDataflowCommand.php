@@ -6,6 +6,7 @@ namespace CodeRhapsodie\DataflowBundle\Command;
 
 use CodeRhapsodie\DataflowBundle\Factory\ConnectionFactory;
 use CodeRhapsodie\DataflowBundle\Registry\DataflowTypeRegistryInterface;
+use CodeRhapsodie\DataflowBundle\Repository\JobRepository;
 use Psr\Log\LoggerAwareInterface;
 use Psr\Log\LoggerAwareTrait;
 use Symfony\Component\Console\Attribute\AsCommand;
@@ -26,7 +27,7 @@ class ExecuteDataflowCommand extends Command implements LoggerAwareInterface
 {
     use LoggerAwareTrait;
 
-    public function __construct(private DataflowTypeRegistryInterface $registry, private ConnectionFactory $connectionFactory)
+    public function __construct(private DataflowTypeRegistryInterface $registry, private ConnectionFactory $connectionFactory, private JobRepository $jobRepository)
     {
         parent::__construct();
     }
@@ -61,6 +62,7 @@ EOF
         $io = new SymfonyStyle($input, $output);
 
         $dataflowType = $this->registry->getDataflowType($fqcnOrAlias);
+        $dataflowType->setRepository($this->jobRepository);
         if ($dataflowType instanceof LoggerAwareInterface && isset($this->logger)) {
             $dataflowType->setLogger($this->logger);
         }

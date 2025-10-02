@@ -137,6 +137,11 @@ class JobRepository
         $this->connection->update(static::TABLE_NAME, $datas, ['id' => $job->getId()], $this->getFields());
     }
 
+    public function updateCount(int $jobId, int $count): void
+    {
+        $this->connection->update(static::TABLE_NAME, ['count' => $count], ['id' => $jobId]);
+    }
+
     public function createQueryBuilder($alias = null): QueryBuilder
     {
         $qb = $this->connection->createQueryBuilder();

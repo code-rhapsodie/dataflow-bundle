@@ -30,6 +30,7 @@ class JobProcessor implements JobProcessorInterface, LoggerAwareInterface
         $this->beforeProcessing($job);
 
         $dataflowType = $this->registry->getDataflowType($job->getDataflowType());
+        $dataflowType->setRepository($this->repository);
         $loggers = [new Logger('dataflow_internal', [$bufferHandler = new BufferHandler()])];
         if (isset($this->logger)) {
             $loggers[] = $this->logger;
@@ -40,7 +41,7 @@ class JobProcessor implements JobProcessorInterface, LoggerAwareInterface
             $dataflowType->setLogger($logger);
         }
 
-        $result = $dataflowType->process($job->getOptions());
+        $result = $dataflowType->process($job->getOptions(), $job->getId());
 
         if (!$dataflowType instanceof LoggerAwareInterface) {
             foreach ($result->getExceptions() as $index => $e) {

@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace CodeRhapsodie\DataflowBundle\DataflowType;
 
+use CodeRhapsodie\DataflowBundle\Repository\JobRepository;
 use Psr\Log\LoggerAwareInterface;
 use Psr\Log\LoggerAwareTrait;
 use Psr\Log\LoggerInterface;
@@ -13,6 +14,10 @@ abstract class AbstractDataflowType implements DataflowTypeInterface, LoggerAwar
 {
     use LoggerAwareTrait;
 
+    private JobRepository $repository;
+
+    private ?\DateTime $saveDate = null;
+
     /**
      * @codeCoverageIgnore
      */
@@ -21,7 +26,7 @@ abstract class AbstractDataflowType implements DataflowTypeInterface, LoggerAwar
         return [];
     }
 
-    public function process(array $options): Result
+    public function process(array $options, ?int $jobId = null): Result
     {
         $optionsResolver = new OptionsResolver();
         $this->configureOptions($optionsResolver);
@@ -29,6 +34,13 @@ abstract class AbstractDataflowType implements DataflowTypeInterface, LoggerAwar
 
         $builder = $this->createDataflowBuilder();
         $builder->setName($this->getLabel());
+        $builder->addAfterItemProcessors(function (int|string $index, mixed $item, int $count) use ($jobId) {
+            if ($jobId === null || $this->saveDate->modify('+1 minute') > new \DateTime()) {
+                return;
+            }
+
+            $this->repository->updateCount($jobId, $count);
+        });
         $this->buildDataflow($builder, $options);
         $dataflow = $builder->getDataflow();
         if ($dataflow instanceof LoggerAwareInterface && $this->logger instanceof LoggerInterface) {
@@ -51,4 +63,9 @@ abstract class AbstractDataflowType implements DataflowTypeInterface, LoggerAwar
     }
 
     abstract protected function buildDataflow(DataflowBuilder $builder, array $options): void;
+
+    public function setRepository(JobRepository $repository): void
+    {
+        $this->repository = $repository;
+    }
 }

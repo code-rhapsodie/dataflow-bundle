@@ -21,6 +21,13 @@ class Dataflow implements DataflowInterface, LoggerAwareInterface
 
     private ?\Closure $customExceptionIndex = null;
 
+    private ?\DateTimeInterface $dateTime = null;
+
+    /**
+     * @var \Closure[]
+     */
+    private array $afterItemProcessors = [];
+
     public function __construct(private iterable $reader, private ?string $name)
     {
     }
@@ -56,6 +63,18 @@ class Dataflow implements DataflowInterface, LoggerAwareInterface
     }
 
     /**
+     * @param array<callable> $processors
+     */
+    public function setAfterItemProcessors(array $processors): self
+    {
+        $this->afterItemProcessors = array_map(function (callable $callable) {
+            return \Closure::fromCallable($callable);
+        }, $processors);
+
+        return $this;
+    }
+
+    /**
      * {@inheritdoc}
      */
     public function process(): Result
@@ -76,7 +95,7 @@ class Dataflow implements DataflowInterface, LoggerAwareInterface
                     $exceptionIndex = $index;
                     try {
                         if (is_callable($this->customExceptionIndex)) {
-                            $exceptionIndex = (string) ($this->customExceptionIndex)($item, $index);
+                            $exceptionIndex = (string)($this->customExceptionIndex)($item, $index);
                         }
                     } catch (\Throwable $e2) {
                         $exceptions[$index] = $e2;
@@ -87,6 +106,10 @@ class Dataflow implements DataflowInterface, LoggerAwareInterface
                 }
 
                 ++$count;
+
+                foreach ($this->afterItemProcessors as $afterItemProcessor) {
+                    $afterItemProcessor($index, $item, $count);
+                }
             }
 
             foreach ($this->writers as $writer) {
