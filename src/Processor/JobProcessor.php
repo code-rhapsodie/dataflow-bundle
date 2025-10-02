@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace CodeRhapsodie\DataflowBundle\Processor;
 
-use CodeRhapsodie\DataflowBundle\DataflowType\RepositoryInterface;
+use CodeRhapsodie\DataflowBundle\DataflowType\AutoUpdateCountInterface;
 use CodeRhapsodie\DataflowBundle\DataflowType\Result;
 use CodeRhapsodie\DataflowBundle\Entity\Job;
 use CodeRhapsodie\DataflowBundle\Event\Events;
@@ -31,7 +31,7 @@ class JobProcessor implements JobProcessorInterface, LoggerAwareInterface
         $this->beforeProcessing($job);
 
         $dataflowType = $this->registry->getDataflowType($job->getDataflowType());
-        if ($dataflowType instanceof RepositoryInterface) {
+        if ($dataflowType instanceof AutoUpdateCountInterface) {
             $dataflowType->setRepository($this->repository);
         }
 
