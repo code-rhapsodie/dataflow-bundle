@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace CodeRhapsodie\DataflowBundle\Command;
 
+use CodeRhapsodie\DataflowBundle\DataflowType\RepositoryInterface;
 use CodeRhapsodie\DataflowBundle\Factory\ConnectionFactory;
 use CodeRhapsodie\DataflowBundle\Registry\DataflowTypeRegistryInterface;
 use CodeRhapsodie\DataflowBundle\Repository\JobRepository;
@@ -62,7 +63,10 @@ EOF
         $io = new SymfonyStyle($input, $output);
 
         $dataflowType = $this->registry->getDataflowType($fqcnOrAlias);
-        $dataflowType->setRepository($this->jobRepository);
+        if ($dataflowType instanceof RepositoryInterface) {
+            $dataflowType->setRepository($this->jobRepository);
+        }
+
         if ($dataflowType instanceof LoggerAwareInterface && isset($this->logger)) {
             $dataflowType->setLogger($this->logger);
         }

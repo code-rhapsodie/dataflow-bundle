@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace CodeRhapsodie\DataflowBundle\Processor;
 
+use CodeRhapsodie\DataflowBundle\DataflowType\RepositoryInterface;
 use CodeRhapsodie\DataflowBundle\DataflowType\Result;
 use CodeRhapsodie\DataflowBundle\Entity\Job;
 use CodeRhapsodie\DataflowBundle\Event\Events;
@@ -30,7 +31,10 @@ class JobProcessor implements JobProcessorInterface, LoggerAwareInterface
         $this->beforeProcessing($job);
 
         $dataflowType = $this->registry->getDataflowType($job->getDataflowType());
-        $dataflowType->setRepository($this->repository);
+        if ($dataflowType instanceof RepositoryInterface) {
+            $dataflowType->setRepository($this->repository);
+        }
+
         $loggers = [new Logger('dataflow_internal', [$bufferHandler = new BufferHandler()])];
         if (isset($this->logger)) {
             $loggers[] = $this->logger;

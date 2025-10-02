@@ -95,7 +95,7 @@ class Dataflow implements DataflowInterface, LoggerAwareInterface
                     $exceptionIndex = $index;
                     try {
                         if (is_callable($this->customExceptionIndex)) {
-                            $exceptionIndex = (string)($this->customExceptionIndex)($item, $index);
+                            $exceptionIndex = (string) ($this->customExceptionIndex)($item, $index);
                         }
                     } catch (\Throwable $e2) {
                         $exceptions[$index] = $e2;
