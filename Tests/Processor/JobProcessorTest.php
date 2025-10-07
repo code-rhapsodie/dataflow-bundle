@@ -75,7 +75,7 @@ class JobProcessorTest extends TestCase
             ->willReturn($result)
         ;
 
-        $this->repository
+        $this->jobGateway
             ->expects($this->exactly(2))
             ->method('save')
         ;
