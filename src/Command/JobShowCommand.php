@@ -7,7 +7,6 @@ namespace CodeRhapsodie\DataflowBundle\Command;
 use CodeRhapsodie\DataflowBundle\Entity\Job;
 use CodeRhapsodie\DataflowBundle\Factory\ConnectionFactory;
 use CodeRhapsodie\DataflowBundle\Gateway\JobGateway;
-use CodeRhapsodie\DataflowBundle\Repository\JobRepository;
 use Symfony\Component\Console\Attribute\AsCommand;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputInterface;

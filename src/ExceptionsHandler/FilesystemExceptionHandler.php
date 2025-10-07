@@ -19,17 +19,17 @@ class FilesystemExceptionHandler implements ExceptionHandlerInterface
             return;
         }
 
-        $this->filesystem->write(sprintf('dataflow-job-%s.log', $jobId), json_encode($exceptions));
+        $this->filesystem->write(\sprintf('dataflow-job-%s.log', $jobId), json_encode($exceptions));
     }
 
     public function find(int $jobId): ?array
     {
         try {
-            if (!$this->filesystem->has(sprintf('dataflow-job-%s.log', $jobId))) {
+            if (!$this->filesystem->has(\sprintf('dataflow-job-%s.log', $jobId))) {
                 return [];
             }
 
-            return json_decode($this->filesystem->read(sprintf('dataflow-job-%s.log', $jobId)), true);
+            return json_decode($this->filesystem->read(\sprintf('dataflow-job-%s.log', $jobId)), true);
         } catch (FilesystemException) {
             return [];
         }

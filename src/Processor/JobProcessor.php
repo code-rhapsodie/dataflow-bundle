@@ -14,7 +14,6 @@ use CodeRhapsodie\DataflowBundle\Logger\BufferHandler;
 use CodeRhapsodie\DataflowBundle\Logger\DelegatingLogger;
 use CodeRhapsodie\DataflowBundle\Registry\DataflowTypeRegistryInterface;
 use CodeRhapsodie\DataflowBundle\Repository\JobRepository;
-use League\Flysystem\Filesystem;
 use Monolog\Logger;
 use Psr\Log\LoggerAwareInterface;
 use Psr\Log\LoggerAwareTrait;
@@ -29,8 +28,7 @@ class JobProcessor implements JobProcessorInterface, LoggerAwareInterface
         private DataflowTypeRegistryInterface $registry,
         private EventDispatcherInterface $dispatcher,
         private JobGateway $jobGateway,
-    )
-    {
+    ) {
     }
 
     public function process(Job $job): void

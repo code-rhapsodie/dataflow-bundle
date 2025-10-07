@@ -47,7 +47,7 @@ class Configuration implements ConfigurationInterface
                         ->scalarNode('flysystem_service')
                         ->end()
                         ->validate()
-                            ->ifTrue(static fn($v): bool => 'file' === $v['type'] && !interface_exists('\League\Flysystem\Filesystem'))
+                            ->ifTrue(static fn ($v): bool => $v['type'] === 'file' && !interface_exists('\League\Flysystem\Filesystem'))
                             ->thenInvalid('You need "league/flysystem" to use Dataflow file exception mode.')
                         ->end()
                     ->end()
