@@ -13,6 +13,7 @@ use CodeRhapsodie\DataflowBundle\Logger\BufferHandler;
 use CodeRhapsodie\DataflowBundle\Logger\DelegatingLogger;
 use CodeRhapsodie\DataflowBundle\Registry\DataflowTypeRegistryInterface;
 use CodeRhapsodie\DataflowBundle\Repository\JobRepository;
+use League\Flysystem\Filesystem;
 use Monolog\Logger;
 use Psr\Log\LoggerAwareInterface;
 use Psr\Log\LoggerAwareTrait;
@@ -22,7 +23,12 @@ class JobProcessor implements JobProcessorInterface, LoggerAwareInterface
 {
     use LoggerAwareTrait;
 
-    public function __construct(private JobRepository $repository, private DataflowTypeRegistryInterface $registry, private EventDispatcherInterface $dispatcher)
+    public function __construct(
+        private JobRepository $repository,
+        private DataflowTypeRegistryInterface $registry,
+        private EventDispatcherInterface $dispatcher,
+        private ?Filesystem $filesystem = null
+    )
     {
     }
 
@@ -69,12 +75,19 @@ class JobProcessor implements JobProcessorInterface, LoggerAwareInterface
 
     private function afterProcessing(Job $job, Result $result, BufferHandler $bufferLogger): void
     {
+        $exceptions = $bufferLogger->clearBuffer();
+        if ($this->filesystem) {
+            $this->filesystem->write(sprintf('dataflow-job-%s.log',$job->getId()), json_encode($exceptions));
+            $exceptions = [];
+        }
+
         $job
             ->setEndTime($result->getEndTime())
             ->setStatus(Job::STATUS_COMPLETED)
             ->setCount($result->getSuccessCount())
-            ->setExceptions($bufferLogger->clearBuffer())
+            ->setExceptions($exceptions)
         ;
+
         $this->repository->save($job);
 
         $this->dispatcher->dispatch(new ProcessingEvent($job), Events::AFTER_PROCESSING);
