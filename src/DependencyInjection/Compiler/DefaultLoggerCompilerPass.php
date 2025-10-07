@@ -12,7 +12,7 @@ use Symfony\Component\DependencyInjection\Reference;
 
 class DefaultLoggerCompilerPass implements CompilerPassInterface
 {
-    public function process(ContainerBuilder $container)
+    public function process(ContainerBuilder $container): void
     {
         $defaultLogger = $container->getParameter('coderhapsodie.dataflow.default_logger');
         if (!$container->has($defaultLogger)) {

@@ -6,7 +6,7 @@ namespace CodeRhapsodie\DataflowBundle\Command;
 
 use CodeRhapsodie\DataflowBundle\Entity\Job;
 use CodeRhapsodie\DataflowBundle\Factory\ConnectionFactory;
-use CodeRhapsodie\DataflowBundle\Repository\JobRepository;
+use CodeRhapsodie\DataflowBundle\Gateway\JobGateway;
 use Symfony\Component\Console\Attribute\AsCommand;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputInterface;
@@ -26,7 +26,7 @@ class JobShowCommand extends Command
         Job::STATUS_COMPLETED => 'Completed',
     ];
 
-    public function __construct(private JobRepository $jobRepository, private ConnectionFactory $connectionFactory)
+    public function __construct(private JobGateway $jobGateway, private ConnectionFactory $connectionFactory)
     {
         parent::__construct();
     }
@@ -58,9 +58,9 @@ class JobShowCommand extends Command
         }
 
         if ($scheduleId) {
-            $job = $this->jobRepository->findLastForDataflowId($scheduleId);
+            $job = $this->jobGateway->findLastForDataflowId($scheduleId);
         } elseif ($jobId) {
-            $job = $this->jobRepository->find($jobId);
+            $job = $this->jobGateway->find($jobId);
         } else {
             $io->error('You must pass `job-id` or `schedule-id` option.');
 

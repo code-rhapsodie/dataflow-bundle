@@ -7,6 +7,7 @@ use CodeRhapsodie\DataflowBundle\DataflowType\Result;
 use CodeRhapsodie\DataflowBundle\Entity\Job;
 use CodeRhapsodie\DataflowBundle\Event\Events;
 use CodeRhapsodie\DataflowBundle\Event\ProcessingEvent;
+use CodeRhapsodie\DataflowBundle\Gateway\JobGateway;
 use CodeRhapsodie\DataflowBundle\Processor\JobProcessor;
 use CodeRhapsodie\DataflowBundle\Registry\DataflowTypeRegistryInterface;
 use CodeRhapsodie\DataflowBundle\Repository\JobRepository;
@@ -20,14 +21,16 @@ class JobProcessorTest extends TestCase
     private JobRepository|MockObject $repository;
     private DataflowTypeRegistryInterface|MockObject $registry;
     private EventDispatcherInterface|MockObject $dispatcher;
+    private JobGateway|MockObject $jobGateway;
 
     protected function setUp(): void
     {
         $this->repository = $this->createMock(JobRepository::class);
         $this->registry = $this->createMock(DataflowTypeRegistryInterface::class);
         $this->dispatcher = $this->createMock(EventDispatcherInterface::class);
+        $this->jobGateway = $this->createMock(JobGateway::class);
 
-        $this->processor = new JobProcessor($this->repository, $this->registry, $this->dispatcher);
+        $this->processor = new JobProcessor($this->repository, $this->registry, $this->dispatcher, $this->jobGateway);
     }
 
     public function testProcess()
@@ -72,7 +75,7 @@ class JobProcessorTest extends TestCase
             ->willReturn($result)
         ;
 
-        $this->repository
+        $this->jobGateway
             ->expects($this->exactly(2))
             ->method('save')
         ;

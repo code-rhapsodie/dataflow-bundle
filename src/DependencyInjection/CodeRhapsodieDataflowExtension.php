@@ -15,7 +15,7 @@ use Symfony\Component\DependencyInjection\Loader\YamlFileLoader;
  */
 class CodeRhapsodieDataflowExtension extends Extension
 {
-    public function load(array $configs, ContainerBuilder $container)
+    public function load(array $configs, ContainerBuilder $container): void
     {
         $loader = new YamlFileLoader($container, new FileLocator(__DIR__.'/../Resources/config'));
         $loader->load('services.yaml');
@@ -29,6 +29,12 @@ class CodeRhapsodieDataflowExtension extends Extension
 
         $container->setParameter('coderhapsodie.dataflow.dbal_default_connection', $config['dbal_default_connection']);
         $container->setParameter('coderhapsodie.dataflow.default_logger', $config['default_logger']);
+        $container->setParameter('coderhapsodie.dataflow.exceptions_mode.type', $config['exceptions_mode']['type']);
+
+        if ($config['exceptions_mode']['type'] === 'file') {
+            $container->setParameter('coderhapsodie.dataflow.flysystem_service', $config['exceptions_mode']['flysystem_service']);
+            $loader->load('exceptions_services.yaml');
+        }
 
         if ($config['messenger_mode']['enabled']) {
             $container->setParameter('coderhapsodie.dataflow.bus', $config['messenger_mode']['bus']);

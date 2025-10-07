@@ -28,7 +28,7 @@ services:
 
     CodeRhapsodie\DataflowBundle\Command\JobShowCommand:
         arguments:
-            $jobRepository: '@CodeRhapsodie\DataflowBundle\Repository\JobRepository'
+            $jobGateway: '@CodeRhapsodie\DataflowBundle\Gateway\JobGateway'
             $connectionFactory: '@CodeRhapsodie\DataflowBundle\Factory\ConnectionFactory'
         tags: ['console.command']
 
@@ -93,3 +93,10 @@ services:
             $repository: '@CodeRhapsodie\DataflowBundle\Repository\JobRepository'
             $registry: '@CodeRhapsodie\DataflowBundle\Registry\DataflowTypeRegistryInterface'
             $dispatcher: '@event_dispatcher'
+            $jobGateway: '@CodeRhapsodie\DataflowBundle\Gateway\JobGateway'
+    CodeRhapsodie\DataflowBundle\ExceptionsHandler\ExceptionHandlerInterface: '@CodeRhapsodie\DataflowBundle\ExceptionsHandler\NullExceptionHandler'
+    CodeRhapsodie\DataflowBundle\ExceptionsHandler\NullExceptionHandler:
+    CodeRhapsodie\DataflowBundle\Gateway\JobGateway:
+        arguments:
+            $repository: '@CodeRhapsodie\DataflowBundle\Repository\JobRepository'
+            $exceptionHandler: '@CodeRhapsodie\DataflowBundle\ExceptionsHandler\ExceptionHandlerInterface'

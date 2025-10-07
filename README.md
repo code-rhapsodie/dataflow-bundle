@@ -146,6 +146,20 @@ framework:
       CodeRhapsodie\DataflowBundle\MessengerMode\JobMessage: async
 ```
 
+### Exceptions mode
+Dataflow can save exceptions in any filesystem you want. 
+This allows dataflow to save exceptions in filesystem instead of the database
+You have to install `league/flysystem`.
+
+To enable exceptions mode:
+
+```yaml
+code_rhapsodie_dataflow:
+  exceptions_mode:
+    type: 'file'
+    flysystem_service: 'app.filesystem' #The name of the \League\Flysystem\Filesystem service
+```
+
 ## Define a dataflow type
 
 This bundle uses a fixed and simple workflow structure in order to let you focus on the data processing logic part of

@@ -9,6 +9,7 @@ use CodeRhapsodie\DataflowBundle\DataflowType\Result;
 use CodeRhapsodie\DataflowBundle\Entity\Job;
 use CodeRhapsodie\DataflowBundle\Event\Events;
 use CodeRhapsodie\DataflowBundle\Event\ProcessingEvent;
+use CodeRhapsodie\DataflowBundle\Gateway\JobGateway;
 use CodeRhapsodie\DataflowBundle\Logger\BufferHandler;
 use CodeRhapsodie\DataflowBundle\Logger\DelegatingLogger;
 use CodeRhapsodie\DataflowBundle\Registry\DataflowTypeRegistryInterface;
@@ -22,8 +23,12 @@ class JobProcessor implements JobProcessorInterface, LoggerAwareInterface
 {
     use LoggerAwareTrait;
 
-    public function __construct(private JobRepository $repository, private DataflowTypeRegistryInterface $registry, private EventDispatcherInterface $dispatcher)
-    {
+    public function __construct(
+        private JobRepository $repository,
+        private DataflowTypeRegistryInterface $registry,
+        private EventDispatcherInterface $dispatcher,
+        private JobGateway $jobGateway,
+    ) {
     }
 
     public function process(Job $job): void
@@ -64,7 +69,7 @@ class JobProcessor implements JobProcessorInterface, LoggerAwareInterface
             ->setStatus(Job::STATUS_RUNNING)
             ->setStartTime(new \DateTime())
         ;
-        $this->repository->save($job);
+        $this->jobGateway->save($job);
     }
 
     private function afterProcessing(Job $job, Result $result, BufferHandler $bufferLogger): void
@@ -75,7 +80,8 @@ class JobProcessor implements JobProcessorInterface, LoggerAwareInterface
             ->setCount($result->getSuccessCount())
             ->setExceptions($bufferLogger->clearBuffer())
         ;
-        $this->repository->save($job);
+
+        $this->jobGateway->save($job);
 
         $this->dispatcher->dispatch(new ProcessingEvent($job), Events::AFTER_PROCESSING);
     }

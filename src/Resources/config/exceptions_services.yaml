@@ -1,0 +1,5 @@
+services:
+    CodeRhapsodie\DataflowBundle\ExceptionsHandler\ExceptionHandlerInterface: '@CodeRhapsodie\DataflowBundle\ExceptionsHandler\FilesystemExceptionHandler'
+    CodeRhapsodie\DataflowBundle\ExceptionsHandler\FilesystemExceptionHandler:
+        arguments:
+            $filesystem: ~ # Filled in compiler pass

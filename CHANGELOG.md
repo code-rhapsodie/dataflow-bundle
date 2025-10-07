@@ -1,3 +1,6 @@
+# Version 5.4.0
+* Add possibility to save exceptions in file
+
 # Version 5.3.1
 * Fix interface naming
 
