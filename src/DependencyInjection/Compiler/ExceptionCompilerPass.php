@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace CodeRhapsodie\DataflowBundle\DependencyInjection\Compiler;
 
-use CodeRhapsodie\DataflowBundle\Processor\JobProcessor;
+use CodeRhapsodie\DataflowBundle\ExceptionsHandler\FilesystemExceptionHandler;
 use Symfony\Component\DependencyInjection\Compiler\CompilerPassInterface;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
 use Symfony\Component\DependencyInjection\Exception\InvalidArgumentException;
@@ -23,7 +23,7 @@ class ExceptionCompilerPass implements CompilerPassInterface
             throw new InvalidArgumentException(\sprintf('Service "%s" not found', $flysystem));
         }
 
-        $definition = $container->findDefinition(JobProcessor::class);
+        $definition = $container->findDefinition(FilesystemExceptionHandler::class);
         $definition->setArgument('$filesystem', new Reference($flysystem));
     }
 }

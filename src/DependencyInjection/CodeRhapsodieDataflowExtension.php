@@ -33,6 +33,7 @@ class CodeRhapsodieDataflowExtension extends Extension
 
         if ($config['exceptions_mode']['type'] === 'file') {
             $container->setParameter('coderhapsodie.dataflow.flysystem_service', $config['exceptions_mode']['flysystem_service']);
+            $loader->load('exceptions_services.yaml');
         }
 
         if ($config['messenger_mode']['enabled']) {
