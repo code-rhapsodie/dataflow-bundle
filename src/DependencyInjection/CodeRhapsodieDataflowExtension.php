@@ -29,10 +29,10 @@ class CodeRhapsodieDataflowExtension extends Extension
 
         $container->setParameter('coderhapsodie.dataflow.dbal_default_connection', $config['dbal_default_connection']);
         $container->setParameter('coderhapsodie.dataflow.default_logger', $config['default_logger']);
-        $container->setParameter('coderhapsodie.dataflow.exception_mode.type', $config['exception_mode']['type']);
+        $container->setParameter('coderhapsodie.dataflow.exceptions_mode.type', $config['exceptions_mode']['type']);
 
-        if ($config['exception_mode']['type'] === 'file') {
-            $container->setParameter('coderhapsodie.dataflow.flysystem_service', $config['exception_mode']['flysystem_service']);
+        if ($config['exceptions_mode']['type'] === 'file') {
+            $container->setParameter('coderhapsodie.dataflow.flysystem_service', $config['exceptions_mode']['flysystem_service']);
         }
 
         if ($config['messenger_mode']['enabled']) {
