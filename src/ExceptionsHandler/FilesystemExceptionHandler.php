@@ -25,7 +25,7 @@ class FilesystemExceptionHandler implements ExceptionHandlerInterface
     public function find(int $jobId): ?array
     {
         try {
-            if (!$this->filesystem->has(\sprintf('dataflow-job-%s.log', $jobId))) {
+            if (!$this->filesystem->fileExists(\sprintf('dataflow-job-%s.log', $jobId))) {
                 return [];
             }
 

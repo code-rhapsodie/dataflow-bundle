@@ -8,6 +8,7 @@ use CodeRhapsodie\DataflowBundle\DependencyInjection\CodeRhapsodieDataflowExtens
 use CodeRhapsodie\DataflowBundle\DependencyInjection\Compiler\BusCompilerPass;
 use CodeRhapsodie\DataflowBundle\DependencyInjection\Compiler\DataflowTypeCompilerPass;
 use CodeRhapsodie\DataflowBundle\DependencyInjection\Compiler\DefaultLoggerCompilerPass;
+use CodeRhapsodie\DataflowBundle\DependencyInjection\Compiler\ExceptionCompilerPass;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
 use Symfony\Component\DependencyInjection\Extension\ExtensionInterface;
 use Symfony\Component\HttpKernel\Bundle\Bundle;
@@ -30,6 +31,7 @@ class CodeRhapsodieDataflowBundle extends Bundle
             ->addCompilerPass(new DataflowTypeCompilerPass())
             ->addCompilerPass(new DefaultLoggerCompilerPass())
             ->addCompilerPass(new BusCompilerPass())
+            ->addCompilerPass(new ExceptionCompilerPass())
         ;
     }
 }
