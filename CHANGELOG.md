@@ -1,3 +1,6 @@
+# Version 5.4.1
+* Fix File Exceptions integration
+
 # Version 5.4.0
 * Add possibility to save exceptions in file
 
