@@ -3,7 +3,7 @@ services:
         public: false
 
     CodeRhapsodie\DataflowBundle\Registry\DataflowTypeRegistryInterface: '@CodeRhapsodie\DataflowBundle\Registry\DataflowTypeRegistry'
-    CodeRhapsodie\DataflowBundle\Registry\DataflowTypeRegistry:
+    CodeRhapsodie\DataflowBundle\Registry\DataflowTypeRegistry: ~
 
     CodeRhapsodie\DataflowBundle\Command\AddScheduledDataflowCommand:
         arguments:
@@ -100,3 +100,15 @@ services:
         arguments:
             $repository: '@CodeRhapsodie\DataflowBundle\Repository\JobRepository'
             $exceptionHandler: '@CodeRhapsodie\DataflowBundle\ExceptionsHandler\ExceptionHandlerInterface'
+
+    CodeRhapsodie\DataflowBundle\Command\JobCleanupCommand:
+        arguments:
+            $jobRepository: '@CodeRhapsodie\DataflowBundle\Repository\JobRepository'
+            $retention: '%coderhapsodie.dataflow.job_history.retention%'
+        tags: ['console.command']
+
+    CodeRhapsodie\DataflowBundle\Command\SetCrashedCommand:
+        arguments:
+            $jobRepository: '@CodeRhapsodie\DataflowBundle\Repository\JobRepository'
+            $crashedDelay: '%coderhapsodie.dataflow.job_history.crashed_delay%'
+        tags: ['console.command']

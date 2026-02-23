@@ -244,7 +244,6 @@ implementing `DataflowTypeInterface`.
 Otherwise, manually add the tag `coderhapsodie.dataflow.type` in your dataflow type service configuration:
 
 ```yaml
-```yaml
 CodeRhapsodie\DataflowExemple\DataflowType\MyFirstDataflowType:
   tags:
     - { name: coderhapsodie.dataflow.type }
@@ -597,6 +596,10 @@ the messenger component instead.
 `code-rhapsodie:dataflow:execute` Let you execute one dataflow job.
 
 `code-rhapsodie:dataflow:dump-schema` Generates schema create / update SQL queries
+
+`code-rhapsodie:dataflow:set_crashed` Jobs that have been in the "running" status for too long will be set in the "crashed" status.
+
+`code-rhapsodie:dataflow:job_cleanup` Remove old completed or crashed jobs
 
 ### Work with many databases
 

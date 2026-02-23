@@ -17,6 +17,7 @@ class Job
     public const STATUS_RUNNING = 1;
     public const STATUS_COMPLETED = 2;
     public const STATUS_QUEUED = 3;
+    public const STATUS_CRASHED = 4;
 
     private const KEYS = [
         'id',
