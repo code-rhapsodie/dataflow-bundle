@@ -93,7 +93,7 @@ class JobShowCommand extends Command
         $io->table(['Field', 'Value'], $display);
         if ($input->getOption('details')) {
             $io->section('Exceptions');
-            $exceptions = array_map(fn (string $exception) => substr($exception, 0, 900).'…', $job->getExceptions());
+            $exceptions = array_map(static fn (string $exception) => substr($exception, 0, 900).'…', $job->getExceptions());
 
             $io->write($exceptions);
         }

@@ -38,7 +38,7 @@ class SchemaCommand extends Command
 
         // add -- before each keys
         $options = array_combine(
-            array_map(fn ($key) => '--'.$key, array_keys($options)),
+            array_map(static fn ($key) => '--'.$key, array_keys($options)),
             array_values($options)
         );
 
