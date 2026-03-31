@@ -5,7 +5,7 @@ providing an easy way to create import / export dataflow.
 
 | Dataflow | Symfony                  | Support |
 |----------|--------------------------|---------|
-| 5.x      | 7.x                      | yes     |
+| 5.x      | ^7.3                     | yes     |
 | 4.x      | 3.4 \| 4.x \| 5.x \| 6.x | yes     |
 | 3.x      | 3.4 \| 4.x \| 5.x        | no      |
 | 2.x      | 3.4 \| 4.x               | no      |
@@ -243,7 +243,6 @@ implementing `DataflowTypeInterface`.
 
 Otherwise, manually add the tag `coderhapsodie.dataflow.type` in your dataflow type service configuration:
 
-```yaml
 ```yaml
 CodeRhapsodie\DataflowExemple\DataflowType\MyFirstDataflowType:
   tags:
@@ -597,6 +596,10 @@ the messenger component instead.
 `code-rhapsodie:dataflow:execute` Let you execute one dataflow job.
 
 `code-rhapsodie:dataflow:dump-schema` Generates schema create / update SQL queries
+
+`code-rhapsodie:dataflow:job:set-crashed` Jobs that have been in the "running" status for too long will be set in the "crashed" status.
+
+`code-rhapsodie:dataflow:job:cleanup` Remove old completed or crashed jobs
 
 ### Work with many databases
 

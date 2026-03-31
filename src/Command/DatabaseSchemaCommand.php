@@ -12,36 +12,28 @@ use Doctrine\DBAL\Schema\Comparator;
 use Doctrine\DBAL\Schema\Schema;
 use Doctrine\DBAL\Schema\Table;
 use Symfony\Component\Console\Attribute\AsCommand;
+use Symfony\Component\Console\Attribute\Option;
 use Symfony\Component\Console\Command\Command;
-use Symfony\Component\Console\Input\InputInterface;
-use Symfony\Component\Console\Input\InputOption;
-use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Console\Question\ConfirmationQuestion;
 use Symfony\Component\Console\Style\SymfonyStyle;
 
-#[AsCommand(name: 'code-rhapsodie:dataflow:database-schema', description: 'Generates schema create / update SQL queries')]
-class DatabaseSchemaCommand extends Command
+#[AsCommand(name: 'code-rhapsodie:dataflow:database-schema', description: 'Generates schema create / update SQL queries', help: <<<'TXT'
+The <info>%command.name%</info> help you to generate SQL Query to create or update your database schema for this bundle
+TXT)]
+final readonly class DatabaseSchemaCommand
 {
     public function __construct(private ConnectionFactory $connectionFactory)
     {
-        parent::__construct();
     }
 
-    protected function configure(): void
-    {
-        $this
-            ->setHelp('The <info>%command.name%</info> help you to generate SQL Query to create or update your database schema for this bundle')
-            ->addOption('dump-sql', null, InputOption::VALUE_NONE, 'Dump only the update SQL queries.')
-            ->addOption('update', null, InputOption::VALUE_NONE, 'Dump/execute only the update SQL queries.')
-            ->addOption('connection', null, InputOption::VALUE_REQUIRED, 'Define the DBAL connection to use');
-    }
-
-    protected function execute(InputInterface $input, OutputInterface $output): int
-    {
-        $io = new SymfonyStyle($input, $output);
-
-        if ($input->getOption('connection') !== null) {
-            $this->connectionFactory->setConnectionName($input->getOption('connection'));
+    public function __invoke(
+        SymfonyStyle $io,
+        #[Option('Dump only the update SQL queries.')] bool $dump = false,
+        #[Option('Dump/execute only the update SQL queries.')] bool $update = false,
+        #[Option('Define the DBAL connection to use')] ?string $connection = null,
+    ): int {
+        if ($connection !== null) {
+            $this->connectionFactory->setConnectionName($connection);
         }
 
         $connection = $this->connectionFactory->getConnection();
@@ -51,7 +43,7 @@ class DatabaseSchemaCommand extends Command
 
         $sqls = $schema->toSql($connection->getDatabasePlatform());
 
-        if ($input->getOption('update')) {
+        if ($update) {
             $sm = $connection->createSchemaManager();
 
             $tableArray = [JobRepository::TABLE_NAME, ScheduledDataflowRepository::TABLE_NAME];
@@ -84,7 +76,7 @@ class DatabaseSchemaCommand extends Command
             }
         }
 
-        if ($input->getOption('dump-sql')) {
+        if ($dump) {
             $io->text('Execute these SQL Queries on your database:');
             foreach ($sqls as $sql) {
                 $io->text($sql.';');
@@ -105,6 +97,6 @@ class DatabaseSchemaCommand extends Command
 
         $io->success(\sprintf('%d queries executed.', \count($sqls)));
 
-        return parent::SUCCESS;
+        return Command::SUCCESS;
     }
 }

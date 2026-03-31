@@ -151,6 +151,48 @@ class JobRepository
         return $qb;
     }
 
+    public function crashLongRunning(int $hours): void
+    {
+        $qb = $this->connection->createQueryBuilder();
+        $qb->update(static::TABLE_NAME.' j')
+            ->set('j.status', ':new_status')
+            ->set('j.end_time', ':now')
+            ->andWhere('j.status = :status')
+            ->andWhere('j.start_time < :date')
+            ->setParameter('status', Job::STATUS_RUNNING)
+            ->setParameter('date', new \DateTime("- {$hours} hours"), 'datetime')
+            ->setParameter('new_status', Job::STATUS_CRASHED)
+            ->setParameter('now', new \DateTime(), 'datetime')
+            ->executeStatement()
+        ;
+    }
+
+    /**
+     * @return int[] Removed job ids
+     */
+    public function deleteOld(int $days): array
+    {
+        $qb = $this->connection->createQueryBuilder();
+        $ids = $qb->select('j.id')
+            ->from(static::TABLE_NAME, 'j')
+            ->andWhere($qb->expr()->in('j.status', [Job::STATUS_COMPLETED, Job::STATUS_CRASHED]))
+            ->andWhere('j.end_time < :date')
+            ->setParameter('date', new \DateTime("- {$days} days"), 'datetime')
+            ->executeQuery()
+            ->fetchFirstColumn()
+        ;
+
+        $qb = $this->connection->createQueryBuilder();
+        $qb->delete(static::TABLE_NAME.' j')
+            ->andWhere($qb->expr()->in('j.status', [Job::STATUS_COMPLETED, Job::STATUS_CRASHED]))
+            ->andWhere('j.end_time < :date')
+            ->setParameter('date', new \DateTime("- {$days} days"), 'datetime')
+            ->executeStatement()
+        ;
+
+        return $ids;
+    }
+
     private function returnFirstOrNull(QueryBuilder $qb): ?Job
     {
         $stmt = $qb->executeQuery();

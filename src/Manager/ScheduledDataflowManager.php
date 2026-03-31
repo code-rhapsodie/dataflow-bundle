@@ -15,7 +15,7 @@ use Doctrine\DBAL\Connection;
  */
 class ScheduledDataflowManager implements ScheduledDataflowManagerInterface
 {
-    public function __construct(private Connection $connection, private ScheduledDataflowRepository $scheduledDataflowRepository, private JobRepository $jobRepository)
+    public function __construct(private readonly Connection $connection, private readonly ScheduledDataflowRepository $scheduledDataflowRepository, private readonly JobRepository $jobRepository)
     {
     }
 

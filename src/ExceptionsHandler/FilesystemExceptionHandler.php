@@ -9,7 +9,7 @@ use League\Flysystem\FilesystemException;
 
 class FilesystemExceptionHandler implements ExceptionHandlerInterface
 {
-    public function __construct(private Filesystem $filesystem)
+    public function __construct(private readonly Filesystem $filesystem)
     {
     }
 
@@ -33,5 +33,10 @@ class FilesystemExceptionHandler implements ExceptionHandlerInterface
         } catch (FilesystemException) {
             return [];
         }
+    }
+
+    public function delete(int $jobId): void
+    {
+        $this->filesystem->delete(\sprintf('dataflow-job-%s.log', $jobId));
     }
 }

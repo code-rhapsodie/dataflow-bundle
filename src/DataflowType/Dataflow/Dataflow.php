@@ -21,8 +21,6 @@ class Dataflow implements DataflowInterface, LoggerAwareInterface
 
     private ?\Closure $customExceptionIndex = null;
 
-    private ?\DateTimeInterface $dateTime = null;
-
     /**
      * @var \Closure[]
      */
@@ -67,7 +65,7 @@ class Dataflow implements DataflowInterface, LoggerAwareInterface
      */
     public function setAfterItemProcessors(array $processors): self
     {
-        $this->afterItemProcessors = array_map(fn (callable $callable) => \Closure::fromCallable($callable), $processors);
+        $this->afterItemProcessors = array_map(\Closure::fromCallable(...), $processors);
 
         return $this;
     }

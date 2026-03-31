@@ -41,33 +41,35 @@
         }
     },
     "require": {
-        "php": "^8.0",
+        "php": "^8.2",
         "ext-json": "*",
         "doctrine/dbal": "^3.0||^4.0",
         "doctrine/doctrine-bundle": "^2.0",
         "monolog/monolog": "^2.0||^3.0",
         "psr/log": "^1.1||^2.0||^3.0",
-        "symfony/config": "^7.0",
-        "symfony/console": "^7.0",
-        "symfony/dependency-injection": "^7.0",
-        "symfony/event-dispatcher": "^7.0",
-        "symfony/http-kernel": "^7.0",
-        "symfony/lock": "^7.0",
-        "symfony/monolog-bridge": "^7.0",
-        "symfony/options-resolver": "^7.0",
-        "symfony/validator": "^7.0",
-        "symfony/yaml": "^7.0"
+        "symfony/config": "^7.3",
+        "symfony/console": "^7.3",
+        "symfony/dependency-injection": "^7.3",
+        "symfony/event-dispatcher": "^7.3",
+        "symfony/http-kernel": "^7.3",
+        "symfony/lock": "^7.3",
+        "symfony/monolog-bridge": "^7.3",
+        "symfony/options-resolver": "^7.3",
+        "symfony/validator": "^7.3",
+        "symfony/yaml": "^7.3"
     },
     "require-dev": {
         "amphp/amp": "^2.5",
+        "ekino/phpstan-banned-code": "^3.2",
         "friendsofphp/php-cs-fixer": "^3.75",
         "phpunit/phpunit": "^11",
         "portphp/portphp": "^1.9",
         "rector/rector": "^2.0",
-        "symfony/messenger": "^7.0"
+        "symfony/messenger": "^7.3"
     },
     "suggest": {
         "amphp/amp": "Provide asynchronous steps for your dataflows",
+        "league/flysystem":  "Allows Dataflow file exception mode, i.e. saving job exceptions outside the database",
         "portphp/portphp": "Provides generic readers, steps and writers for your dataflows.",
         "symfony/messenger": "Allows messenger mode, i.e. letting workers run jobs"
     },

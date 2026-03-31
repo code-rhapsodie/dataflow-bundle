@@ -18,7 +18,7 @@ class AbstractDataflowTypeTest extends TestCase
 
         $dataflowType = new class($label, $options, $values, $testCase) extends AbstractDataflowType
         {
-            public function __construct(private string $label, private array $options, private array $values, private TestCase $testCase)
+            public function __construct(private readonly string $label, private readonly array $options, private readonly array $values, private readonly TestCase $testCase)
             {
             }
 

@@ -11,7 +11,7 @@ use CodeRhapsodie\DataflowBundle\Repository\JobRepository;
 
 class JobGateway
 {
-    public function __construct(private JobRepository $repository, private ExceptionHandlerInterface $exceptionHandler)
+    public function __construct(private readonly JobRepository $repository, private readonly ExceptionHandlerInterface $exceptionHandler)
     {
     }
 
