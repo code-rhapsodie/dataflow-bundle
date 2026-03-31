@@ -167,8 +167,21 @@ class JobRepository
         ;
     }
 
-    public function deleteOld(int $days): void
+    /**
+     * @return int[] Removed job ids
+     */
+    public function deleteOld(int $days): array
     {
+        $qb = $this->connection->createQueryBuilder();
+        $ids = $qb->select('j.id')
+            ->from(static::TABLE_NAME, 'j')
+            ->andWhere($qb->expr()->in('j.status', [Job::STATUS_COMPLETED, Job::STATUS_CRASHED]))
+            ->andWhere('j.end_time < :date')
+            ->setParameter('date', new \DateTime("- {$days} days"), 'datetime')
+            ->executeQuery()
+            ->fetchFirstColumn()
+        ;
+
         $qb = $this->connection->createQueryBuilder();
         $qb->delete(static::TABLE_NAME.' j')
             ->andWhere($qb->expr()->in('j.status', [Job::STATUS_COMPLETED, Job::STATUS_CRASHED]))
@@ -176,6 +189,8 @@ class JobRepository
             ->setParameter('date', new \DateTime("- {$days} days"), 'datetime')
             ->executeStatement()
         ;
+
+        return $ids;
     }
 
     private function returnFirstOrNull(QueryBuilder $qb): ?Job

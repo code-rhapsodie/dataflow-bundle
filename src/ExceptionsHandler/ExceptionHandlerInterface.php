@@ -9,4 +9,6 @@ interface ExceptionHandlerInterface
     public function save(?int $jobId, ?array $exceptions): void;
 
     public function find(int $jobId): ?array;
+
+    public function delete(int $jobId): void;
 }

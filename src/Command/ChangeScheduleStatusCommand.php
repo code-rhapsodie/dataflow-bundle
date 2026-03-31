@@ -7,12 +7,9 @@ namespace CodeRhapsodie\DataflowBundle\Command;
 use CodeRhapsodie\DataflowBundle\Entity\ScheduledDataflow;
 use CodeRhapsodie\DataflowBundle\Factory\ConnectionFactory;
 use CodeRhapsodie\DataflowBundle\Repository\ScheduledDataflowRepository;
+use Symfony\Component\Console\Attribute\Argument;
 use Symfony\Component\Console\Attribute\AsCommand;
-use Symfony\Component\Console\Command\Command;
-use Symfony\Component\Console\Input\InputArgument;
-use Symfony\Component\Console\Input\InputInterface;
-use Symfony\Component\Console\Input\InputOption;
-use Symfony\Component\Console\Output\OutputInterface;
+use Symfony\Component\Console\Attribute\Option;
 use Symfony\Component\Console\Style\SymfonyStyle;
 
 /**
@@ -21,50 +18,47 @@ use Symfony\Component\Console\Style\SymfonyStyle;
 #[AsCommand('code-rhapsodie:dataflow:schedule:change-status', 'Change schedule status', help: <<<'TXT'
 The <info>%command.name%</info> command able you to change schedule status.
 TXT)]
-class ChangeScheduleStatusCommand extends Command
+final readonly class ChangeScheduleStatusCommand
 {
-    public function __construct(private readonly ScheduledDataflowRepository $scheduledDataflowRepository, private readonly ConnectionFactory $connectionFactory)
+    public function __construct(private ScheduledDataflowRepository $scheduledDataflowRepository, private ConnectionFactory $connectionFactory)
     {
-        parent::__construct();
     }
 
-    protected function configure(): void
-    {
-        $this
-            ->addArgument('schedule-id', InputArgument::REQUIRED, 'Id of the schedule')
-            ->addOption('enable', null, InputOption::VALUE_NONE, 'Enable the schedule')
-            ->addOption('disable', null, InputOption::VALUE_NONE, 'Disable the schedule')
-            ->addOption('connection', null, InputOption::VALUE_REQUIRED, 'Define the DBAL connection to use');
-    }
-
-    protected function execute(InputInterface $input, OutputInterface $output): int
-    {
-        if ($input->getOption('connection') !== null) {
-            $this->connectionFactory->setConnectionName($input->getOption('connection'));
+    public function __invoke(
+        SymfonyStyle $io,
+        #[Argument('Id of the schedule')] int $scheduleId,
+        #[Option('Enable the schedule')] ?bool $enable = null,
+        #[Option('Disable the schedule')] ?bool $disable = null,
+        #[Option('Define the DBAL connection to use')] ?string $connection = null,
+    ): int {
+        if ($connection !== null) {
+            $this->connectionFactory->setConnectionName($connection);
         }
-        $io = new SymfonyStyle($input, $output);
+
         /** @var ScheduledDataflow|null $schedule */
-        $schedule = $this->scheduledDataflowRepository->find((int) $input->getArgument('schedule-id'));
+        $schedule = $this->scheduledDataflowRepository->find($scheduleId);
 
         if (!$schedule) {
-            $io->error(\sprintf('Cannot find scheduled dataflow with id "%d".', $input->getArgument('schedule-id')));
+            $io->error(\sprintf('Cannot find scheduled dataflow with id "%d".', $scheduleId));
 
             return 1;
         }
 
-        if ($input->getOption('enable') && $input->getOption('disable')) {
+        if ($enable !== null && $disable !== null) {
             $io->error('You cannot pass enable and disable options in the same time.');
 
             return 2;
         }
-        if (!$input->getOption('enable') && !$input->getOption('disable')) {
+        if ($enable === null && $disable === null) {
             $io->error('You must pass enable or disable option.');
 
             return 3;
         }
 
+        $enable = $enable ?? !$disable;
+
         try {
-            $schedule->setEnabled($input->getOption('enable'));
+            $schedule->setEnabled($enable);
             $this->scheduledDataflowRepository->save($schedule);
             $io->success(\sprintf('Schedule with id "%s" has been successfully updated.', $schedule->getId()));
         } catch (\Exception $e) {

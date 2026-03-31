@@ -95,7 +95,7 @@ services:
             $dispatcher: '@event_dispatcher'
             $jobGateway: '@CodeRhapsodie\DataflowBundle\Gateway\JobGateway'
     CodeRhapsodie\DataflowBundle\ExceptionsHandler\ExceptionHandlerInterface: '@CodeRhapsodie\DataflowBundle\ExceptionsHandler\NullExceptionHandler'
-    CodeRhapsodie\DataflowBundle\ExceptionsHandler\NullExceptionHandler:
+    CodeRhapsodie\DataflowBundle\ExceptionsHandler\NullExceptionHandler: ~
     CodeRhapsodie\DataflowBundle\Gateway\JobGateway:
         arguments:
             $repository: '@CodeRhapsodie\DataflowBundle\Repository\JobRepository'
@@ -104,6 +104,7 @@ services:
     CodeRhapsodie\DataflowBundle\Command\JobCleanupCommand:
         arguments:
             $jobRepository: '@CodeRhapsodie\DataflowBundle\Repository\JobRepository'
+            $exceptionHandler: '@CodeRhapsodie\DataflowBundle\ExceptionsHandler\ExceptionHandlerInterface'
             $retention: '%coderhapsodie.dataflow.job_history.retention%'
         tags: ['console.command']
 

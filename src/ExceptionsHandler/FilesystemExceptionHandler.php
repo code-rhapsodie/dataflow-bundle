@@ -34,4 +34,9 @@ class FilesystemExceptionHandler implements ExceptionHandlerInterface
             return [];
         }
     }
+
+    public function delete(int $jobId): void
+    {
+        $this->filesystem->delete(\sprintf('dataflow-job-%s.log', $jobId));
+    }
 }

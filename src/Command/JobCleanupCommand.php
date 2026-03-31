@@ -4,29 +4,29 @@ declare(strict_types=1);
 
 namespace CodeRhapsodie\DataflowBundle\Command;
 
+use CodeRhapsodie\DataflowBundle\ExceptionsHandler\ExceptionHandlerInterface;
 use CodeRhapsodie\DataflowBundle\Repository\JobRepository;
 use Symfony\Component\Console\Attribute\AsCommand;
 use Symfony\Component\Console\Command\Command;
-use Symfony\Component\Console\Input\InputInterface;
-use Symfony\Component\Console\Output\OutputInterface;
 
 #[AsCommand(name: 'code-rhapsodie:dataflow:job:cleanup', description: 'Cleanup job history.', help: <<<'TXT'
 Job retention can be configured with the "job_history.retention" configuration.
 TXT)]
-class JobCleanupCommand extends Command
+final readonly class JobCleanupCommand
 {
-    public function __construct(private readonly JobRepository $jobRepository, private readonly int $retention)
-    {
-        parent::__construct();
+    public function __construct(
+        private JobRepository $jobRepository,
+        private ExceptionHandlerInterface $exceptionHandler,
+        private int $retention,
+    ) {
     }
 
-    protected function configure()
+    public function __invoke(): int
     {
-    }
-
-    protected function execute(InputInterface $input, OutputInterface $output): int
-    {
-        $this->jobRepository->deleteOld($this->retention);
+        $removedIds = $this->jobRepository->deleteOld($this->retention);
+        foreach ($removedIds as $jobId) {
+            $this->exceptionHandler->delete($jobId);
+        }
 
         return Command::SUCCESS;
     }
