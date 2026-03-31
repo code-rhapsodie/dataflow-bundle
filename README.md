@@ -5,7 +5,7 @@ providing an easy way to create import / export dataflow.
 
 | Dataflow | Symfony                  | Support |
 |----------|--------------------------|---------|
-| 5.x      | 7.x                      | yes     |
+| 5.x      | ^7.3                     | yes     |
 | 4.x      | 3.4 \| 4.x \| 5.x \| 6.x | yes     |
 | 3.x      | 3.4 \| 4.x \| 5.x        | no      |
 | 2.x      | 3.4 \| 4.x               | no      |
