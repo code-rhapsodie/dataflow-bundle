@@ -16,10 +16,12 @@ use Symfony\Component\Console\Style\SymfonyStyle;
 /**
  * @codeCoverageIgnore
  */
-#[AsCommand('code-rhapsodie:dataflow:schedule:list', 'List scheduled dataflows')]
+#[AsCommand('code-rhapsodie:dataflow:schedule:list', 'List scheduled dataflows', help: <<<'TXT'
+The <info>%command.name%</info> lists all scheduled dataflows.
+TXT)]
 class ScheduleListCommand extends Command
 {
-    public function __construct(private ScheduledDataflowRepository $scheduledDataflowRepository, private ConnectionFactory $connectionFactory)
+    public function __construct(private readonly ScheduledDataflowRepository $scheduledDataflowRepository, private readonly ConnectionFactory $connectionFactory)
     {
         parent::__construct();
     }
@@ -27,7 +29,6 @@ class ScheduleListCommand extends Command
     protected function configure(): void
     {
         $this
-            ->setHelp('The <info>%command.name%</info> lists all scheduled dataflows.')
             ->addOption('connection', null, InputOption::VALUE_REQUIRED, 'Define the DBAL connection to use');
     }
 

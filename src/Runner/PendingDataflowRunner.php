@@ -9,7 +9,7 @@ use CodeRhapsodie\DataflowBundle\Repository\JobRepository;
 
 class PendingDataflowRunner implements PendingDataflowRunnerInterface
 {
-    public function __construct(private JobRepository $repository, private JobProcessorInterface $processor)
+    public function __construct(private readonly JobRepository $repository, private readonly JobProcessorInterface $processor)
     {
     }
 

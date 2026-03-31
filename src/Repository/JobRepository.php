@@ -154,7 +154,7 @@ class JobRepository
     public function crashLongRunning(int $hours): void
     {
         $qb = $this->connection->createQueryBuilder();
-        $qb->update(static::TABLE_NAME, 'j')
+        $qb->update(static::TABLE_NAME.' j')
             ->set('j.status', ':new_status')
             ->set('j.end_time', ':now')
             ->andWhere('j.status = :status')
@@ -170,7 +170,7 @@ class JobRepository
     public function deleteOld(int $days): void
     {
         $qb = $this->connection->createQueryBuilder();
-        $qb->delete(static::TABLE_NAME, 'j')
+        $qb->delete(static::TABLE_NAME.' j')
             ->andWhere($qb->expr()->in('j.status', [Job::STATUS_COMPLETED, Job::STATUS_CRASHED]))
             ->andWhere('j.end_time < :date')
             ->setParameter('date', new \DateTime("- {$days} days"), 'datetime')

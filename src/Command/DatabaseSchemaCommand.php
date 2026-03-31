@@ -19,10 +19,12 @@ use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Console\Question\ConfirmationQuestion;
 use Symfony\Component\Console\Style\SymfonyStyle;
 
-#[AsCommand(name: 'code-rhapsodie:dataflow:database-schema', description: 'Generates schema create / update SQL queries')]
+#[AsCommand(name: 'code-rhapsodie:dataflow:database-schema', description: 'Generates schema create / update SQL queries', help: <<<'TXT'
+The <info>%command.name%</info> help you to generate SQL Query to create or update your database schema for this bundle
+TXT)]
 class DatabaseSchemaCommand extends Command
 {
-    public function __construct(private ConnectionFactory $connectionFactory)
+    public function __construct(private readonly ConnectionFactory $connectionFactory)
     {
         parent::__construct();
     }
@@ -30,7 +32,6 @@ class DatabaseSchemaCommand extends Command
     protected function configure(): void
     {
         $this
-            ->setHelp('The <info>%command.name%</info> help you to generate SQL Query to create or update your database schema for this bundle')
             ->addOption('dump-sql', null, InputOption::VALUE_NONE, 'Dump only the update SQL queries.')
             ->addOption('update', null, InputOption::VALUE_NONE, 'Dump/execute only the update SQL queries.')
             ->addOption('connection', null, InputOption::VALUE_REQUIRED, 'Define the DBAL connection to use');

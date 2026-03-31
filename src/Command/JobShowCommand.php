@@ -17,7 +17,9 @@ use Symfony\Component\Console\Style\SymfonyStyle;
 /**
  * @codeCoverageIgnore
  */
-#[AsCommand('code-rhapsodie:dataflow:job:show', 'Display job details for schedule or specific job')]
+#[AsCommand('code-rhapsodie:dataflow:job:show', 'Display job details for schedule or specific job', help: <<<'TXT'
+The <info>%command.name%</info> display job details for schedule or specific job.
+TXT)]
 class JobShowCommand extends Command
 {
     private const STATUS_MAPPING = [
@@ -26,7 +28,7 @@ class JobShowCommand extends Command
         Job::STATUS_COMPLETED => 'Completed',
     ];
 
-    public function __construct(private JobGateway $jobGateway, private ConnectionFactory $connectionFactory)
+    public function __construct(private readonly JobGateway $jobGateway, private readonly ConnectionFactory $connectionFactory)
     {
         parent::__construct();
     }
@@ -34,7 +36,6 @@ class JobShowCommand extends Command
     protected function configure(): void
     {
         $this
-            ->setHelp('The <info>%command.name%</info> display job details for schedule or specific job.')
             ->addOption('job-id', null, InputOption::VALUE_REQUIRED, 'Id of the job to get details')
             ->addOption('schedule-id', null, InputOption::VALUE_REQUIRED, 'Id of schedule for last execution details')
             ->addOption('details', null, InputOption::VALUE_NONE, 'Display full details')

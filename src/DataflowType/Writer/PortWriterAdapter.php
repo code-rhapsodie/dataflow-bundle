@@ -6,7 +6,7 @@ namespace CodeRhapsodie\DataflowBundle\DataflowType\Writer;
 
 class PortWriterAdapter implements WriterInterface
 {
-    public function __construct(private \Port\Writer $writer)
+    public function __construct(private readonly \Port\Writer $writer)
     {
     }
 

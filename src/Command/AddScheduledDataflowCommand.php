@@ -19,10 +19,12 @@ use Symfony\Component\Validator\Validator\ValidatorInterface;
 /**
  * @codeCoverageIgnore
  */
-#[AsCommand('code-rhapsodie:dataflow:schedule:add', 'Create a scheduled dataflow')]
+#[AsCommand('code-rhapsodie:dataflow:schedule:add', 'Create a scheduled dataflow', help: <<<'TXT'
+The <info>%command.name%</info> allows you to create a new scheduled dataflow.
+TXT)]
 class AddScheduledDataflowCommand extends Command
 {
-    public function __construct(private DataflowTypeRegistryInterface $registry, private ScheduledDataflowRepository $scheduledDataflowRepository, private ValidatorInterface $validator, private ConnectionFactory $connectionFactory)
+    public function __construct(private readonly DataflowTypeRegistryInterface $registry, private readonly ScheduledDataflowRepository $scheduledDataflowRepository, private readonly ValidatorInterface $validator, private readonly ConnectionFactory $connectionFactory)
     {
         parent::__construct();
     }
@@ -30,7 +32,6 @@ class AddScheduledDataflowCommand extends Command
     protected function configure(): void
     {
         $this
-            ->setHelp('The <info>%command.name%</info> allows you to create a new scheduled dataflow.')
             ->addOption('label', null, InputOption::VALUE_REQUIRED, 'Label of the scheduled dataflow')
             ->addOption('type', null, InputOption::VALUE_REQUIRED, 'Type of the scheduled dataflow (FQCN)')
             ->addOption(

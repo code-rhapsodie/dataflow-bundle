@@ -9,15 +9,15 @@ namespace CodeRhapsodie\DataflowBundle\DataflowType;
  */
 class Result
 {
-    private \DateInterval $elapsed;
+    private readonly \DateInterval $elapsed;
 
     private int $errorCount = 0;
 
     private int $successCount = 0;
 
-    private array $exceptions;
+    private readonly array $exceptions;
 
-    public function __construct(private string $name, private \DateTimeInterface $startTime, private \DateTimeInterface $endTime, private int $totalProcessedCount, array $exceptions)
+    public function __construct(private readonly string $name, private readonly \DateTimeInterface $startTime, private readonly \DateTimeInterface $endTime, private readonly int $totalProcessedCount, array $exceptions)
     {
         $this->elapsed = $startTime->diff($endTime);
         $this->errorCount = \count($exceptions);

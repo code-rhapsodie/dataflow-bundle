@@ -19,7 +19,9 @@ use Symfony\Component\Console\Output\OutputInterface;
  *
  * @codeCoverageIgnore
  */
-#[AsCommand('code-rhapsodie:dataflow:run-pending', 'Runs dataflows based on the scheduled defined in the UI.')]
+#[AsCommand('code-rhapsodie:dataflow:run-pending', 'Runs dataflows based on the scheduled defined in the UI.', help: <<<'TXT'
+The <info>%command.name%</info> command runs dataflows according to the schedule defined in the UI by the user.
+TXT)]
 class RunPendingDataflowsCommand extends Command
 {
     use LockableTrait;
@@ -32,11 +34,6 @@ class RunPendingDataflowsCommand extends Command
     protected function configure(): void
     {
         $this
-            ->setHelp(
-                <<<'EOF'
-The <info>%command.name%</info> command runs dataflows according to the schedule defined in the UI by the user.
-EOF
-            )
             ->addOption('connection', null, InputOption::VALUE_REQUIRED, 'Define the DBAL connection to use');
     }
 

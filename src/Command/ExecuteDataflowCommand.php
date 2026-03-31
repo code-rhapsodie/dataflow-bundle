@@ -23,7 +23,11 @@ use Symfony\Component\Console\Style\SymfonyStyle;
  *
  * @codeCoverageIgnore
  */
-#[AsCommand('code-rhapsodie:dataflow:execute', 'Runs one dataflow type with provided options')]
+#[AsCommand('code-rhapsodie:dataflow:execute', 'Runs one dataflow type with provided options', help: <<<'TXT'
+The <info>%command.name%</info> command runs one dataflow with the provided options.
+
+  <info>php %command.full_name% App\Dataflow\MyDataflow '{"option1": "value1", "option2": "value2"}'</info>
+TXT)]
 class ExecuteDataflowCommand extends Command implements LoggerAwareInterface
 {
     use LoggerAwareTrait;
@@ -36,13 +40,6 @@ class ExecuteDataflowCommand extends Command implements LoggerAwareInterface
     protected function configure(): void
     {
         $this
-            ->setHelp(
-                <<<'EOF'
-The <info>%command.name%</info> command runs one dataflow with the provided options.
-
-  <info>php %command.full_name% App\Dataflow\MyDataflow '{"option1": "value1", "option2": "value2"}'</info>
-EOF
-            )
             ->addArgument('fqcn', InputArgument::REQUIRED, 'FQCN or alias of the dataflow type')
             ->addArgument('options', InputArgument::OPTIONAL, 'Options for the dataflow type as a json string', '[]')
             ->addOption('connection', null, InputOption::VALUE_REQUIRED, 'Define the DBAL connection to use');
@@ -54,7 +51,7 @@ EOF
             $this->connectionFactory->setConnectionName($input->getOption('connection'));
         }
         $fqcnOrAlias = $input->getArgument('fqcn');
-        $options = json_decode($input->getArgument('options'), true, 512, \JSON_THROW_ON_ERROR);
+        $options = json_decode((string) $input->getArgument('options'), true, 512, \JSON_THROW_ON_ERROR);
         $io = new SymfonyStyle($input, $output);
 
         $dataflowType = $this->registry->getDataflowType($fqcnOrAlias);

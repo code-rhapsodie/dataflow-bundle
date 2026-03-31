@@ -6,7 +6,7 @@ namespace CodeRhapsodie\DataflowBundle\MessengerMode;
 
 class JobMessage
 {
-    public function __construct(private int $jobId)
+    public function __construct(private readonly int $jobId)
     {
     }
 

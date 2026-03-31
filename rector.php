@@ -7,19 +7,16 @@ use Rector\Config\RectorConfig;
 use Rector\Set\ValueObject\LevelSetList;
 use Rector\Symfony\Set\SymfonySetList;
 
-return static function (RectorConfig $rectorConfig): void {
-    $rectorConfig->paths([
-        __DIR__ . '/src',
-        __DIR__ . '/Tests',
-    ]);
-
-    // register a single rule
-    $rectorConfig->rule(InlineConstructorDefaultToPropertyRector::class);
-
-    $rectorConfig->sets([
-        SymfonySetList::SYMFONY_70,
+return RectorConfig::configure()
+    ->withPaths([
+        __DIR__.'/src',
+        __DIR__.'/Tests',
+    ])
+    ->withComposerBased(symfony: true)
+    ->withRules([InlineConstructorDefaultToPropertyRector::class])
+    ->withSets([
         SymfonySetList::SYMFONY_CODE_QUALITY,
         SymfonySetList::SYMFONY_CONSTRUCTOR_INJECTION,
-        LevelSetList::UP_TO_PHP_80,
-    ]);
-};
+        LevelSetList::UP_TO_PHP_82,
+    ])
+;

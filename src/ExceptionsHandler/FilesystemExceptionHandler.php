@@ -9,7 +9,7 @@ use League\Flysystem\FilesystemException;
 
 class FilesystemExceptionHandler implements ExceptionHandlerInterface
 {
-    public function __construct(private Filesystem $filesystem)
+    public function __construct(private readonly Filesystem $filesystem)
     {
     }
 

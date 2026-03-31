@@ -67,7 +67,7 @@ class Dataflow implements DataflowInterface, LoggerAwareInterface
      */
     public function setAfterItemProcessors(array $processors): self
     {
-        $this->afterItemProcessors = array_map(static fn (callable $callable) => \Closure::fromCallable($callable), $processors);
+        $this->afterItemProcessors = array_map(\Closure::fromCallable(...), $processors);
 
         return $this;
     }

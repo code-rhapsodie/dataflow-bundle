@@ -13,7 +13,7 @@ use Symfony\Component\DependencyInjection\Container;
  */
 class ConnectionFactory
 {
-    public function __construct(private Container $container, private string $connectionName)
+    public function __construct(private readonly Container $container, private string $connectionName)
     {
     }
 

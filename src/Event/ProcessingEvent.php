@@ -16,7 +16,7 @@ class ProcessingEvent extends CrEvent
     /**
      * ProcessingEvent constructor.
      */
-    public function __construct(private Job $job)
+    public function __construct(private readonly Job $job)
     {
     }
 

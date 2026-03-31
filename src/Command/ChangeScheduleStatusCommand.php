@@ -18,10 +18,12 @@ use Symfony\Component\Console\Style\SymfonyStyle;
 /**
  * @codeCoverageIgnore
  */
-#[AsCommand('code-rhapsodie:dataflow:schedule:change-status', 'Change schedule status')]
+#[AsCommand('code-rhapsodie:dataflow:schedule:change-status', 'Change schedule status', help: <<<'TXT'
+The <info>%command.name%</info> command able you to change schedule status.
+TXT)]
 class ChangeScheduleStatusCommand extends Command
 {
-    public function __construct(private ScheduledDataflowRepository $scheduledDataflowRepository, private ConnectionFactory $connectionFactory)
+    public function __construct(private readonly ScheduledDataflowRepository $scheduledDataflowRepository, private readonly ConnectionFactory $connectionFactory)
     {
         parent::__construct();
     }
@@ -29,7 +31,6 @@ class ChangeScheduleStatusCommand extends Command
     protected function configure(): void
     {
         $this
-            ->setHelp('The <info>%command.name%</info> command able you to change schedule status.')
             ->addArgument('schedule-id', InputArgument::REQUIRED, 'Id of the schedule')
             ->addOption('enable', null, InputOption::VALUE_NONE, 'Enable the schedule')
             ->addOption('disable', null, InputOption::VALUE_NONE, 'Disable the schedule')

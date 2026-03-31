@@ -1,5 +1,6 @@
 # Version 5.5.0
 * Added cleanup commands
+* Updated for PHP 8.2
 
 # Version 5.4.1
 * Fix File Exceptions integration

@@ -14,7 +14,7 @@ class CollectionWriter implements DelegateWriterInterface
     /**
      * CollectionWriter constructor.
      */
-    public function __construct(private WriterInterface $writer)
+    public function __construct(private readonly WriterInterface $writer)
     {
     }
 
