@@ -10,7 +10,7 @@ use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
 
-#[AsCommand(name: 'code-rhapsodie:set_crashed', description: 'Set long running jobs as crashed.')]
+#[AsCommand(name: 'code-rhapsodie:job:set-crashed', description: 'Set long running jobs as crashed.')]
 class SetCrashedCommand extends Command
 {
     public function __construct(private JobRepository $jobRepository, private int $crashedDelay)

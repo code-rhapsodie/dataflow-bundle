@@ -597,9 +597,9 @@ the messenger component instead.
 
 `code-rhapsodie:dataflow:dump-schema` Generates schema create / update SQL queries
 
-`code-rhapsodie:dataflow:set_crashed` Jobs that have been in the "running" status for too long will be set in the "crashed" status.
+`code-rhapsodie:dataflow:job:set-crashed` Jobs that have been in the "running" status for too long will be set in the "crashed" status.
 
-`code-rhapsodie:dataflow:job_cleanup` Remove old completed or crashed jobs
+`code-rhapsodie:dataflow:job:cleanup` Remove old completed or crashed jobs
 
 ### Work with many databases
 
