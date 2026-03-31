@@ -8,11 +8,9 @@ use CodeRhapsodie\DataflowBundle\Factory\ConnectionFactory;
 use CodeRhapsodie\DataflowBundle\Manager\ScheduledDataflowManagerInterface;
 use CodeRhapsodie\DataflowBundle\Runner\PendingDataflowRunnerInterface;
 use Symfony\Component\Console\Attribute\AsCommand;
-use Symfony\Component\Console\Command\Command;
+use Symfony\Component\Console\Attribute\Option;
 use Symfony\Component\Console\Command\LockableTrait;
-use Symfony\Component\Console\Input\InputInterface;
-use Symfony\Component\Console\Input\InputOption;
-use Symfony\Component\Console\Output\OutputInterface;
+use Symfony\Component\Console\Style\SymfonyStyle;
 
 /**
  * Runs dataflows according to user-defined schedule.
@@ -22,31 +20,26 @@ use Symfony\Component\Console\Output\OutputInterface;
 #[AsCommand('code-rhapsodie:dataflow:run-pending', 'Runs dataflows based on the scheduled defined in the UI.', help: <<<'TXT'
 The <info>%command.name%</info> command runs dataflows according to the schedule defined in the UI by the user.
 TXT)]
-class RunPendingDataflowsCommand extends Command
+final class RunPendingDataflowsCommand
 {
     use LockableTrait;
 
-    public function __construct(private ScheduledDataflowManagerInterface $manager, private PendingDataflowRunnerInterface $runner, private ConnectionFactory $connectionFactory)
+    public function __construct(private readonly ScheduledDataflowManagerInterface $manager, private readonly PendingDataflowRunnerInterface $runner, private readonly ConnectionFactory $connectionFactory)
     {
-        parent::__construct();
     }
 
-    protected function configure(): void
-    {
-        $this
-            ->addOption('connection', null, InputOption::VALUE_REQUIRED, 'Define the DBAL connection to use');
-    }
-
-    protected function execute(InputInterface $input, OutputInterface $output): int
-    {
+    public function __invoke(
+        SymfonyStyle $io,
+        #[Option('Define the DBAL connection to use')] ?string $connection = null,
+    ): int {
         if (!$this->lock()) {
-            $output->writeln('The command is already running in another process.');
+            $io->writeln('The command is already running in another process.');
 
             return 0;
         }
 
-        if ($input->getOption('connection') !== null) {
-            $this->connectionFactory->setConnectionName($input->getOption('connection'));
+        if ($connection !== null) {
+            $this->connectionFactory->setConnectionName($connection);
         }
 
         $this->manager->createJobsFromScheduledDataflows();

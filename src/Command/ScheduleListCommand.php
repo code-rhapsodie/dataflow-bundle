@@ -7,10 +7,7 @@ namespace CodeRhapsodie\DataflowBundle\Command;
 use CodeRhapsodie\DataflowBundle\Factory\ConnectionFactory;
 use CodeRhapsodie\DataflowBundle\Repository\ScheduledDataflowRepository;
 use Symfony\Component\Console\Attribute\AsCommand;
-use Symfony\Component\Console\Command\Command;
-use Symfony\Component\Console\Input\InputInterface;
-use Symfony\Component\Console\Input\InputOption;
-use Symfony\Component\Console\Output\OutputInterface;
+use Symfony\Component\Console\Attribute\Option;
 use Symfony\Component\Console\Style\SymfonyStyle;
 
 /**
@@ -19,25 +16,20 @@ use Symfony\Component\Console\Style\SymfonyStyle;
 #[AsCommand('code-rhapsodie:dataflow:schedule:list', 'List scheduled dataflows', help: <<<'TXT'
 The <info>%command.name%</info> lists all scheduled dataflows.
 TXT)]
-class ScheduleListCommand extends Command
+final readonly class ScheduleListCommand
 {
-    public function __construct(private readonly ScheduledDataflowRepository $scheduledDataflowRepository, private readonly ConnectionFactory $connectionFactory)
+    public function __construct(private ScheduledDataflowRepository $scheduledDataflowRepository, private ConnectionFactory $connectionFactory)
     {
-        parent::__construct();
     }
 
-    protected function configure(): void
-    {
-        $this
-            ->addOption('connection', null, InputOption::VALUE_REQUIRED, 'Define the DBAL connection to use');
-    }
-
-    protected function execute(InputInterface $input, OutputInterface $output): int
-    {
-        if ($input->getOption('connection') !== null) {
-            $this->connectionFactory->setConnectionName($input->getOption('connection'));
+    public function __invoke(
+        SymfonyStyle $io,
+        #[Option('Define the DBAL connection to use')] ?string $connection = null,
+    ): int {
+        if ($connection !== null) {
+            $this->connectionFactory->setConnectionName($connection);
         }
-        $io = new SymfonyStyle($input, $output);
+
         $display = [];
         $schedules = $this->scheduledDataflowRepository->listAllOrderedByLabel();
         foreach ($schedules as $schedule) {

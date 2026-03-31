@@ -21,8 +21,6 @@ class Dataflow implements DataflowInterface, LoggerAwareInterface
 
     private ?\Closure $customExceptionIndex = null;
 
-    private ?\DateTimeInterface $dateTime = null;
-
     /**
      * @var \Closure[]
      */

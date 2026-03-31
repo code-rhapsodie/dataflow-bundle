@@ -60,6 +60,7 @@
     },
     "require-dev": {
         "amphp/amp": "^2.5",
+        "ekino/phpstan-banned-code": "^3.2",
         "friendsofphp/php-cs-fixer": "^3.75",
         "phpunit/phpunit": "^11",
         "portphp/portphp": "^1.9",

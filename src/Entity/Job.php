@@ -64,7 +64,7 @@ class Job
 
     public static function createFromScheduledDataflow(ScheduledDataflow $scheduled): self
     {
-        return (new static())
+        return (new self())
             ->setStatus(static::STATUS_PENDING)
             ->setDataflowType($scheduled->getDataflowType())
             ->setOptions($scheduled->getOptions())
@@ -75,7 +75,7 @@ class Job
 
     public static function createFromArray(array $datas)
     {
-        $lost = array_diff(static::KEYS, array_keys($datas));
+        $lost = array_diff(self::KEYS, array_keys($datas));
         if (\count($lost) > 0) {
             throw new \LogicException('The first argument of '.__METHOD__.'  must be contains: "'.implode(', ', $lost).'"');
         }

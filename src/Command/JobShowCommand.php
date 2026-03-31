@@ -8,10 +8,7 @@ use CodeRhapsodie\DataflowBundle\Entity\Job;
 use CodeRhapsodie\DataflowBundle\Factory\ConnectionFactory;
 use CodeRhapsodie\DataflowBundle\Gateway\JobGateway;
 use Symfony\Component\Console\Attribute\AsCommand;
-use Symfony\Component\Console\Command\Command;
-use Symfony\Component\Console\Input\InputInterface;
-use Symfony\Component\Console\Input\InputOption;
-use Symfony\Component\Console\Output\OutputInterface;
+use Symfony\Component\Console\Attribute\Option;
 use Symfony\Component\Console\Style\SymfonyStyle;
 
 /**
@@ -20,38 +17,31 @@ use Symfony\Component\Console\Style\SymfonyStyle;
 #[AsCommand('code-rhapsodie:dataflow:job:show', 'Display job details for schedule or specific job', help: <<<'TXT'
 The <info>%command.name%</info> display job details for schedule or specific job.
 TXT)]
-class JobShowCommand extends Command
+final readonly class JobShowCommand
 {
     private const STATUS_MAPPING = [
         Job::STATUS_PENDING => 'Pending',
         Job::STATUS_RUNNING => 'Running',
         Job::STATUS_COMPLETED => 'Completed',
+        Job::STATUS_QUEUED => 'Queued',
+        Job::STATUS_CRASHED => 'Crashed',
     ];
 
-    public function __construct(private readonly JobGateway $jobGateway, private readonly ConnectionFactory $connectionFactory)
+    public function __construct(private JobGateway $jobGateway, private ConnectionFactory $connectionFactory)
     {
-        parent::__construct();
     }
 
-    protected function configure(): void
-    {
-        $this
-            ->addOption('job-id', null, InputOption::VALUE_REQUIRED, 'Id of the job to get details')
-            ->addOption('schedule-id', null, InputOption::VALUE_REQUIRED, 'Id of schedule for last execution details')
-            ->addOption('details', null, InputOption::VALUE_NONE, 'Display full details')
-            ->addOption('connection', null, InputOption::VALUE_REQUIRED, 'Define the DBAL connection to use');
-    }
-
-    protected function execute(InputInterface $input, OutputInterface $output): int
-    {
-        if ($input->getOption('connection') !== null) {
-            $this->connectionFactory->setConnectionName($input->getOption('connection'));
+    public function __invoke(
+        SymfonyStyle $io,
+        #[Option('Id of the job to get details')] ?int $jobId = null,
+        #[Option('Id of schedule for last execution details')] ?int $scheduleId = null,
+        #[Option('Display full details')] bool $details = false,
+        #[Option('Define the DBAL connection to use')] ?string $connection = null,
+    ): int {
+        if ($connection !== null) {
+            $this->connectionFactory->setConnectionName($connection);
         }
 
-        $io = new SymfonyStyle($input, $output);
-
-        $jobId = (int) $input->getOption('job-id');
-        $scheduleId = (int) $input->getOption('schedule-id');
         if ($jobId && $scheduleId) {
             $io->error('You must use `job-id` OR `schedule-id` option, not the 2 in the same time.');
 
@@ -85,14 +75,14 @@ class JobShowCommand extends Command
             ['Errors', \count((array) $job->getExceptions())],
             ['Status', $this->translateStatus($job->getStatus())],
         ];
-        if ($input->getOption('details')) {
+        if ($details) {
             $display[] = ['Type', $job->getDataflowType()];
             $display[] = ['Options', json_encode($job->getOptions(), \JSON_THROW_ON_ERROR)];
             $io->section('Summary');
         }
 
         $io->table(['Field', 'Value'], $display);
-        if ($input->getOption('details')) {
+        if ($details) {
             $io->section('Exceptions');
             $exceptions = array_map(static fn (string $exception) => substr($exception, 0, 900).'…', $job->getExceptions());
 

@@ -23,7 +23,7 @@ class AMPAsyncDataflow implements DataflowInterface, LoggerAwareInterface
 {
     use LoggerAwareTrait;
 
-    /** @var callable[] */
+    /** @var array<array<callable|int>> */
     private array $steps = [];
 
     /** @var WriterInterface[] */
