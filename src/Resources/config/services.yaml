@@ -94,6 +94,7 @@ services:
             $registry: '@CodeRhapsodie\DataflowBundle\Registry\DataflowTypeRegistryInterface'
             $dispatcher: '@event_dispatcher'
             $jobGateway: '@CodeRhapsodie\DataflowBundle\Gateway\JobGateway'
+            $exceptionHandler: '@CodeRhapsodie\DataflowBundle\ExceptionsHandler\ExceptionHandlerInterface'
     CodeRhapsodie\DataflowBundle\ExceptionsHandler\ExceptionHandlerInterface: '@CodeRhapsodie\DataflowBundle\ExceptionsHandler\NullExceptionHandler'
     CodeRhapsodie\DataflowBundle\ExceptionsHandler\NullExceptionHandler: ~
     CodeRhapsodie\DataflowBundle\Gateway\JobGateway:

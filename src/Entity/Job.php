@@ -62,6 +62,11 @@ class Job
 
     private ?\DateTimeInterface $endTime = null;
 
+    /**
+     * @var resource|null
+     */
+    private $streamExceptions = null;
+
     public static function createFromScheduledDataflow(ScheduledDataflow $scheduled): self
     {
         return (new self())
@@ -241,6 +246,24 @@ class Job
     public function setEndTime(?\DateTimeInterface $endTime): self
     {
         $this->endTime = $endTime;
+
+        return $this;
+    }
+
+    /**
+     * @return resource|null
+     */
+    public function getStreamExceptions()
+    {
+        return $this->streamExceptions;
+    }
+
+    /**
+     * @param resource $streamExceptions
+     */
+    public function setStreamExceptions($streamExceptions): self
+    {
+        $this->streamExceptions = $streamExceptions;
 
         return $this;
     }

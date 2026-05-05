@@ -4,7 +4,9 @@ declare(strict_types=1);
 
 namespace CodeRhapsodie\DataflowBundle\DataflowType;
 
-interface DataflowTypeInterface
+use Psr\Log\LoggerAwareInterface;
+
+interface DataflowTypeInterface extends LoggerAwareInterface
 {
     public function getLabel(): string;
 

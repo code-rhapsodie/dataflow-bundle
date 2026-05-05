@@ -46,7 +46,7 @@ abstract class AbstractDataflowType implements DataflowTypeInterface, LoggerAwar
         });
         $this->buildDataflow($builder, $options);
         $dataflow = $builder->getDataflow();
-        if ($dataflow instanceof LoggerAwareInterface && $this->logger instanceof LoggerInterface) {
+        if ($this->logger instanceof LoggerInterface) {
             $dataflow->setLogger($this->logger);
         }
 

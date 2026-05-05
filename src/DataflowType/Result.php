@@ -11,18 +11,12 @@ class Result
 {
     private readonly \DateInterval $elapsed;
 
-    private int $errorCount = 0;
-
     private int $successCount = 0;
 
-    private readonly array $exceptions;
-
-    public function __construct(private readonly string $name, private readonly \DateTimeInterface $startTime, private readonly \DateTimeInterface $endTime, private readonly int $totalProcessedCount, array $exceptions)
+    public function __construct(private readonly string $name, private readonly \DateTimeInterface $startTime, private \DateTimeInterface $endTime, private int $totalProcessedCount, private int $errorCount)
     {
         $this->elapsed = $startTime->diff($endTime);
-        $this->errorCount = \count($exceptions);
         $this->successCount = $totalProcessedCount - $this->errorCount;
-        $this->exceptions = $exceptions;
     }
 
     public function getName(): string

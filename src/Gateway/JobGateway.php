@@ -19,16 +19,11 @@ class JobGateway
     {
         $job = $this->repository->find($jobId);
 
-        return $this->loadExceptions($job);
+        return $this->loadStreamExceptions($job);
     }
 
     public function save(Job $job): void
     {
-        if (!$this->exceptionHandler instanceof NullExceptionHandler) {
-            $this->exceptionHandler->save($job->getId(), $job->getExceptions());
-            $job->setExceptions([]);
-        }
-
         $this->repository->save($job);
     }
 
@@ -36,17 +31,15 @@ class JobGateway
     {
         $job = $this->repository->findLastForDataflowId($scheduleId);
 
-        return $this->loadExceptions($job);
+        return $this->loadStreamExceptions($job);
     }
 
-    private function loadExceptions(?Job $job): ?Job
+    private function loadStreamExceptions(?Job $job): ?Job
     {
         if ($job === null || $this->exceptionHandler instanceof NullExceptionHandler) {
             return $job;
         }
 
-        $this->exceptionHandler->save($job->getId(), $job->getExceptions());
-
-        return $job->setExceptions($this->exceptionHandler->find($job->getId()));
+        return $job->setStreamExceptions($this->exceptionHandler->find($job->getId()));
     }
 }

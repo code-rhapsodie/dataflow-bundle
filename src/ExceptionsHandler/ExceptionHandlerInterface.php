@@ -6,9 +6,11 @@ namespace CodeRhapsodie\DataflowBundle\ExceptionsHandler;
 
 interface ExceptionHandlerInterface
 {
-    public function save(?int $jobId, ?array $exceptions): void;
+    /** @param resource $exceptions */
+    public function save(?int $jobId, $exceptions): void;
 
-    public function find(int $jobId): ?array;
+    /** @return null|resource */
+    public function find(int $jobId);
 
     public function delete(int $jobId): void;
 }
