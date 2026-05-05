@@ -85,7 +85,7 @@ class ScheduledDataflowRepository
         return $query->executeQuery()->fetchAllAssociative();
     }
 
-    public function save(ScheduledDataflow $scheduledDataflow)
+    public function save(ScheduledDataflow $scheduledDataflow): void
     {
         $datas = $scheduledDataflow->toArray();
         unset($datas['id']);

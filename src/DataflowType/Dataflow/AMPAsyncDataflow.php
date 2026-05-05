@@ -122,7 +122,7 @@ class AMPAsyncDataflow implements DataflowInterface
                 $this->stepsJobs[$stepIndex][$readIndex] = true;
                 /** @var Promise<void> $promise */
                 $promise = coroutine($step)($item);
-                $promise->onResolve(function (?\Throwable $exception = null, $newItem = null) use ($stepIndex, $readIndex, &$countExceptions) {
+                $promise->onResolve(function (?\Throwable $exception = null, $newItem = null) use ($stepIndex, $readIndex, &$countExceptions): void {
                     if ($exception) {
                         ++$countExceptions;
                         $this->logException($exception, (string) $stepIndex);

@@ -9,6 +9,7 @@ $config = new PhpCsFixer\Config();
 $config->setRules([
     '@Symfony' => true,
     '@Symfony:risky' => true,
+    '@PHP8x2Migration:risky' => true,
     '@PSR12' => true,
     'array_syntax' => [
         'syntax' => 'short',
