@@ -24,9 +24,8 @@ use Symfony\Component\EventDispatcher\EventDispatcherInterface;
 
 class JobProcessor implements JobProcessorInterface, LoggerAwareInterface
 {
-    private const FORMAT = "[%datetime%] %level_name% when processing item %context.index%: %message% %context% %extra%\n";
-
     use LoggerAwareTrait;
+    private const FORMAT = "[%datetime%] %level_name% when processing item %context.index%: %message% %context% %extra%\n";
 
     public function __construct(
         private JobRepository $repository,
