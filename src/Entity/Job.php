@@ -65,7 +65,7 @@ class Job
     /**
      * @var resource|null
      */
-    private $streamExceptions = null;
+    private mixed $streamExceptions = null;
 
     public static function createFromScheduledDataflow(ScheduledDataflow $scheduled): self
     {
