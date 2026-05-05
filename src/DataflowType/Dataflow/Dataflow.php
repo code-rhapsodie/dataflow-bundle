@@ -6,7 +6,6 @@ namespace CodeRhapsodie\DataflowBundle\DataflowType\Dataflow;
 
 use CodeRhapsodie\DataflowBundle\DataflowType\Result;
 use CodeRhapsodie\DataflowBundle\DataflowType\Writer\WriterInterface;
-use Psr\Log\LoggerAwareInterface;
 use Psr\Log\LoggerAwareTrait;
 
 class Dataflow implements DataflowInterface

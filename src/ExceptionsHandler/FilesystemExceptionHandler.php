@@ -13,7 +13,6 @@ class FilesystemExceptionHandler implements ExceptionHandlerInterface
     {
     }
 
-    /** @inheritDoc */
     public function save(?int $jobId, $exceptions): void
     {
         if ($jobId === null || stream_get_contents($exceptions, 1) === false) {
@@ -47,7 +46,6 @@ class FilesystemExceptionHandler implements ExceptionHandlerInterface
         fclose($exceptions);
     }
 
-    /** @inheritDoc */
     public function find(int $jobId)
     {
         try {

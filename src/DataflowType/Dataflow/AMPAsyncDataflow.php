@@ -16,7 +16,6 @@ use function Amp\Promise\wait;
 
 use CodeRhapsodie\DataflowBundle\DataflowType\Result;
 use CodeRhapsodie\DataflowBundle\DataflowType\Writer\WriterInterface;
-use Psr\Log\LoggerAwareInterface;
 use Psr\Log\LoggerAwareTrait;
 
 class AMPAsyncDataflow implements DataflowInterface

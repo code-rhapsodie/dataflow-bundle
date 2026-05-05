@@ -9,7 +9,7 @@ interface ExceptionHandlerInterface
     /** @param resource $exceptions */
     public function save(?int $jobId, $exceptions): void;
 
-    /** @return null|resource */
+    /** @return resource|null */
     public function find(int $jobId);
 
     public function delete(int $jobId): void;

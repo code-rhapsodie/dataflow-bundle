@@ -6,13 +6,11 @@ namespace CodeRhapsodie\DataflowBundle\ExceptionsHandler;
 
 class NullExceptionHandler implements ExceptionHandlerInterface
 {
-    /** @inheritDoc */
     public function save(?int $jobId, $exceptions): void
     {
         // Nothing to do
     }
 
-    /** @inheritDoc */
     public function find(int $jobId)
     {
         return null;

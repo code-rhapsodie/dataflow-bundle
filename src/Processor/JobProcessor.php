@@ -31,7 +31,7 @@ class JobProcessor implements JobProcessorInterface, LoggerAwareInterface
         private DataflowTypeRegistryInterface $registry,
         private EventDispatcherInterface $dispatcher,
         private JobGateway $jobGateway,
-        private ExceptionHandlerInterface $exceptionHandler
+        private ExceptionHandlerInterface $exceptionHandler,
     ) {
     }
 
