@@ -11,9 +11,9 @@ class Result
 {
     private readonly \DateInterval $elapsed;
 
-    private int $successCount = 0;
+    private int $successCount;
 
-    public function __construct(private readonly string $name, private readonly \DateTimeInterface $startTime, private \DateTimeInterface $endTime, private int $totalProcessedCount, private int $errorCount)
+    public function __construct(private readonly string $name, private readonly \DateTimeInterface $startTime, private readonly \DateTimeInterface $endTime, private readonly int $totalProcessedCount, private readonly int $errorCount)
     {
         $this->elapsed = $startTime->diff($endTime);
         $this->successCount = $totalProcessedCount - $this->errorCount;
