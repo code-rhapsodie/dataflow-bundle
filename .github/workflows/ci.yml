@@ -7,7 +7,7 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v6
       - uses: php-actions/composer@v6 # or alternative dependency management
       - uses: php-actions/phpunit@v4
       - name: Run PHP CS Fixer
