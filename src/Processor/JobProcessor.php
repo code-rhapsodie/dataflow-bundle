@@ -15,7 +15,7 @@ use CodeRhapsodie\DataflowBundle\Gateway\JobGateway;
 use CodeRhapsodie\DataflowBundle\Logger\DelegatingLogger;
 use CodeRhapsodie\DataflowBundle\Registry\DataflowTypeRegistryInterface;
 use CodeRhapsodie\DataflowBundle\Repository\JobRepository;
-use Monolog\Formatter\JsonFormatter;
+use Monolog\Formatter\LineFormatter;
 use Monolog\Handler\StreamHandler;
 use Monolog\Logger;
 use Psr\Log\LoggerAwareInterface;
@@ -24,6 +24,8 @@ use Symfony\Component\EventDispatcher\EventDispatcherInterface;
 
 class JobProcessor implements JobProcessorInterface, LoggerAwareInterface
 {
+    private const FORMAT = "[%datetime%] %level_name% when processing item %context.index%: %message% %context% %extra%\n";
+
     use LoggerAwareTrait;
 
     public function __construct(
@@ -45,7 +47,7 @@ class JobProcessor implements JobProcessorInterface, LoggerAwareInterface
         }
 
         $handler = new StreamHandler(tempnam(sys_get_temp_dir(), 'dataflow_'));
-        $handler->setFormatter(new JsonFormatter(appendNewline: false));
+        $handler->setFormatter(new LineFormatter(self::FORMAT));
 
         $loggers = [new Logger('dataflow_internal', [$bufferHandler = $handler])];
         if (isset($this->logger)) {

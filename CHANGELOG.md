@@ -1,3 +1,6 @@
+# Version 6.0.0
+* Add managing exceptions with a stream
+
 # Version 5.5.0
 * Added cleanup commands
 * Updated for PHP 8.2
@@ -6,7 +9,7 @@
 * Fix File Exceptions integration
 
 # Version 5.4.0
-* Add possibility to save exceptions in file
+* Add the possibility to save exceptions in the file
 
 # Version 5.3.1
 * Fix interface naming
