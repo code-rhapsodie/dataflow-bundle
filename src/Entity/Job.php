@@ -56,6 +56,8 @@ class Job
 
     private ?int $count = 0;
 
+    private ?int $exceptionCount = 0;
+
     private ?array $exceptions = null;
 
     private ?\DateTimeInterface $startTime = null;
@@ -94,6 +96,7 @@ class Job
         $job->setRequestedDate($datas['requested_date']);
         $job->setScheduledDataflowId($datas['scheduled_dataflow_id'] === null ? null : (int) $datas['scheduled_dataflow_id']);
         $job->setCount($datas['count'] === null ? null : (int) $datas['count']);
+        $job->setExceptionCount($datas['exception_count']);
         $job->setExceptions($datas['exceptions']);
         $job->setStartTime($datas['start_time']);
         $job->setEndTime($datas['end_time']);
@@ -112,6 +115,7 @@ class Job
             'requested_date' => $this->getRequestedDate(),
             'scheduled_dataflow_id' => $this->getScheduledDataflowId(),
             'count' => $this->getCount(),
+            'exception_count' => $this->getExceptionCount(),
             'exceptions' => $this->getExceptions(),
             'start_time' => $this->getStartTime(),
             'end_time' => $this->getEndTime(),
@@ -210,6 +214,18 @@ class Job
     public function setCount(?int $count): self
     {
         $this->count = $count;
+
+        return $this;
+    }
+
+    public function getExceptionCount(): ?int
+    {
+        return $this->exceptionCount;
+    }
+
+    public function setExceptionCount(?int $exceptionCount): self
+    {
+        $this->exceptionCount = $exceptionCount;
 
         return $this;
     }

@@ -45,7 +45,7 @@ class JobProcessor implements JobProcessorInterface, LoggerAwareInterface
             $dataflowType->setRepository($this->repository);
         }
 
-        $handler = new StreamHandler(tempnam(sys_get_temp_dir(), 'dataflow_'));
+        $handler = new StreamHandler(tempnam(sys_get_temp_dir(), 'dataflow_'), fileOpenMode: 'w+');
         $handler->setFormatter(new LineFormatter(self::FORMAT));
 
         $loggers = [new Logger('dataflow_internal', [$bufferHandler = $handler])];
@@ -78,6 +78,7 @@ class JobProcessor implements JobProcessorInterface, LoggerAwareInterface
             ->setEndTime($result->getEndTime())
             ->setStatus(Job::STATUS_COMPLETED)
             ->setCount($result->getSuccessCount())
+            ->setExceptionCount($result->getErrorCount())
         ;
 
         if (!$this->exceptionHandler instanceof NullExceptionHandler) {
