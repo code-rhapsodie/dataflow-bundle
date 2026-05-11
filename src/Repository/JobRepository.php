@@ -193,6 +193,11 @@ class JobRepository
         return $ids;
     }
 
+    public function delete(int $id): void
+    {
+        $this->connection->delete(static::TABLE_NAME, ['id' => $id]);
+    }
+
     private function returnFirstOrNull(QueryBuilder $qb): ?Job
     {
         $stmt = $qb->executeQuery();
