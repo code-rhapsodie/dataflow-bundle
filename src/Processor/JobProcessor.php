@@ -85,7 +85,13 @@ class JobProcessor implements JobProcessorInterface, LoggerAwareInterface
             $this->exceptionHandler->save($job->getId(), $streamHandler->getStream());
             $job->setStreamExceptions($streamHandler->getStream());
         } else {
-            $job->setExceptions(json_decode(stream_get_contents($streamHandler->getStream()), true));
+            $stream = $streamHandler->getStream();
+            rewind($stream);
+            $exceptions = [];
+            while ($line = fgets($stream)) {
+                $exceptions[] = $line;
+            }
+            $job->setExceptions($exceptions);
             $streamHandler->reset();
         }
 
