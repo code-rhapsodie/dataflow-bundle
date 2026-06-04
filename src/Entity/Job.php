@@ -56,7 +56,7 @@ class Job
 
     private ?int $count = 0;
 
-    private ?int $exceptionCount = 0;
+    private ?int $exceptionCount = null;
 
     private ?array $exceptions = null;
 
