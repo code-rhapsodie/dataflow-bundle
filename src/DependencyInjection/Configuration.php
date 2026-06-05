@@ -62,7 +62,7 @@ class Configuration implements ConfigurationInterface
                         ->end()
                         ->integerNode('crashed_delay')
                             ->defaultValue(24)
-                            ->min(24)
+                            ->min(1)
                             ->info('Jobs running for more than this many hours will be set as crashed when running the cleanup command.')
                         ->end()
                     ->end()
