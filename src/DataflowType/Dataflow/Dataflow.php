@@ -6,10 +6,9 @@ namespace CodeRhapsodie\DataflowBundle\DataflowType\Dataflow;
 
 use CodeRhapsodie\DataflowBundle\DataflowType\Result;
 use CodeRhapsodie\DataflowBundle\DataflowType\Writer\WriterInterface;
-use Psr\Log\LoggerAwareInterface;
 use Psr\Log\LoggerAwareTrait;
 
-class Dataflow implements DataflowInterface, LoggerAwareInterface
+class Dataflow implements DataflowInterface
 {
     use LoggerAwareTrait;
 
@@ -73,7 +72,7 @@ class Dataflow implements DataflowInterface, LoggerAwareInterface
     public function process(): Result
     {
         $count = 0;
-        $exceptions = [];
+        $countExceptions = 0;
         $startTime = new \DateTime();
 
         try {
@@ -91,10 +90,10 @@ class Dataflow implements DataflowInterface, LoggerAwareInterface
                             $exceptionIndex = (string) ($this->customExceptionIndex)($item, $index);
                         }
                     } catch (\Throwable $e2) {
-                        $exceptions[$index] = $e2;
+                        ++$countExceptions;
                         $this->logException($e2, $index);
                     }
-                    $exceptions[$exceptionIndex] = $e;
+                    ++$countExceptions;
                     $this->logException($e, $exceptionIndex);
                 }
 
@@ -109,11 +108,11 @@ class Dataflow implements DataflowInterface, LoggerAwareInterface
                 $writer->finish();
             }
         } catch (\Throwable $e) {
-            $exceptions[] = $e;
+            ++$countExceptions;
             $this->logException($e);
         }
 
-        return new Result($this->name, $startTime, new \DateTime(), $count, $exceptions);
+        return new Result($this->name, $startTime, new \DateTime(), $count, $countExceptions);
     }
 
     private function processItem(mixed $item): void

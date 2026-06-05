@@ -116,7 +116,7 @@ class JobRepository
         }
     }
 
-    public function save(Job $job)
+    public function save(Job $job): void
     {
         $datas = $job->toArray();
         unset($datas['id']);

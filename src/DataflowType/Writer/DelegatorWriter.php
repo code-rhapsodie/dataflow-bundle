@@ -21,14 +21,14 @@ class DelegatorWriter implements DelegateWriterInterface
     {
     }
 
-    public function prepare()
+    public function prepare(): void
     {
         foreach ($this->delegates as $delegate) {
             $delegate->prepare();
         }
     }
 
-    public function write($item)
+    public function write($item): void
     {
         foreach ($this->delegates as $delegate) {
             if (!$delegate->supports($item)) {
@@ -43,7 +43,7 @@ class DelegatorWriter implements DelegateWriterInterface
         throw new UnsupportedItemTypeException(\sprintf('None of the registered delegate writers support the received item of type %s', get_debug_type($item)));
     }
 
-    public function finish()
+    public function finish(): void
     {
         foreach ($this->delegates as $delegate) {
             $delegate->finish();

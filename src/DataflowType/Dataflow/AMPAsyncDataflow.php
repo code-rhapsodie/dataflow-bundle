@@ -16,10 +16,9 @@ use function Amp\Promise\wait;
 
 use CodeRhapsodie\DataflowBundle\DataflowType\Result;
 use CodeRhapsodie\DataflowBundle\DataflowType\Writer\WriterInterface;
-use Psr\Log\LoggerAwareInterface;
 use Psr\Log\LoggerAwareTrait;
 
-class AMPAsyncDataflow implements DataflowInterface, LoggerAwareInterface
+class AMPAsyncDataflow implements DataflowInterface
 {
     use LoggerAwareTrait;
 
@@ -65,7 +64,7 @@ class AMPAsyncDataflow implements DataflowInterface, LoggerAwareInterface
     public function process(): Result
     {
         $count = 0;
-        $exceptions = [];
+        $countExceptions = 0;
         $startTime = new \DateTime();
 
         try {
@@ -82,7 +81,7 @@ class AMPAsyncDataflow implements DataflowInterface, LoggerAwareInterface
                 }
             });
 
-            $watcherId = Loop::repeat($this->loopInterval, function () use ($deferred, &$resolved, $producer, &$count, &$exceptions) {
+            $watcherId = Loop::repeat($this->loopInterval, function () use ($deferred, &$resolved, $producer, &$count, &$countExceptions) {
                 if (yield $producer->advance()) {
                     $it = $producer->getCurrent();
                     [$index, $item] = $it;
@@ -93,7 +92,7 @@ class AMPAsyncDataflow implements DataflowInterface, LoggerAwareInterface
                 }
 
                 foreach ($this->states as $state) {
-                    $this->processState($state, $count, $exceptions);
+                    $this->processState($state, $count, $countExceptions);
                 }
             });
 
@@ -104,18 +103,14 @@ class AMPAsyncDataflow implements DataflowInterface, LoggerAwareInterface
                 $writer->finish();
             }
         } catch (\Throwable $e) {
-            $exceptions[] = $e;
+            ++$countExceptions;
             $this->logException($e);
         }
 
-        return new Result($this->name, $startTime, new \DateTime(), $count, $exceptions);
+        return new Result($this->name, $startTime, new \DateTime(), $count, $countExceptions);
     }
 
-    /**
-     * @param int   $count      internal count reference
-     * @param array $exceptions internal exceptions
-     */
-    private function processState(mixed $state, int &$count, array &$exceptions): void
+    private function processState(mixed $state, int &$count, int &$countExceptions): void
     {
         [$readIndex, $stepIndex, $item] = $state;
         if ($stepIndex < \count($this->steps)) {
@@ -127,9 +122,9 @@ class AMPAsyncDataflow implements DataflowInterface, LoggerAwareInterface
                 $this->stepsJobs[$stepIndex][$readIndex] = true;
                 /** @var Promise<void> $promise */
                 $promise = coroutine($step)($item);
-                $promise->onResolve(function (?\Throwable $exception = null, $newItem = null) use ($stepIndex, $readIndex, &$exceptions) {
+                $promise->onResolve(function (?\Throwable $exception = null, $newItem = null) use ($stepIndex, $readIndex, &$countExceptions): void {
                     if ($exception) {
-                        $exceptions[$stepIndex] = $exception;
+                        ++$countExceptions;
                         $this->logException($exception, (string) $stepIndex);
                     } elseif ($newItem === false) {
                         unset($this->states[$readIndex]);

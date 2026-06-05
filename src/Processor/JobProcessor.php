@@ -9,11 +9,14 @@ use CodeRhapsodie\DataflowBundle\DataflowType\Result;
 use CodeRhapsodie\DataflowBundle\Entity\Job;
 use CodeRhapsodie\DataflowBundle\Event\Events;
 use CodeRhapsodie\DataflowBundle\Event\ProcessingEvent;
+use CodeRhapsodie\DataflowBundle\ExceptionsHandler\ExceptionHandlerInterface;
+use CodeRhapsodie\DataflowBundle\ExceptionsHandler\NullExceptionHandler;
 use CodeRhapsodie\DataflowBundle\Gateway\JobGateway;
-use CodeRhapsodie\DataflowBundle\Logger\BufferHandler;
 use CodeRhapsodie\DataflowBundle\Logger\DelegatingLogger;
 use CodeRhapsodie\DataflowBundle\Registry\DataflowTypeRegistryInterface;
 use CodeRhapsodie\DataflowBundle\Repository\JobRepository;
+use Monolog\Formatter\LineFormatter;
+use Monolog\Handler\StreamHandler;
 use Monolog\Logger;
 use Psr\Log\LoggerAwareInterface;
 use Psr\Log\LoggerAwareTrait;
@@ -22,12 +25,14 @@ use Symfony\Component\EventDispatcher\EventDispatcherInterface;
 class JobProcessor implements JobProcessorInterface, LoggerAwareInterface
 {
     use LoggerAwareTrait;
+    private const FORMAT = "[%datetime%] %level_name% when processing item %context.index%: %message% %context% %extra%\n";
 
     public function __construct(
         private JobRepository $repository,
         private DataflowTypeRegistryInterface $registry,
         private EventDispatcherInterface $dispatcher,
         private JobGateway $jobGateway,
+        private ExceptionHandlerInterface $exceptionHandler,
     ) {
     }
 
@@ -40,23 +45,18 @@ class JobProcessor implements JobProcessorInterface, LoggerAwareInterface
             $dataflowType->setRepository($this->repository);
         }
 
-        $loggers = [new Logger('dataflow_internal', [$bufferHandler = new BufferHandler()])];
+        $handler = new StreamHandler(tempnam(sys_get_temp_dir(), 'dataflow_'), fileOpenMode: 'w+');
+        $handler->setFormatter(new LineFormatter(self::FORMAT));
+
+        $loggers = [new Logger('dataflow_internal', [$bufferHandler = $handler])];
         if (isset($this->logger)) {
             $loggers[] = $this->logger;
         }
         $logger = new DelegatingLogger($loggers);
 
-        if ($dataflowType instanceof LoggerAwareInterface) {
-            $dataflowType->setLogger($logger);
-        }
+        $dataflowType->setLogger($logger);
 
         $result = $dataflowType->process($job->getOptions(), $job->getId());
-
-        if (!$dataflowType instanceof LoggerAwareInterface) {
-            foreach ($result->getExceptions() as $index => $e) {
-                $logger->error($e, ['index' => $index]);
-            }
-        }
 
         $this->afterProcessing($job, $result, $bufferHandler);
     }
@@ -72,14 +72,28 @@ class JobProcessor implements JobProcessorInterface, LoggerAwareInterface
         $this->jobGateway->save($job);
     }
 
-    private function afterProcessing(Job $job, Result $result, BufferHandler $bufferLogger): void
+    private function afterProcessing(Job $job, Result $result, StreamHandler $streamHandler): void
     {
         $job
             ->setEndTime($result->getEndTime())
             ->setStatus(Job::STATUS_COMPLETED)
             ->setCount($result->getSuccessCount())
-            ->setExceptions($bufferLogger->clearBuffer())
+            ->setExceptionCount($result->getErrorCount())
         ;
+
+        if (!$this->exceptionHandler instanceof NullExceptionHandler) {
+            $this->exceptionHandler->save($job->getId(), $streamHandler->getStream());
+            $job->setStreamExceptions($streamHandler->getStream());
+        } else {
+            $stream = $streamHandler->getStream();
+            rewind($stream);
+            $exceptions = [];
+            while ($line = fgets($stream)) {
+                $exceptions[] = $line;
+            }
+            $job->setExceptions($exceptions);
+            $streamHandler->reset();
+        }
 
         $this->jobGateway->save($job);
 

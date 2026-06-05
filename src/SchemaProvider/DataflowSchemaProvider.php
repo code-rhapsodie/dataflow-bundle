@@ -32,6 +32,7 @@ class DataflowSchemaProvider
         $tableJob->addColumn('requested_date', 'datetime', ['notnull' => false]);
         $tableJob->addColumn('count', 'integer', ['notnull' => false]);
         $tableJob->addColumn('exceptions', 'json', ['notnull' => false]);
+        $tableJob->addColumn('exception_count', 'integer', ['notnull' => false]);
         $tableJob->addColumn('start_time', 'datetime', ['notnull' => false]);
         $tableJob->addColumn('end_time', 'datetime', ['notnull' => false]);
 

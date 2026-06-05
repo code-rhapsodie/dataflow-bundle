@@ -7,6 +7,7 @@ use CodeRhapsodie\DataflowBundle\DataflowType\Result;
 use CodeRhapsodie\DataflowBundle\Entity\Job;
 use CodeRhapsodie\DataflowBundle\Event\Events;
 use CodeRhapsodie\DataflowBundle\Event\ProcessingEvent;
+use CodeRhapsodie\DataflowBundle\ExceptionsHandler\ExceptionHandlerInterface;
 use CodeRhapsodie\DataflowBundle\Gateway\JobGateway;
 use CodeRhapsodie\DataflowBundle\Processor\JobProcessor;
 use CodeRhapsodie\DataflowBundle\Registry\DataflowTypeRegistryInterface;
@@ -22,6 +23,7 @@ class JobProcessorTest extends TestCase
     private DataflowTypeRegistryInterface|MockObject $registry;
     private EventDispatcherInterface|MockObject $dispatcher;
     private JobGateway|MockObject $jobGateway;
+    private ExceptionHandlerInterface|MockObject $exceptionHandler;
 
     protected function setUp(): void
     {
@@ -29,8 +31,9 @@ class JobProcessorTest extends TestCase
         $this->registry = $this->createMock(DataflowTypeRegistryInterface::class);
         $this->dispatcher = $this->createMock(EventDispatcherInterface::class);
         $this->jobGateway = $this->createMock(JobGateway::class);
+        $this->exceptionHandler = $this->createMock(ExceptionHandlerInterface::class);
 
-        $this->processor = new JobProcessor($this->repository, $this->registry, $this->dispatcher, $this->jobGateway);
+        $this->processor = new JobProcessor($this->repository, $this->registry, $this->dispatcher, $this->jobGateway, $this->exceptionHandler);
     }
 
     public function testProcess()
@@ -64,7 +67,7 @@ class JobProcessorTest extends TestCase
             ->willReturn($dataflowType)
         ;
 
-        $bag = [new \Exception('message1')];
+        $bag = 1;
 
         $result = new Result('name', new \DateTimeImmutable(), $end = new \DateTimeImmutable(), $count = 10, $bag);
 
@@ -85,6 +88,6 @@ class JobProcessorTest extends TestCase
         $this->assertGreaterThanOrEqual($now, $job->getStartTime());
         $this->assertSame(Job::STATUS_COMPLETED, $job->getStatus());
         $this->assertSame($end, $job->getEndTime());
-        $this->assertSame($count - count($bag), $job->getCount());
+        $this->assertSame($count - $bag, $job->getCount());
     }
 }

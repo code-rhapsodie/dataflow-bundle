@@ -17,7 +17,7 @@ class ConnectionFactory
     {
     }
 
-    public function setConnectionName(string $connectionName)
+    public function setConnectionName(string $connectionName): void
     {
         $this->connectionName = $connectionName;
     }

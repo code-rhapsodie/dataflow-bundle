@@ -5,11 +5,12 @@ declare(strict_types=1);
 namespace CodeRhapsodie\DataflowBundle\DataflowType\Dataflow;
 
 use CodeRhapsodie\DataflowBundle\DataflowType\Result;
+use Psr\Log\LoggerAwareInterface;
 
 /**
  * Combines a reader, steps and writers as a data processing workflow.
  */
-interface DataflowInterface
+interface DataflowInterface extends LoggerAwareInterface
 {
     /**
      * Processes the data.

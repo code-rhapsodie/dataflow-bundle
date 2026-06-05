@@ -10,17 +10,17 @@ class PortWriterAdapter implements WriterInterface
     {
     }
 
-    public function prepare()
+    public function prepare(): void
     {
         $this->writer->prepare();
     }
 
-    public function write($item)
+    public function write($item): void
     {
         $this->writer->writeItem((array) $item);
     }
 
-    public function finish()
+    public function finish(): void
     {
         $this->writer->finish();
     }

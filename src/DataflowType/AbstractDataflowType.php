@@ -5,12 +5,11 @@ declare(strict_types=1);
 namespace CodeRhapsodie\DataflowBundle\DataflowType;
 
 use CodeRhapsodie\DataflowBundle\Repository\JobRepository;
-use Psr\Log\LoggerAwareInterface;
 use Psr\Log\LoggerAwareTrait;
 use Psr\Log\LoggerInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 
-abstract class AbstractDataflowType implements DataflowTypeInterface, LoggerAwareInterface, AutoUpdateCountInterface
+abstract class AbstractDataflowType implements DataflowTypeInterface, AutoUpdateCountInterface
 {
     use LoggerAwareTrait;
 
@@ -36,7 +35,7 @@ abstract class AbstractDataflowType implements DataflowTypeInterface, LoggerAwar
 
         $builder = $this->createDataflowBuilder();
         $builder->setName($this->getLabel());
-        $builder->addAfterItemProcessor(function (int|string $index, mixed $item, int $count) use ($jobId) {
+        $builder->addAfterItemProcessor(function (int|string $index, mixed $item, int $count) use ($jobId): void {
             if ($jobId === null || $this->saveDate > new \DateTime()) {
                 return;
             }
@@ -46,7 +45,7 @@ abstract class AbstractDataflowType implements DataflowTypeInterface, LoggerAwar
         });
         $this->buildDataflow($builder, $options);
         $dataflow = $builder->getDataflow();
-        if ($dataflow instanceof LoggerAwareInterface && $this->logger instanceof LoggerInterface) {
+        if ($this->logger instanceof LoggerInterface) {
             $dataflow->setLogger($this->logger);
         }
 
