@@ -26,12 +26,6 @@ services:
             $jobRepository: '@CodeRhapsodie\DataflowBundle\Repository\JobRepository'
         tags: ['console.command']
 
-    CodeRhapsodie\DataflowBundle\Command\JobShowCommand:
-        arguments:
-            $jobGateway: '@CodeRhapsodie\DataflowBundle\Gateway\JobGateway'
-            $connectionFactory: '@CodeRhapsodie\DataflowBundle\Factory\ConnectionFactory'
-        tags: ['console.command']
-
     CodeRhapsodie\DataflowBundle\Command\RunPendingDataflowsCommand:
         arguments:
             $manager: '@CodeRhapsodie\DataflowBundle\Manager\ScheduledDataflowManagerInterface'
