@@ -1,3 +1,6 @@
+# Version 6.0.1
+* Fix esource can be null
+
 # Version 6.0.0
 * Add managing exceptions with a stream
 
