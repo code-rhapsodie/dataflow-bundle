@@ -45,12 +45,6 @@ services:
             $connectionFactory: '@CodeRhapsodie\DataflowBundle\Factory\ConnectionFactory'
         tags: ['console.command']
 
-    CodeRhapsodie\DataflowBundle\Command\SchemaCommand:
-        deprecated:
-            package: 'code-rhapsodie/dataflow-bundle'
-            version: '5.0'
-        tags: ['console.command']
-
     CodeRhapsodie\DataflowBundle\Command\DatabaseSchemaCommand:
         arguments:
             $connectionFactory: '@CodeRhapsodie\DataflowBundle\Factory\ConnectionFactory'
