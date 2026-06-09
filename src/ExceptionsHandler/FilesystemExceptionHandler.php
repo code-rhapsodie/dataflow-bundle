@@ -15,7 +15,7 @@ class FilesystemExceptionHandler implements ExceptionHandlerInterface
 
     public function save(?int $jobId, $exceptions): void
     {
-        if ($jobId === null || !is_resource($exceptions) || stream_get_contents($exceptions, 1) === false) {
+        if ($jobId === null || !\is_resource($exceptions) || stream_get_contents($exceptions, 1) === false) {
             return;
         }
 
