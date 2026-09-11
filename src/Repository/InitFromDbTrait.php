@@ -42,6 +42,6 @@ trait InitFromDbTrait
 
         $array = json_decode($value, true, 512, \JSON_THROW_ON_ERROR);
 
-        return ($array === false) ? [] : $array;
+        return \is_array($array) ? $array : [];
     }
 }
