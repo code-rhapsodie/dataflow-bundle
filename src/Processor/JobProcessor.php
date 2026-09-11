@@ -62,7 +62,7 @@ class JobProcessor implements JobProcessorInterface, LoggerAwareInterface
 
             $this->afterProcessing($job, $result, $bufferHandler);
         } finally {
-        if (is_file($tempFile)) {
+            if (is_file($tempFile)) {
                 @unlink($tempFile);
             }
         }
