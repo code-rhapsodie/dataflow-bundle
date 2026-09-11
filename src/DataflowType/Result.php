@@ -13,6 +13,9 @@ class Result
 
     private int $successCount;
 
+    /** @var array<int, mixed> */
+    private array $exceptions = [];
+
     public function __construct(private readonly string $name, private readonly \DateTimeInterface $startTime, private readonly \DateTimeInterface $endTime, private readonly int $totalProcessedCount, private readonly int $errorCount)
     {
         $this->elapsed = $startTime->diff($endTime);

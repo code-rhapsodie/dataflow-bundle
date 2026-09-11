@@ -45,7 +45,8 @@ class JobProcessor implements JobProcessorInterface, LoggerAwareInterface
             $dataflowType->setRepository($this->repository);
         }
 
-        $handler = new StreamHandler(tempnam(sys_get_temp_dir(), 'dataflow_'), fileOpenMode: 'w+');
+        $tempFile = tempnam(sys_get_temp_dir(), 'dataflow_');
+        $handler = new StreamHandler($tempFile, fileOpenMode: 'w+');
         $handler->setFormatter(new LineFormatter(self::FORMAT));
 
         $loggers = [new Logger('dataflow_internal', [$bufferHandler = $handler])];
@@ -56,9 +57,15 @@ class JobProcessor implements JobProcessorInterface, LoggerAwareInterface
 
         $dataflowType->setLogger($logger);
 
-        $result = $dataflowType->process($job->getOptions(), $job->getId());
+        try {
+            $result = $dataflowType->process($job->getOptions(), $job->getId());
 
-        $this->afterProcessing($job, $result, $bufferHandler);
+            $this->afterProcessing($job, $result, $bufferHandler);
+        } finally {
+            if (is_file($tempFile)) {
+                @unlink($tempFile);
+            }
+        }
     }
 
     private function beforeProcessing(Job $job): void
@@ -89,7 +96,7 @@ class JobProcessor implements JobProcessorInterface, LoggerAwareInterface
             $exceptions = [];
             if ($stream !== null) {
                 rewind($stream);
-                while ($line = fgets($stream)) {
+                while (false !== ($line = fgets($stream))) {
                     $exceptions[] = $line;
                 }
             }

@@ -72,7 +72,7 @@ final readonly class JobShowCommand
             ['Started at', $job->getStartTime() ? $job->getStartTime()->format('Y-m-d H:i:s') : '-'],
             ['Ended at', $job->getEndTime() ? $job->getEndTime()->format('Y-m-d H:i:s') : '-'],
             ['Object number', $job->getCount()],
-            ['Errors', \count((array) $job->getExceptions())],
+            ['Errors', $job->getExceptionCount() ?? \count((array) $job->getExceptions())],
             ['Status', $this->translateStatus($job->getStatus())],
         ];
         if ($details) {
@@ -84,9 +84,7 @@ final readonly class JobShowCommand
         $io->table(['Field', 'Value'], $display);
         if ($details) {
             $io->section('Exceptions');
-            $exceptions = array_map(static fn (string $exception) => substr($exception, 0, 900).'…', $job->getExceptions());
-
-            $io->write($exceptions);
+            $io->write($this->resolveExceptionLines($job));
         }
 
         return 0;
@@ -95,5 +93,23 @@ final readonly class JobShowCommand
     private function translateStatus(int $status): string
     {
         return self::STATUS_MAPPING[$status] ?? 'Unknown status';
+    }
+
+    /**
+     * @return string[]
+     */
+    private function resolveExceptionLines(Job $job): array
+    {
+        $exceptions = $job->getExceptions();
+
+        if ($exceptions === null && \is_resource($stream = $job->getStreamExceptions())) {
+            rewind($stream);
+            $exceptions = [];
+            while (false !== ($line = fgets($stream))) {
+                $exceptions[] = $line;
+            }
+        }
+
+        return array_map(static fn (string $exception) => substr($exception, 0, 900).'…', $exceptions ?? []);
     }
 }

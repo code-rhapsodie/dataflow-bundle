@@ -1,3 +1,14 @@
+# Version 6.0.3
+* Fix job error count display using `Job::getExceptionCount()` when available in `JobShowCommand`
+* Fix exceptions retrieval when only a stream is available in `JobShowCommand`
+* Fix `JobMessageHandler` skipping processing when the job can no longer be found
+* Fix temp log file not being removed when an exception occurs during processing
+* Fix exceptions loop stopping on a falsy (`"0"`) log line in `JobProcessor`
+* Fix array cast in `InitFromDbTrait`
+
+# Version 6.0.2
+* Fix null stream causing an error when no exceptions occured in `JobProcessor`
+
 # Version 6.0.1
 * Fix esource can be null
 

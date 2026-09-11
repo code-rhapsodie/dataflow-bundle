@@ -17,6 +17,11 @@ class JobMessageHandler
 
     public function __invoke(JobMessage $message): void
     {
-        $this->processor->process($this->repository->find($message->getJobId()));
+        $job = $this->repository->find($message->getJobId());
+        if ($job === null) {
+            return;
+        }
+
+        $this->processor->process($job);
     }
 }
