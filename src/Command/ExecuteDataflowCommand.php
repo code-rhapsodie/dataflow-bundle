@@ -50,7 +50,7 @@ final class ExecuteDataflowCommand implements LoggerAwareInterface
             $dataflowType->setRepository($this->jobRepository);
         }
 
-        if ($dataflowType instanceof LoggerAwareInterface && isset($this->logger)) {
+        if (isset($this->logger)) {
             $dataflowType->setLogger($this->logger);
         }
 

@@ -46,7 +46,7 @@ class JobProcessor implements JobProcessorInterface, LoggerAwareInterface
         }
 
         $tempFile = tempnam(sys_get_temp_dir(), 'dataflow_');
-        $handler = new StreamHandler($tempFile, fileOpenMode: 'w+');
+        $handler = new StreamHandler(fopen($tempFile, 'w+'));
         $handler->setFormatter(new LineFormatter(self::FORMAT));
 
         $loggers = [new Logger('dataflow_internal', [$bufferHandler = $handler])];

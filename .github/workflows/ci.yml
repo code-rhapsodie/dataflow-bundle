@@ -1,14 +1,51 @@
 name: CI
 
-on: [push]
+on: [push, pull_request]
 
 jobs:
-  build-test:
+  tests:
+    name: PHP ${{ matrix.php }} (${{ matrix.dependencies }}${{ matrix.dbal && ', dbal ' || '' }}${{ matrix.dbal }})
     runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        php: ['8.2', '8.3', '8.4', '8.5']
+        dependencies: [highest, lowest]
+        include:
+          - php: '8.2'
+            dependencies: highest
+            dbal: '^3.0'
+          - php: '8.4'
+            dependencies: highest
+            dbal: '^4.0'
 
     steps:
       - uses: actions/checkout@v6
-      - uses: php-actions/composer@v6 # or alternative dependency management
-      - uses: php-actions/phpunit@v4
-      - name: Run PHP CS Fixer
-        run: php vendor/bin/php-cs-fixer fix --dry-run --diff
+      - uses: shivammathur/setup-php@v2
+        with:
+          php-version: ${{ matrix.php }}
+          coverage: none
+          tools: composer
+      - name: Pin doctrine/dbal
+        if: matrix.dbal
+        run: composer require --no-update "doctrine/dbal:${{ matrix.dbal }}"
+      - name: Install dependencies
+        run: composer update --no-interaction --no-progress --prefer-stable ${{ matrix.dependencies == 'lowest' && '--prefer-lowest' || '' }}
+      - name: Run PHPUnit
+        run: vendor/bin/phpunit
+
+  static-analysis:
+    name: Code style & static analysis
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v6
+      - uses: shivammathur/setup-php@v2
+        with:
+          php-version: '8.2'
+          coverage: none
+          tools: composer
+      - run: composer update --no-interaction --no-progress --prefer-stable
+      - name: PHP CS Fixer
+        run: vendor/bin/php-cs-fixer fix --dry-run --diff
+      - name: PHPStan
+        run: vendor/bin/phpstan analyse --no-progress

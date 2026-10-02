@@ -41,7 +41,7 @@ class ScheduledDataflowManager implements ScheduledDataflowManagerInterface
     private function updateScheduledDataflowNext(ScheduledDataflow $scheduled): void
     {
         $interval = \DateInterval::createFromDateString($scheduled->getFrequency());
-        $next = clone $scheduled->getNext();
+        $next = \DateTime::createFromInterface($scheduled->getNext());
         $now = new \DateTime();
 
         while ($next < $now) {
