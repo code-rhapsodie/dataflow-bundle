@@ -67,9 +67,7 @@ final readonly class AddScheduledDataflowCommand
         if (!$firstRun) {
             $firstRun = $io->ask('When is the first execution of the scheduled dataflow (format: Y-m-d H:i:s)?');
         }
-        if ($enabled === null) {
-            $enabled = $io->confirm('Enable the scheduled dataflow?');
-        }
+        $enabled ??= $io->confirm('Enable the scheduled dataflow?');
 
         $newScheduledDataflow = ScheduledDataflow::createFromArray([
             'id' => null,

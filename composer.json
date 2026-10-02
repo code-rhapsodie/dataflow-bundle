@@ -62,6 +62,7 @@
         "amphp/amp": "^2.5",
         "ekino/phpstan-banned-code": "^3.2",
         "friendsofphp/php-cs-fixer": "^3.75",
+        "league/flysystem": "^3.0",
         "phpunit/phpunit": "^11",
         "portphp/portphp": "^1.9",
         "rector/rector": "^2.0",

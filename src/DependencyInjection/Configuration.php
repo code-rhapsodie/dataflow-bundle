@@ -48,7 +48,7 @@ class Configuration implements ConfigurationInterface
                         ->end()
                     ->end()
                     ->validate()
-                        ->ifTrue(static fn ($v): bool => $v['type'] === 'file' && !class_exists('\League\Flysystem\Filesystem'))
+                        ->ifTrue(static fn ($v): bool => $v['type'] === 'file' && !class_exists(\League\Flysystem\Filesystem::class))
                         ->thenInvalid('You need "league/flysystem" to use Dataflow file exception mode.')
                     ->end()
                 ->end()

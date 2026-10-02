@@ -41,7 +41,7 @@ jobs:
       - uses: actions/checkout@v6
       - uses: shivammathur/setup-php@v2
         with:
-          php-version: '8.2'
+          php-version: '8.4'
           coverage: none
           tools: composer
       - run: composer update --no-interaction --no-progress --prefer-stable
@@ -49,3 +49,17 @@ jobs:
         run: vendor/bin/php-cs-fixer fix --dry-run --diff
       - name: PHPStan
         run: vendor/bin/phpstan analyse --no-progress
+
+  rector:
+    name: Rector
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v6
+      - uses: shivammathur/setup-php@v2
+        with:
+          php-version: '8.4'
+          coverage: none
+          tools: composer
+      - run: composer update --no-interaction --no-progress --prefer-stable
+      - name: Rector
+        run: vendor/bin/rector process --dry-run --no-progress-bar

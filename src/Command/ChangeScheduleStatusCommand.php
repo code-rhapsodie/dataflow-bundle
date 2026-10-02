@@ -55,7 +55,7 @@ final readonly class ChangeScheduleStatusCommand
             return 3;
         }
 
-        $enable = $enable ?? !$disable;
+        $enable ??= !$disable;
 
         try {
             $schedule->setEnabled($enable);
