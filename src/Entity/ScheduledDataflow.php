@@ -37,10 +37,8 @@ class ScheduledDataflow
 
     private ?array $options = null;
 
-    /**
-     * @Frequency()
-     */
     #[Asserts\NotBlank]
+    #[Frequency]
     private ?string $frequency = null;
 
     private ?\DateTimeInterface $next = null;

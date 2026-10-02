@@ -175,7 +175,7 @@ class JobRepository
         $qb = $this->connection->createQueryBuilder();
         $ids = $qb->select('j.id')
             ->from(static::TABLE_NAME, 'j')
-            ->andWhere($qb->expr()->in('j.status', [Job::STATUS_COMPLETED, Job::STATUS_CRASHED]))
+            ->andWhere($qb->expr()->in('j.status', [(string) Job::STATUS_COMPLETED, (string) Job::STATUS_CRASHED]))
             ->andWhere('j.end_time < :date')
             ->setParameter('date', new \DateTime("- {$days} days"), 'datetime')
             ->executeQuery()
@@ -184,7 +184,7 @@ class JobRepository
 
         $qb = $this->connection->createQueryBuilder();
         $qb->delete(static::TABLE_NAME.' j')
-            ->andWhere($qb->expr()->in('j.status', [Job::STATUS_COMPLETED, Job::STATUS_CRASHED]))
+            ->andWhere($qb->expr()->in('j.status', [(string) Job::STATUS_COMPLETED, (string) Job::STATUS_CRASHED]))
             ->andWhere('j.end_time < :date')
             ->setParameter('date', new \DateTime("- {$days} days"), 'datetime')
             ->executeStatement()

@@ -11,7 +11,7 @@ class Result
 {
     private readonly \DateInterval $elapsed;
 
-    private int $successCount;
+    private readonly int $successCount;
 
     /** @var array<int, mixed> */
     private array $exceptions = [];

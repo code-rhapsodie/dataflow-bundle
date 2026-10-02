@@ -114,9 +114,7 @@ class AMPAsyncDataflow implements DataflowInterface
     {
         [$readIndex, $stepIndex, $item] = $state;
         if ($stepIndex < \count($this->steps)) {
-            if (!isset($this->stepsJobs[$stepIndex])) {
-                $this->stepsJobs[$stepIndex] = [];
-            }
+            $this->stepsJobs[$stepIndex] ??= [];
             [$step, $scale] = $this->steps[$stepIndex];
             if ((is_countable($this->stepsJobs[$stepIndex]) ? \count($this->stepsJobs[$stepIndex]) : 0) < $scale && !isset($this->stepsJobs[$stepIndex][$readIndex])) {
                 $this->stepsJobs[$stepIndex][$readIndex] = true;
