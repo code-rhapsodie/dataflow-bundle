@@ -1,3 +1,11 @@
+# Version 6.0.4
+* Fix compatibility with `monolog/monolog` < 3.8 (`StreamHandler` `fileOpenMode` argument) in `JobProcessor`
+* Require `monolog/monolog` `^3.0` (`^2.0` was never installable with `symfony/monolog-bridge` 7.4)
+* Use the `#[Frequency]` attribute on `ScheduledDataflow::$frequency`
+* Fix PHPStan errors (`DateTimeInterface` clone in `ScheduledDataflowManager`, status types in `JobRepository`)
+* Add `league/flysystem` to dev dependencies
+* CI: test on PHP 8.2 to 8.5 with lowest and highest dependencies, and with `doctrine/dbal` 3 and 4; add PHPStan and Rector checks
+
 # Version 6.0.3
 * Fix job error count display using `Job::getExceptionCount()` when available in `JobShowCommand`
 * Fix exceptions retrieval when only a stream is available in `JobShowCommand`
