@@ -21,7 +21,8 @@ class FrequencyValidator extends ConstraintValidator
         }
 
         try {
-            $interval = \DateInterval::createFromDateString($value);
+            // Before PHP 8.3, an invalid string emits a warning and returns false instead of throwing
+            $interval = @\DateInterval::createFromDateString($value);
         } catch (\Exception) {
             $interval = false;
         }
