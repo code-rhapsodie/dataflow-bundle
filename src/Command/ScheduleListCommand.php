@@ -37,13 +37,23 @@ final readonly class ScheduleListCommand
                 $schedule['id'],
                 $schedule['label'],
                 $schedule['enabled'] ? 'yes' : 'no',
-                $schedule['startTime'] ? (new \DateTime($schedule['startTime']))->format('Y-m-d H:i:s') : '-',
-                $schedule['next'] ? (new \DateTime($schedule['next']))->format('Y-m-d H:i:s') : '-',
+                $schedule['startTime'] ? $this->toLocalTime($schedule['startTime']) : '-',
+                $schedule['next'] ? $this->toLocalTime($schedule['next']) : '-',
             ];
         }
 
         $io->table(['id', 'label', 'enabled?', 'last execution', 'next execution'], $display);
 
         return 0;
+    }
+
+    /**
+     * Dates are stored in UTC, they are displayed in the PHP default timezone.
+     */
+    private function toLocalTime(string $date): string
+    {
+        return (new \DateTime($date, new \DateTimeZone('UTC')))
+            ->setTimezone(new \DateTimeZone(date_default_timezone_get()))
+            ->format('Y-m-d H:i:s');
     }
 }

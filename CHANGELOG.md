@@ -1,3 +1,6 @@
+# Version 7.0.0
+* [BC] Dates (`requested_date`, `start_time`, `end_time`, `next`) are now stored in UTC whatever the PHP default timezone is. See UPGRADE.md.
+
 # Version 6.0.4
 * Fix compatibility with `monolog/monolog` < 3.8 (`StreamHandler` `fileOpenMode` argument) in `JobProcessor`
 * Require `monolog/monolog` `^3.0` (`^2.0` was never installable with `symfony/monolog-bridge` 7.4)

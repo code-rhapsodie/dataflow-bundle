@@ -66,7 +66,7 @@ class JobRepository
     public function findNextPendingDataflow(): ?Job
     {
         $qb = $this->createQueryBuilder();
-        $qb->andWhere($qb->expr()->lte('requested_date', $qb->createNamedParameter(new \DateTime(), 'datetime')))
+        $qb->andWhere($qb->expr()->lte('requested_date', $qb->createNamedParameter($this->utcDateTime(), 'datetime')))
             ->andWhere($qb->expr()->eq('status', $qb->createNamedParameter(Job::STATUS_PENDING, ParameterType::INTEGER)))
             ->orderBy('requested_date', 'ASC')
             ->setMaxResults(1)
@@ -118,7 +118,7 @@ class JobRepository
 
     public function save(Job $job): void
     {
-        $datas = $job->toArray();
+        $datas = $this->convertDateTimeToUtc($job->toArray());
         unset($datas['id']);
 
         if (\is_array($datas['options'])) {
@@ -160,9 +160,9 @@ class JobRepository
             ->andWhere('j.status = :status')
             ->andWhere('j.start_time < :date')
             ->setParameter('status', Job::STATUS_RUNNING)
-            ->setParameter('date', new \DateTime("- {$hours} hours"), 'datetime')
+            ->setParameter('date', $this->utcDateTime("- {$hours} hours"), 'datetime')
             ->setParameter('new_status', Job::STATUS_CRASHED)
-            ->setParameter('now', new \DateTime(), 'datetime')
+            ->setParameter('now', $this->utcDateTime(), 'datetime')
             ->executeStatement()
         ;
     }
@@ -177,7 +177,7 @@ class JobRepository
             ->from(static::TABLE_NAME, 'j')
             ->andWhere($qb->expr()->in('j.status', [(string) Job::STATUS_COMPLETED, (string) Job::STATUS_CRASHED]))
             ->andWhere('j.end_time < :date')
-            ->setParameter('date', new \DateTime("- {$days} days"), 'datetime')
+            ->setParameter('date', $this->utcDateTime("- {$days} days"), 'datetime')
             ->executeQuery()
             ->fetchFirstColumn()
         ;
@@ -186,7 +186,7 @@ class JobRepository
         $qb->delete(static::TABLE_NAME.' j')
             ->andWhere($qb->expr()->in('j.status', [(string) Job::STATUS_COMPLETED, (string) Job::STATUS_CRASHED]))
             ->andWhere('j.end_time < :date')
-            ->setParameter('date', new \DateTime("- {$days} days"), 'datetime')
+            ->setParameter('date', $this->utcDateTime("- {$days} days"), 'datetime')
             ->executeStatement()
         ;
 

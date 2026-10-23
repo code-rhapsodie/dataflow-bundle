@@ -1,10 +1,15 @@
 # Code Rhapsodie Dataflow Bundle
 
+> [!WARNING]
+> **Breaking change: dates are now stored in UTC** (`cr_dataflow_job` and `cr_dataflow_scheduled`), whatever the PHP default timezone is.
+> Existing dates must be converted with a command before running the new version: see [UPGRADE.md](UPGRADE.md).
+
 DataflowBundle is a bundle for Symfony 3.4+
 providing an easy way to create import / export dataflow.
 
 | Dataflow | Symfony                  | Support |
 |----------|--------------------------|---------|
+| 7.x      | ^7.4                     | yes     |
 | 6.x      | ^7.4                     | yes     |
 | 5.x      | ^7.3                     | yes     |
 | 4.x      | 3.4 \| 4.x \| 5.x \| 6.x | yes     |

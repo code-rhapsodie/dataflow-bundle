@@ -35,7 +35,7 @@ class ScheduledDataflowRepository
     public function findReadyToRun(): iterable
     {
         $qb = $this->createQueryBuilder();
-        $qb->andWhere($qb->expr()->lte('next', $qb->createNamedParameter(new \DateTime(), 'datetime')))
+        $qb->andWhere($qb->expr()->lte('next', $qb->createNamedParameter($this->utcDateTime(), 'datetime')))
             ->andWhere($qb->expr()->eq('enabled', $qb->createNamedParameter(1, ParameterType::INTEGER)))
             ->orderBy('next', 'ASC')
         ;
@@ -87,7 +87,7 @@ class ScheduledDataflowRepository
 
     public function save(ScheduledDataflow $scheduledDataflow): void
     {
-        $datas = $scheduledDataflow->toArray();
+        $datas = $this->convertDateTimeToUtc($scheduledDataflow->toArray());
         unset($datas['id']);
 
         if (\is_array($datas['options'])) {
