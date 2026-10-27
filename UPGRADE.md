@@ -1,7 +1,10 @@
-# Upgrade to v6.x
+# Upgrade to v7.x
 
 [BC] Dates are now stored in UTC (`cr_dataflow_job`: `requested_date`, `start_time`, `end_time`; `cr_dataflow_scheduled`: `next`),
 and read as UTC, whatever the PHP default timezone is.
+
+## If you don't use ibexa-dataflow-bundle
+
 Dates previously stored in the PHP default timezone must be converted to UTC (make a backup first, the command is not idempotent):
 
 ```
